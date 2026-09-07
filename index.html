@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <meta name="theme-color" content="#070b12">
   <meta name="description" content="TK Baddy Championships - Weekly badminton championship leaderboard, live standings, stats grid, and match tracker.">
-  <title>TK Baddy Championships &#127992; | ShuttleMasters Standings & Match Tracker</title>
+  <title>TK Baddy Championships &#127992; | Standings &amp; Match Tracker</title>
 
   <!-- Google Fonts: Outfit (Headings/Badges/Scores) & Plus Jakarta Sans (Body/Tables) -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -121,39 +121,41 @@
     }
 
     /* Header Styles */
-    header {
-      padding: 24px 0 20px;
-      margin-bottom: 24px;
+    header, .app-header {
+      padding: 12px 0 10px;
+      margin-bottom: 6px;
       display: flex;
       flex-direction: column;
-      gap: 16px;
     }
 
     .header-top {
       display: flex;
       align-items: center;
-      justify-content: space-between;
-      flex-wrap: wrap;
-      gap: 12px;
+      justify-content: flex-start;
+      width: 100%;
     }
 
     .brand-group {
       display: flex;
       align-items: center;
-      gap: 12px;
+      gap: 10px;
+      width: 100%;
+      min-width: 0;
     }
 
     .shuttle-logo {
-      width: 48px;
-      height: 48px;
+      width: 36px;
+      height: 36px;
+      min-width: 36px;
       background: linear-gradient(135deg, #059669 0%, #00f59b 100%);
       border-radius: var(--radius-md);
       display: flex;
       align-items: center;
       justify-content: center;
-      font-size: 26px;
-      box-shadow: 0 0 25px rgba(0, 245, 155, 0.4);
+      font-size: 18px;
+      box-shadow: 0 0 15px rgba(0, 245, 155, 0.35);
       border: 1px solid rgba(255, 255, 255, 0.3);
+      flex-shrink: 0;
       animation: shuttleFloat 4s ease-in-out infinite;
     }
 
@@ -162,51 +164,18 @@
       50% { transform: translateY(-4px) rotate(-6deg); }
     }
 
-    .brand-titles {
-      display: flex;
-      flex-direction: column;
-    }
-
-    .brand-badge {
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-      font-family: var(--font-display);
-      font-size: 11px;
-      font-weight: 800;
-      text-transform: uppercase;
-      letter-spacing: 0.1em;
-      color: var(--court-emerald-neon);
-      background: rgba(0, 245, 155, 0.1);
-      border: 1px solid rgba(0, 245, 155, 0.25);
-      padding: 3px 10px;
-      border-radius: var(--radius-full);
-      width: fit-content;
-      margin-bottom: 4px;
-    }
-
     .brand-title {
-      font-size: 26px;
+      font-size: clamp(16px, 4.8vw, 24px);
       font-weight: 800;
-      line-height: 1.15;
+      line-height: 1.2;
       background: linear-gradient(180deg, #ffffff 30%, #cbd5e1 100%);
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
-    }
-
-    .brand-subtitle {
-      font-size: 13px;
-      color: var(--text-muted);
-      font-weight: 500;
-      display: flex;
-      align-items: center;
-      gap: 6px;
-    }
-
-    .header-actions {
-      display: flex;
-      align-items: center;
-      gap: 8px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      margin: 0;
+      letter-spacing: -0.01em;
     }
 
     /* Sync Pill Indicator */
@@ -1543,22 +1512,29 @@
   
     /* Main Navigation Tabs */
     .tabs-nav-bar {
-      display: flex;
-      gap: 10px;
-      margin: 18px 0 22px 0;
-      border-bottom: 1px solid var(--border-subtle);
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 6px;
+      margin: 8px 0 16px 0;
       padding-bottom: 12px;
-      align-items: center;
-      flex-wrap: wrap;
+      border-bottom: 1px solid var(--border-subtle);
+      width: 100%;
+    }
+
+    @media (min-width: 480px) {
+      .tabs-nav-bar {
+        gap: 10px;
+      }
     }
 
     .tab-pill-btn {
       display: inline-flex;
       align-items: center;
-      gap: 8px;
-      padding: 9px 18px;
+      justify-content: center;
+      gap: 5px;
+      padding: 9px 4px;
       border-radius: var(--radius-full);
-      font-size: 14px;
+      font-size: 12px;
       font-weight: 700;
       color: var(--text-muted);
       background: var(--bg-card);
@@ -1566,6 +1542,17 @@
       cursor: pointer;
       transition: all var(--transition-fast);
       user-select: none;
+      white-space: nowrap;
+      min-height: 42px;
+      text-align: center;
+    }
+
+    @media (min-width: 480px) {
+      .tab-pill-btn {
+        padding: 10px 14px;
+        font-size: 14px;
+        gap: 8px;
+      }
     }
 
     .tab-pill-btn:hover {
@@ -1578,26 +1565,34 @@
       color: #0b0f19;
       background: var(--court-emerald-neon);
       border-color: var(--court-emerald-neon);
-      box-shadow: 0 0 16px rgba(0, 245, 155, 0.4);
+      box-shadow: 0 0 16px rgba(0, 245, 155, 0.35);
     }
 
-    .tab-pill-btn.tab-honors.active {
-      color: #3b1d03;
-      background: linear-gradient(135deg, #ffd700 0%, #f59e0b 100%);
-      border-color: #ffd700;
-      box-shadow: 0 0 16px rgba(255, 215, 0, 0.4);
+    .leaderboard-subnav {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 14px;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
     }
 
-    .tab-pill-action {
-      background: linear-gradient(135deg, rgba(255, 215, 0, 0.12) 0%, rgba(245, 158, 11, 0.08) 100%);
-      border: 1px solid rgba(255, 215, 0, 0.4);
-      color: #ffd700;
+    @media (max-width: 540px) {
+      .leaderboard-subnav {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 10px;
+      }
+      .leaderboard-subnav .pill-filter-group {
+        justify-content: center;
+      }
     }
 
-    .tab-pill-action:hover {
-      background: linear-gradient(135deg, #ffd700 0%, #f59e0b 100%);
-      color: #3b1d03;
-      box-shadow: 0 4px 14px rgba(245, 158, 11, 0.35);
+    .admin-actions-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
+      gap: 8px;
+      margin-top: 12px;
     }
 
     .tab-badge {
@@ -1697,201 +1692,125 @@
 
   <div class="app-container">
 
-    <!-- Header Section -->
-    <header>
+    <!-- Header Section (Clean single line on mobile) -->
+    <header class="app-header">
       <div class="header-top">
         <div class="brand-group">
           <div class="shuttle-logo">&#127992;</div>
-          <div class="brand-titles">
-            <span class="brand-badge">&#9889; WEEKLY CHAMPIONSHIP 2026</span>
-            <h1 class="brand-title">TK Baddy Championships</h1>
-            <div class="brand-subtitle">
-              <span>ShuttleMasters &#127992;</span>
-              <span>&#8226;</span>
-              <span id="activeWeekDisplay">Season 1 Active</span>
-              <span>&#8226;</span>
-              <span>Emerald Court Arena</span>
-            </div>
-          </div>
-        </div>
-
-        <div class="header-actions">
-          <div id="syncStatusPill" class="sync-status-pill connected" onclick="openDatabaseSettingsModal()" title="Click to view database connection details">
-            <span class="pulse-dot"></span>
-            <span id="syncStatusText">Firestore Live Sync</span>
-          </div>
-
-          <button id="headerLockBtn" class="btn btn-outline btn-icon" onclick="handleLockToggle()" title="Organizer Mode (PIN 2026)">
-            <span id="headerLockIcon">&#128274;</span>
-          </button>
-        </div>
-      </div>
-
-      <!-- Admin Top Action Bar (Visible when unlocked with PIN 2026) -->
-      <div id="adminStatusBar" class="admin-bar">
-        <div class="admin-bar-info">
-          <span>&#128081;</span>
-          <span>Organizer Mode Active (PIN 2026)</span>
-        </div>
-        <div class="admin-bar-actions">
-          <button class="btn btn-emerald" onclick="openLogMatchModal()">
-            <span>&#10133;</span> Log Match
-          </button>
-          <button class="btn btn-emerald" onclick="openLogChampionsModal()" style="background: rgba(255, 215, 0, 0.18); color: #ffd700; border: 1px solid rgba(255, 215, 0, 0.4);">
-            <span>&#127942;</span> Log Champions
-          </button>
-          <button class="btn btn-outline" onclick="openManagePlayersModal()">
-            <span>&#128101;</span> Players
-          </button>
-          <button class="btn btn-outline" onclick="exportDataCSV()">
-            <span>&#128229;</span> Export CSV
-          </button>
-          <button class="btn btn-outline" onclick="openDatabaseSettingsModal()">
-            <span>&#9881;&#65039;</span> Config
-          </button>
-          <button class="btn btn-danger-outline" onclick="lockAdminMode()">
-            <span>&#128274;</span> Lock
-          </button>
+          <h1 class="brand-title">TK Baddy Championships</h1>
         </div>
       </div>
     </header>
 
-    <!-- Main Navigation Tabs -->
-    <div class="tabs-nav-bar">
-      <button class="tab-pill-btn active" id="tabBtnStandings" onclick="switchMainTab('standings')">
-        <span>&#127992;</span> Match Standings &amp; Games
+    <!-- Main Navigation Tabs (Exactly 3 Tabs) -->
+    <div class="tabs-nav-bar" id="mainTabsNav">
+      <button class="tab-pill-btn active" id="tabBtnLeaderboard" onclick="switchMainTab('leaderboard')">
+        <span>&#127942;</span> Leaderboard
       </button>
-      <button class="tab-pill-btn tab-honors" id="tabBtnHonors" onclick="switchMainTab('honors')">
-        <span>&#127942;</span> Champions &amp; Finalists <span class="tab-badge" id="honorsTabBadge">0</span>
+      <button class="tab-pill-btn" id="tabBtnBadges" onclick="switchMainTab('badges')">
+        <span>&#127894;&#65039;</span> Badges
       </button>
-      <button class="tab-pill-btn tab-pill-action" onclick="openLogChampionsModal()" style="margin-left: auto;">
-        <span>&#10133;</span> Log Champions &amp; Finalists for the Week
+      <button class="tab-pill-btn" id="tabBtnHistory" onclick="switchMainTab('history')">
+        <span>&#128220;</span> Match History
       </button>
     </div>
 
-    <!-- TAB 1: STANDINGS & MATCHES -->
-    <div id="standingsTabContent">
-
-    <!-- SECTION 1: LIVE LEADERBOARD / STANDINGS TABLE -->
-    <section>
-      <div class="section-header">
-        <div>
-          <div class="section-title">
-            <span class="section-icon">&#127942;</span>
-            <span>Live Standings & Leaderboard</span>
-          </div>
-          <div class="section-sub">Computed dynamically from match history &#8226; Click any player for profile spotlight</div>
+    <!-- =========================================================================
+         TAB 1: LEADERBOARD CONTENT (Upfront default)
+         ========================================================================= -->
+    <div id="leaderboardTabContent">
+      <div class="leaderboard-subnav">
+        <div class="pill-filter-group" style="margin: 0;">
+          <button class="pill-btn active" id="subBtnMatches" onclick="toggleLeaderboardView('matches')">&#127992; Standings</button>
+          <button class="pill-btn" id="subBtnChampions" onclick="toggleLeaderboardView('champions')">&#127942; Titles &amp; Finalists</button>
         </div>
-        <div class="filter-group" style="display: flex; gap: 8px; align-items: center; flex-wrap: wrap;">
-          <div class="pill-filter-group">
-            <button class="pill-btn active" id="genderFilterAll" onclick="handleGenderFilter('all', this)">All</button>
-            <button class="pill-btn" id="genderFilterMale" onclick="handleGenderFilter('Male', this)">&#9794;&#65039; Men</button>
-            <button class="pill-btn" id="genderFilterFemale" onclick="handleGenderFilter('Female', this)">&#9792;&#65039; Women</button>
-          </div>
-          <button class="btn btn-outline btn-icon" onclick="refreshStandings()" title="Recalculate Standings">
+        <div id="standingsGenderFilters" class="pill-filter-group" style="margin: 0;">
+          <button class="pill-btn active" id="genderFilterAll" onclick="handleGenderFilter('all', this)">All</button>
+          <button class="pill-btn" id="genderFilterMale" onclick="handleGenderFilter('Male', this)">&#9794;&#65039; Men</button>
+          <button class="pill-btn" id="genderFilterFemale" onclick="handleGenderFilter('Female', this)">&#9792;&#65039; Women</button>
+          <button class="btn btn-outline btn-icon" onclick="refreshStandings()" title="Recalculate Standings" style="padding: 4px 8px; font-size: 12px;">
             <span>&#128260;</span>
           </button>
         </div>
       </div>
 
-      <div class="leaderboard-card">
+      <!-- View A: Live Match Standings Table -->
+      <div id="standingsMatchesSection">
+        <div class="leaderboard-card">
+          <div class="table-container">
+            <table class="standings-table">
+              <thead>
+                <tr>
+                  <th class="rank-cell">#</th>
+                  <th class="sortable" onclick="sortTable('name')">Player Name &#8597;</th>
+                  <th class="sortable" onclick="sortTable('played')">P &#8597;</th>
+                  <th class="sortable" onclick="sortTable('won')">W &#8597;</th>
+                  <th class="sortable" onclick="sortTable('lost')">L &#8597;</th>
+                  <th class="sortable" onclick="sortTable('winRate')">Win Rate &#8597;</th>
+                  <th class="sortable" onclick="sortTable('diff')">+/- Net Pts &#8597;</th>
+                </tr>
+              </thead>
+              <tbody id="standingsTableBody">
+                <!-- Dynamically populated rows -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- View B: Championship Titles & Finalists Hall of Fame -->
+      <div id="standingsHonorsSection" style="display: none;">
+        <!-- Honors Leaderboard Section -->
+      <section style="margin-bottom: 30px;">
+        <div class="section-header">
+          <div>
+            <h2 class="section-title"><span>&#127942;</span> # Titles &amp; # Finals Appearances Leaderboard</h2>
+            <div class="section-subtitle">Ranked by Championships won, followed by total finals appearances</div>
+          </div>
+        </div>
+
         <div class="table-container">
           <table class="standings-table">
             <thead>
               <tr>
-                <th class="rank-cell">#</th>
-                <th class="sortable" onclick="sortTable('name')">Player Name &#8597;</th>
-                <th class="sortable" onclick="sortTable('played')">P &#8597;</th>
-                <th class="sortable" onclick="sortTable('won')">W &#8597;</th>
-                <th class="sortable" onclick="sortTable('lost')">L &#8597;</th>
-                <th class="sortable" onclick="sortTable('winRate')">Win Rate &#8597;</th>
-                <th class="sortable" onclick="sortTable('diff')">+/- Net Pts &#8597;</th>
+                <th style="width: 70px;"># Rank</th>
+                <th>Player</th>
+                <th style="text-align: center;">Titles Won &#127942;</th>
+                <th style="text-align: center;">Runners Up &#129352;</th>
+                <th style="text-align: center;">Finals Played &#127919;</th>
+                <th style="text-align: center;">Finals Win %</th>
+                <th>Championship Seasons Won</th>
               </tr>
             </thead>
-            <tbody id="standingsTableBody">
+            <tbody id="honorsLeaderboardBody">
               <!-- Dynamically populated rows -->
             </tbody>
           </table>
         </div>
+      </section>
+
+      <!-- Weekly Editions History Section -->
+      <section style="margin-bottom: 30px;">
+        <div class="section-header">
+          <div>
+            <h2 class="section-title"><span>&#128220;</span> Weekly Championship Seasons Archive</h2>
+            <div class="section-subtitle">Chronological history of weekly title winning and runner-up finalist teams</div>
+          </div>
+        </div>
+
+        <div id="editionsListContainer">
+          <!-- Dynamically populated edition cards -->
+        </div>
+      </section>
       </div>
-    </section>
+    </div>
+    <!-- END TAB 1 -->
 
-    <!-- SECTION 2: CHAMPIONSHIP STATS GRID (EXACTLY 6 CARDS) -->
-    <section>
-      <div class="section-header">
-        <div>
-          <div class="section-title">
-            <span class="section-icon">&#128202;</span>
-            <span>Championship Stats Grid</span>
-          </div>
-          <div class="section-sub">Real-time season metrics and records</div>
-        </div>
-      </div>
-
-      <div class="stats-grid">
-        <!-- 1. Total Matches Played -->
-        <div class="stat-card">
-          <div class="stat-header">
-            <span class="stat-card-title">Total Matches</span>
-            <div class="stat-icon">&#127992;</div>
-          </div>
-          <div class="stat-value" id="statTotalMatches">0</div>
-          <div class="stat-sub"><span>&#128200;</span> Season matches</div>
-        </div>
-
-        <!-- 2. Current Table Leader -->
-        <div class="stat-card gold-card">
-          <div class="stat-header">
-            <span class="stat-card-title">Table Leader</span>
-            <div class="stat-icon">&#128081;</div>
-          </div>
-          <div class="stat-value" id="statLeaderName">&#8212;</div>
-          <div class="stat-sub" id="statLeaderRate">100% Win Rate</div>
-        </div>
-
-        <!-- 3. Most Matches Won -->
-        <div class="stat-card">
-          <div class="stat-header">
-            <span class="stat-card-title">Most Wins</span>
-            <div class="stat-icon">&#129351;</div>
-          </div>
-          <div class="stat-value" id="statMostWinsPlayer">&#8212;</div>
-          <div class="stat-sub" id="statMostWinsCount">0 Wins</div>
-        </div>
-
-        <!-- 4. Longest Win Streak -->
-        <div class="stat-card gold-card">
-          <div class="stat-header">
-            <span class="stat-card-title">Longest Streak</span>
-            <div class="stat-icon">&#128293;</div>
-          </div>
-          <div class="stat-value" id="statStreakPlayer">&#8212;</div>
-          <div class="stat-sub" id="statStreakCount">0 in a row</div>
-        </div>
-
-        <!-- 5. Highest Single-Match Point Margin -->
-        <div class="stat-card">
-          <div class="stat-header">
-            <span class="stat-card-title">Highest Margin</span>
-            <div class="stat-icon">&#128165;</div>
-          </div>
-          <div class="stat-value" id="statHighestMargin">+0 pts</div>
-          <div class="stat-sub" id="statHighestMarginSub">Single match lead</div>
-        </div>
-
-        <!-- 6. Most Active Player -->
-        <div class="stat-card">
-          <div class="stat-header">
-            <span class="stat-card-title">Most Active</span>
-            <div class="stat-icon">&#9889;</div>
-          </div>
-          <div class="stat-value" id="statActivePlayer">&#8212;</div>
-          <div class="stat-sub" id="statActiveGames">0 games played</div>
-        </div>
-      </div>
-    </section>
-
-    <!-- SECTION 3: PLAYER BADGES & ACHIEVEMENTS (EXACTLY 5 BADGES) -->
+    <!-- =========================================================================
+         TAB 2: BADGES CONTENT
+         ========================================================================= -->
+    <div id="badgesTabContent" style="display: none;">
+      <!-- SECTION 3: PLAYER BADGES & ACHIEVEMENTS (EXACTLY 5 BADGES) -->
     <section>
       <div class="section-header">
         <div>
@@ -1975,8 +1894,90 @@
         </div>
       </div>
     </section>
+      <div style="margin-top: 24px;">
+        <!-- SECTION 2: CHAMPIONSHIP STATS GRID (EXACTLY 6 CARDS) -->
+    <section>
+      <div class="section-header">
+        <div>
+          <div class="section-title">
+            <span class="section-icon">&#128202;</span>
+            <span>Championship Stats Grid</span>
+          </div>
+          <div class="section-sub">Real-time season metrics and records</div>
+        </div>
+      </div>
 
-    <!-- SECTION 4: MATCH HISTORY FEED -->
+      <div class="stats-grid">
+        <!-- 1. Total Matches Played -->
+        <div class="stat-card">
+          <div class="stat-header">
+            <span class="stat-card-title">Total Matches</span>
+            <div class="stat-icon">&#127992;</div>
+          </div>
+          <div class="stat-value" id="statTotalMatches">0</div>
+          <div class="stat-sub"><span>&#128200;</span> Season matches</div>
+        </div>
+
+        <!-- 2. Current Table Leader -->
+        <div class="stat-card gold-card">
+          <div class="stat-header">
+            <span class="stat-card-title">Table Leader</span>
+            <div class="stat-icon">&#128081;</div>
+          </div>
+          <div class="stat-value" id="statLeaderName">&#8212;</div>
+          <div class="stat-sub" id="statLeaderRate">100% Win Rate</div>
+        </div>
+
+        <!-- 3. Most Matches Won -->
+        <div class="stat-card">
+          <div class="stat-header">
+            <span class="stat-card-title">Most Wins</span>
+            <div class="stat-icon">&#129351;</div>
+          </div>
+          <div class="stat-value" id="statMostWinsPlayer">&#8212;</div>
+          <div class="stat-sub" id="statMostWinsCount">0 Wins</div>
+        </div>
+
+        <!-- 4. Longest Win Streak -->
+        <div class="stat-card gold-card">
+          <div class="stat-header">
+            <span class="stat-card-title">Longest Streak</span>
+            <div class="stat-icon">&#128293;</div>
+          </div>
+          <div class="stat-value" id="statStreakPlayer">&#8212;</div>
+          <div class="stat-sub" id="statStreakCount">0 in a row</div>
+        </div>
+
+        <!-- 5. Highest Single-Match Point Margin -->
+        <div class="stat-card">
+          <div class="stat-header">
+            <span class="stat-card-title">Highest Margin</span>
+            <div class="stat-icon">&#128165;</div>
+          </div>
+          <div class="stat-value" id="statHighestMargin">+0 pts</div>
+          <div class="stat-sub" id="statHighestMarginSub">Single match lead</div>
+        </div>
+
+        <!-- 6. Most Active Player -->
+        <div class="stat-card">
+          <div class="stat-header">
+            <span class="stat-card-title">Most Active</span>
+            <div class="stat-icon">&#9889;</div>
+          </div>
+          <div class="stat-value" id="statActivePlayer">&#8212;</div>
+          <div class="stat-sub" id="statActiveGames">0 games played</div>
+        </div>
+      </div>
+    </section>
+      </div>
+    </div>
+    <!-- END TAB 2 -->
+
+    <!-- =========================================================================
+         TAB 3: MATCH HISTORY CONTENT
+         ========================================================================= -->
+    <div id="historyTabContent" style="display: none;">
+      <!-- SECTION 4: MATCH HISTORY FEED -->
     <section>
       <div class="section-header">
         <div>
@@ -2016,84 +2017,61 @@
         <!-- Dynamically populated match cards -->
       </div>
     </section>
-
     </div>
-    <!-- END TAB 1 (STANDINGS & MATCHES) -->
+    <!-- END TAB 3 -->
 
-    <!-- TAB 2: CHAMPIONS & FINALISTS (HALL OF FAME) -->
-    <div id="honorsTabContent" style="display: none;">
-      <!-- Hero Banner -->
-      <div class="honors-hero-card">
-        <div>
-          <div style="font-size: 20px; font-weight: 800; color: #ffd700; display: flex; align-items: center; gap: 8px;">
-            <span>&#127942;</span> Weekly Roll of Honor &amp; Hall of Fame
-          </div>
-          <div style="font-size: 13px; color: var(--text-muted); margin-top: 4px;">
-            Official record of weekly championship title holders, runner-up finalists, and all-time hall of fame rankings.
-          </div>
-        </div>
-        <div style="display: flex; gap: 10px; flex-wrap: wrap;">
-          <button class="btn btn-gold" onclick="openLogChampionsModal()">
-            <span>&#127942;</span> Log Champions &amp; Finalists for the Week
+    <!-- =========================================================================
+         ORGANIZER & ADMIN CONTROLS (AT THE VERY BOTTOM OF THE PAGE)
+         ========================================================================= -->
+    <footer class="organizer-bottom-box" id="organizerBottomBox">
+      <!-- State 1: Locked (Default for public viewers) -->
+      <div id="organizerLockedView">
+        <div class="organizer-icon" id="bottomLockIcon">&#128274;</div>
+        <div class="organizer-title" id="bottomLockTitle">Organizer Access</div>
+        <p class="organizer-desc" id="bottomLockDesc">
+          Tournament organizer tools are locked behind PIN 2026. Enter PIN to log matches, record weekly champions, or manage players.
+        </p>
+        <div style="display: flex; gap: 10px; justify-content: center; align-items: center; flex-wrap: wrap;">
+          <button class="btn btn-gold" id="bottomLockBtn" onclick="openPinModal()">
+            <span>&#128273;</span> Enter Organizer PIN (2026)
           </button>
+          <div id="syncStatusPill" class="sync-status-pill connected" onclick="openDatabaseSettingsModal()" title="Click to view database connection details">
+            <span class="pulse-dot"></span>
+            <span id="syncStatusText">Firestore Live Sync</span>
+          </div>
         </div>
       </div>
 
-      <!-- Honors Leaderboard Section -->
-      <section style="margin-bottom: 30px;">
-        <div class="section-header">
-          <div>
-            <h2 class="section-title"><span>&#127942;</span> # Titles &amp; # Finals Appearances Leaderboard</h2>
-            <div class="section-subtitle">Ranked by Championships won, followed by total finals appearances</div>
+      <!-- State 2: Unlocked (Active Admin Session) -->
+      <div id="organizerUnlockedView" style="display: none;">
+        <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px; flex-wrap: wrap; gap: 8px;">
+          <div style="display: flex; align-items: center; gap: 8px;">
+            <span style="font-size: 20px;">&#128081;</span>
+            <span style="font-weight: 800; color: #ffd700; font-size: 15px;">Organizer Controls Active</span>
           </div>
+          <button class="btn btn-danger-outline" style="padding: 5px 12px; font-size: 12px;" onclick="lockAdminMode()">
+            <span>&#128274;</span> Lock &amp; Exit Admin
+          </button>
         </div>
 
-        <div class="table-container">
-          <table class="standings-table">
-            <thead>
-              <tr>
-                <th style="width: 70px;"># Rank</th>
-                <th>Player</th>
-                <th style="text-align: center;">Titles Won &#127942;</th>
-                <th style="text-align: center;">Runners Up &#129352;</th>
-                <th style="text-align: center;">Finals Played &#127919;</th>
-                <th style="text-align: center;">Finals Win %</th>
-                <th>Championship Seasons Won</th>
-              </tr>
-            </thead>
-            <tbody id="honorsLeaderboardBody">
-              <!-- Dynamically populated rows -->
-            </tbody>
-          </table>
+        <div class="admin-actions-grid">
+          <button class="btn btn-emerald" onclick="openLogMatchModal()">
+            <span>&#10133;</span> Log New Match
+          </button>
+          <button class="btn btn-gold" onclick="openLogChampionsModal()">
+            <span>&#127942;</span> Log Champions for the Week
+          </button>
+          <button class="btn btn-outline" onclick="openManagePlayersModal()">
+            <span>&#128101;</span> Manage Players
+          </button>
+          <button class="btn btn-outline" onclick="exportDataCSV()">
+            <span>&#128229;</span> Export CSV
+          </button>
+          <button class="btn btn-outline" onclick="openDatabaseSettingsModal()">
+            <span>&#9881;&#65039;</span> Cloud Sync &amp; DB
+          </button>
         </div>
-      </section>
-
-      <!-- Weekly Editions History Section -->
-      <section style="margin-bottom: 30px;">
-        <div class="section-header">
-          <div>
-            <h2 class="section-title"><span>&#128220;</span> Weekly Championship Seasons Archive</h2>
-            <div class="section-subtitle">Chronological history of weekly title winning and runner-up finalist teams</div>
-          </div>
-        </div>
-
-        <div id="editionsListContainer">
-          <!-- Dynamically populated edition cards -->
-        </div>
-      </section>
-    </div>
-    <!-- END TAB 2 -->
-
-    <!-- ORGANIZER / ADMIN ENTRY SECTION (AT THE BOTTOM) -->
-    <footer class="organizer-bottom-box" id="organizerBottomBox">
-      <div class="organizer-icon" id="bottomLockIcon">&#128274;</div>
-      <div class="organizer-title" id="bottomLockTitle">Organizer Access</div>
-      <p class="organizer-desc" id="bottomLockDesc">
-        Locked behind PIN 2026. Unlocks "Log New Match", "Add/Manage Players", "Edit/Delete Matches", and "Export CSV".
-      </p>
-      <button class="btn btn-gold" id="bottomLockBtn" onclick="handleLockToggle()">
-        <span>&#128273;</span> Enter Organizer PIN (2026)
-      </button>
+      </div>
     </footer>
 
   </div><!-- /.app-container -->
@@ -3505,20 +3483,16 @@
       sessionStorage.setItem('tk_admin_active', 'true');
       document.body.classList.add('is-admin');
 
-      // Update Header Bar
-      document.getElementById('adminStatusBar').classList.add('active');
-      document.getElementById('headerLockIcon').innerText = '\u{1F451}';
-
       // Update Bottom Box
       const bBox = document.getElementById('organizerBottomBox');
-      bBox.classList.add('admin-active');
-      document.getElementById('bottomLockIcon').innerText = '\u{1F451}';
-      document.getElementById('bottomLockTitle').innerText = 'Organizer Mode Active';
-      document.getElementById('bottomLockDesc').innerText = 'You have unlocked match logging, player editing, and CSV data export.';
-      document.getElementById('bottomLockBtn').innerHTML = '<span>\u{1F512}</span> Exit / Lock Organizer Mode';
-      document.getElementById('bottomLockBtn').className = 'btn btn-outline';
+      if (bBox) bBox.classList.add('admin-active');
 
-      renderMatchesFeed(); // Show edit/delete buttons on match cards
+      const lockedView = document.getElementById('organizerLockedView');
+      const unlockedView = document.getElementById('organizerUnlockedView');
+      if (lockedView) lockedView.style.display = 'none';
+      if (unlockedView) unlockedView.style.display = 'block';
+
+      renderMatchesFeed();
       renderHonorsUI();
 
       if (showCelebration) {
@@ -3531,21 +3505,18 @@
       sessionStorage.removeItem('tk_admin_active');
       document.body.classList.remove('is-admin');
 
-      // Update Header Bar
-      document.getElementById('adminStatusBar').classList.remove('active');
-      document.getElementById('headerLockIcon').innerText = '\u{1F512}';
-
       // Update Bottom Box
       const bBox = document.getElementById('organizerBottomBox');
-      bBox.classList.remove('admin-active');
-      document.getElementById('bottomLockIcon').innerText = '\u{1F512}';
-      document.getElementById('bottomLockTitle').innerText = 'Organizer Access';
-      document.getElementById('bottomLockDesc').innerText = 'Locked behind PIN 2026. Unlocks "Log New Match", "Add/Manage Players", "Edit/Delete Matches", and "Export CSV".';
-      document.getElementById('bottomLockBtn').innerHTML = '<span>\u{1F511}</span> Enter Organizer PIN (2026)';
-      document.getElementById('bottomLockBtn').className = 'btn btn-gold';
+      if (bBox) bBox.classList.remove('admin-active');
 
-      renderMatchesFeed(); // Hide edit/delete buttons
+      const lockedView = document.getElementById('organizerLockedView');
+      const unlockedView = document.getElementById('organizerUnlockedView');
+      if (lockedView) lockedView.style.display = 'block';
+      if (unlockedView) unlockedView.style.display = 'none';
+
+      renderMatchesFeed();
       renderHonorsUI();
+      showToast("Organizer Mode Locked \u{1F512}");
     }
 
     /* ==========================================================================
@@ -4199,22 +4170,60 @@
        ========================================================================== */
     function switchMainTab(tabName) {
       appState.activeMainTab = tabName;
-      const standingsContent = document.getElementById('standingsTabContent');
-      const honorsContent = document.getElementById('honorsTabContent');
-      const tabBtnStandings = document.getElementById('tabBtnStandings');
-      const tabBtnHonors = document.getElementById('tabBtnHonors');
+      const leaderboardContent = document.getElementById('leaderboardTabContent');
+      const badgesContent = document.getElementById('badgesTabContent');
+      const historyContent = document.getElementById('historyTabContent');
 
-      if (tabName === 'honors') {
-        if (standingsContent) standingsContent.style.display = 'none';
-        if (honorsContent) honorsContent.style.display = 'block';
-        if (tabBtnStandings) tabBtnStandings.classList.remove('active');
-        if (tabBtnHonors) tabBtnHonors.classList.add('active');
+      const tabBtnLeaderboard = document.getElementById('tabBtnLeaderboard');
+      const tabBtnBadges = document.getElementById('tabBtnBadges');
+      const tabBtnHistory = document.getElementById('tabBtnHistory');
+
+      if (leaderboardContent) leaderboardContent.style.display = 'none';
+      if (badgesContent) badgesContent.style.display = 'none';
+      if (historyContent) historyContent.style.display = 'none';
+
+      if (tabBtnLeaderboard) tabBtnLeaderboard.classList.remove('active');
+      if (tabBtnBadges) tabBtnBadges.classList.remove('active');
+      if (tabBtnHistory) tabBtnHistory.classList.remove('active');
+
+      if (tabName === 'badges') {
+        if (badgesContent) badgesContent.style.display = 'block';
+        if (tabBtnBadges) tabBtnBadges.classList.add('active');
+        renderStatsGrid(computeStandings());
+        renderBadges(computeStandings());
+      } else if (tabName === 'history') {
+        if (historyContent) historyContent.style.display = 'block';
+        if (tabBtnHistory) tabBtnHistory.classList.add('active');
+        renderMatchesFeed();
+      } else {
+        // Default: leaderboard
+        if (leaderboardContent) leaderboardContent.style.display = 'block';
+        if (tabBtnLeaderboard) tabBtnLeaderboard.classList.add('active');
+        renderStandingsTable(computeStandings());
+      }
+    }
+
+    function toggleLeaderboardView(view) {
+      const matchesSection = document.getElementById('standingsMatchesSection');
+      const honorsSection = document.getElementById('standingsHonorsSection');
+      const subBtnMatches = document.getElementById('subBtnMatches');
+      const subBtnChampions = document.getElementById('subBtnChampions');
+      const genderFilters = document.getElementById('standingsGenderFilters');
+
+      if (view === 'champions') {
+        if (matchesSection) matchesSection.style.display = 'none';
+        if (honorsSection) honorsSection.style.display = 'block';
+        if (subBtnMatches) subBtnMatches.classList.remove('active');
+        if (subBtnChampions) subBtnChampions.classList.add('active');
+        if (genderFilters) genderFilters.style.display = 'none';
         renderHonorsUI();
       } else {
-        if (standingsContent) standingsContent.style.display = 'block';
-        if (honorsContent) honorsContent.style.display = 'none';
-        if (tabBtnStandings) tabBtnStandings.classList.add('active');
-        if (tabBtnHonors) tabBtnHonors.classList.remove('active');
+        if (matchesSection) matchesSection.style.display = 'block';
+        if (honorsSection) honorsSection.style.display = 'none';
+        if (subBtnMatches) subBtnMatches.classList.add('active');
+        if (subBtnChampions) subBtnChampions.classList.remove('active');
+        if (genderFilters) genderFilters.style.display = 'flex';
+        renderStandingsTable(computeStandings());
       }
     }
 

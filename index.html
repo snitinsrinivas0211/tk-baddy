@@ -1288,12 +1288,22 @@
       color: #fff;
     }
 
+    .modal-window form {
+      display: flex;
+      flex-direction: column;
+      flex: 1;
+      min-height: 0;
+      overflow: hidden;
+    }
+
     .modal-body {
       padding: 20px;
       overflow-y: auto;
       display: flex;
       flex-direction: column;
       gap: 16px;
+      flex: 1;
+      min-height: 0;
     }
 
     .modal-footer {
@@ -1304,6 +1314,7 @@
       justify-content: flex-end;
       gap: 10px;
       background: rgba(7, 11, 18, 0.6);
+      flex-shrink: 0;
     }
 
     /* Form Elements */
@@ -2030,6 +2041,13 @@
             <!-- Player item rows -->
           </div>
         </div>
+
+        <div style="margin-top: 16px; padding-top: 12px; border-top: 1px solid var(--border-subtle); display: flex; justify-content: space-between; align-items: center;">
+          <span style="font-size: 12px; color: var(--text-dim);">Need to reset the championship?</span>
+          <button type="button" class="btn btn-danger-outline" style="font-size: 11px; padding: 4px 10px; color: #ef4444; border-color: rgba(239, 68, 68, 0.4); background: rgba(239, 68, 68, 0.1);" onclick="wipeAllData()">
+            &#128465;&#65039; Wipe All Data
+          </button>
+        </div>
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-outline" onclick="closePlayersModal()">Done</button>
@@ -2076,9 +2094,11 @@
           <textarea id="firebaseConfigTextarea" class="form-textarea" rows="7" style="font-family: monospace; font-size: 12px;"></textarea>
         </div>
 
-        <div style="display: flex; gap: 8px; flex-wrap: wrap;">
+        <div style="display: flex; gap: 8px; flex-wrap: wrap; align-items: center; margin-top: 12px;">
           <button type="button" class="btn btn-emerald" onclick="saveCustomFirebaseConfig()">Save Config</button>
-          <button type="button" class="btn btn-outline" onclick="resetToInitialSampleData()">&#128260; Re-seed Sample Data</button>
+          <button type="button" class="btn btn-danger-outline" onclick="wipeAllData()" style="color: #ef4444; border-color: rgba(239, 68, 68, 0.4); background: rgba(239, 68, 68, 0.1);">
+            &#128465;&#65039; Wipe All Matches &amp; Players (Clean Slate)
+          </button>
         </div>
       </div>
       <div class="modal-footer">
@@ -2132,103 +2152,10 @@
     }
 
     /* ==========================================================================
-       2. INITIAL SEED DATA (Players & Past Matches)
+       2. INITIAL SEED DATA (Clean Slate)
        ========================================================================== */
-    const INITIAL_PLAYERS = [
-      { id: "p_nitin", name: "Nitin", avatar: "\u{1F451}", joinedDate: "2026-08-01", active: true },
-      { id: "p_rahul", name: "Rahul", avatar: "\u26A1", joinedDate: "2026-08-01", active: true },
-      { id: "p_amit", name: "Amit", avatar: "\u{1F3F8}", joinedDate: "2026-08-01", active: true },
-      { id: "p_vikram", name: "Vikram", avatar: "\u{1F525}", joinedDate: "2026-08-01", active: true },
-      { id: "p_karthik", name: "Karthik", avatar: "\u{1F3AF}", joinedDate: "2026-08-01", active: true },
-      { id: "p_rohan", name: "Rohan", avatar: "\u{1F680}", joinedDate: "2026-08-01", active: true }
-    ];
-
-    const INITIAL_MATCHES = [
-      {
-        id: "m_01",
-        date: "2026-08-16",
-        weekNumber: 33,
-        format: "singles",
-        team1: ["Nitin"],
-        team2: ["Karthik"],
-        sets: [{ t1: 21, t2: 15 }, { t1: 21, t2: 14 }],
-        winner: 1,
-        notes: "Season kickoff match! Nitin dominated with pinpoint drop shots.",
-        createdAt: "2026-08-16T10:00:00.000Z"
-      },
-      {
-        id: "m_02",
-        date: "2026-08-20",
-        weekNumber: 33,
-        format: "doubles",
-        team1: ["Nitin", "Rohan"],
-        team2: ["Rahul", "Amit"],
-        sets: [{ t1: 21, t2: 16 }, { t1: 21, t2: 18 }],
-        winner: 1,
-        notes: "High-octane doubles battle. Nitin & Rohan covered the court with seamless rotation.",
-        createdAt: "2026-08-20T11:00:00.000Z"
-      },
-      {
-        id: "m_03",
-        date: "2026-08-23",
-        weekNumber: 34,
-        format: "singles",
-        team1: ["Nitin"],
-        team2: ["Rahul"],
-        sets: [{ t1: 21, t2: 19 }, { t1: 18, t2: 21 }, { t1: 21, t2: 16 }],
-        winner: 1,
-        notes: "Opening season thriller! Nitin sealed the decider with back-to-back cross-court smashes.",
-        createdAt: "2026-08-23T10:30:00.000Z"
-      },
-      {
-        id: "m_04",
-        date: "2026-08-27",
-        weekNumber: 34,
-        format: "doubles",
-        team1: ["Nitin", "Amit"],
-        team2: ["Rahul", "Vikram"],
-        sets: [{ t1: 21, t2: 17 }, { t1: 21, t2: 14 }],
-        winner: 1,
-        notes: "Clinical doubles teamwork. Amit's net kills neutralized Vikram's backcourt jump smashes.",
-        createdAt: "2026-08-27T18:00:00.000Z"
-      },
-      {
-        id: "m_05",
-        date: "2026-08-30",
-        weekNumber: 35,
-        format: "singles",
-        team1: ["Vikram"],
-        team2: ["Karthik"],
-        sets: [{ t1: 14, t2: 21 }, { t1: 21, t2: 18 }, { t1: 21, t2: 19 }],
-        winner: 1,
-        notes: "Epic 40-shot rally on set 3 match point! Vikram came back from 0-1 set down in legendary fashion.",
-        createdAt: "2026-08-30T09:45:00.000Z"
-      },
-      {
-        id: "m_06",
-        date: "2026-09-02",
-        weekNumber: 36,
-        format: "singles",
-        team1: ["Rahul"],
-        team2: ["Rohan"],
-        sets: [{ t1: 21, t2: 8 }, { t1: 21, t2: 10 }],
-        winner: 1,
-        notes: "Flawless defense and blistering pace. Rahul held Rohan under 11 points in both sets.",
-        createdAt: "2026-09-02T19:15:00.000Z"
-      },
-      {
-        id: "m_07",
-        date: "2026-09-06",
-        weekNumber: 36,
-        format: "doubles",
-        team1: ["Nitin", "Vikram"],
-        team2: ["Amit", "Karthik"],
-        sets: [{ t1: 21, t2: 19 }, { t1: 22, t2: 20 }],
-        winner: 1,
-        notes: "High-intensity deuce in Set 2! Nitin's jump smash on match point locked in a 5-match win streak!",
-        createdAt: "2026-09-06T11:30:00.000Z"
-      }
-    ];
+    const INITIAL_PLAYERS = [];
+    const INITIAL_MATCHES = [];
 
     /* ==========================================================================
        3. APPLICATION STATE
@@ -2286,11 +2213,11 @@
             const players = [];
             snapshot.forEach(doc => players.push({ id: doc.id, ...doc.data() }));
             appState.players = players;
-            saveLocalData();
-            updateUI();
           } else {
-            seedFirestoreData();
+            appState.players = [];
           }
+          saveLocalData();
+          updateUI();
         }, (err) => {
           console.warn("Firestore players onSnapshot error:", err);
           fallbackToLocalStorage();
@@ -2302,9 +2229,11 @@
             const matches = [];
             snapshot.forEach(doc => matches.push({ id: doc.id, ...doc.data() }));
             appState.matches = matches;
-            saveLocalData();
-            updateUI();
+          } else {
+            appState.matches = [];
           }
+          saveLocalData();
+          updateUI();
         }, (err) => {
           console.warn("Firestore matches onSnapshot error:", err);
           fallbackToLocalStorage();
@@ -2318,9 +2247,9 @@
 
     function fallbackToLocalStorage() {
       const hasData = loadLocalData();
-      if (!hasData || appState.players.length === 0) {
-        appState.players = [...INITIAL_PLAYERS];
-        appState.matches = [...INITIAL_MATCHES];
+      if (!hasData) {
+        appState.players = [];
+        appState.matches = [];
         saveLocalData();
       }
       updateSyncBadge(false);
@@ -2340,24 +2269,7 @@
     }
 
     async function seedFirestoreData() {
-      if (!firestoreDb) return;
-      try {
-        console.log("Seeding Firestore collections...");
-        const batch = firestoreDb.batch();
-        INITIAL_PLAYERS.forEach(p => {
-          const ref = firestoreDb.collection("badminton_players").doc(p.id);
-          batch.set(ref, p);
-        });
-        INITIAL_MATCHES.forEach(m => {
-          const ref = firestoreDb.collection("badminton_matches").doc(m.id);
-          batch.set(ref, m);
-        });
-        await batch.commit();
-        console.log("Firestore seeded successfully!");
-      } catch (e) {
-        console.warn("Could not seed Firestore batch (permissions or network):", e);
-        fallbackToLocalStorage();
-      }
+      // Clean slate: auto-seeding disabled
     }
 
     async function persistMatch(matchObj, isEdit = false) {
@@ -2618,7 +2530,7 @@
       tbody.innerHTML = '';
 
       if (standings.length === 0) {
-        tbody.innerHTML = `<tr><td colspan="7" class="empty-state">No players found. Add players in Admin mode!</td></tr>`;
+        tbody.innerHTML = `<tr><td colspan="7" class="empty-state">No players registered yet. Unlock Organizer Mode (PIN: 2026) to add your first players!</td></tr>`;
         return;
       }
 
@@ -2827,11 +2739,12 @@
       filteredMatches.sort((a, b) => new Date(b.date) - new Date(a.date));
 
       if (filteredMatches.length === 0) {
+        const isCleanSlate = appState.matches.length === 0;
         container.innerHTML = `
           <div class="empty-state">
             <div class="empty-state-icon">\u{1F3F8}</div>
-            <div style="font-size: 16px; font-weight: 700; color: var(--text-main);">No matches match your filter</div>
-            <p style="font-size: 13px; margin-top: 4px;">Try selecting a different player or format filter.</p>
+            <div style="font-size: 16px; font-weight: 700; color: var(--text-main);">${isCleanSlate ? "No matches logged yet" : "No matches match your filter"}</div>
+            <p style="font-size: 13px; margin-top: 4px;">${isCleanSlate ? "Use Organizer Mode (PIN: 2026) to log your first championship match!" : "Try selecting a different player or format filter."}</p>
           </div>
         `;
         return;
@@ -2926,13 +2839,17 @@
       selects.forEach(id => {
         const el = document.getElementById(id);
         if (el) {
-          el.innerHTML = '<option value="" disabled selected>Select player...</option>';
-          appState.players.forEach(p => {
-            const opt = document.createElement('option');
-            opt.value = p.name;
-            opt.innerText = `${p.avatar || '\u{1F3F8}'} ${p.name}`;
-            el.appendChild(opt);
-          });
+          if (appState.players.length === 0) {
+            el.innerHTML = '<option value="" disabled selected>No players registered (Add in Organizer mode)</option>';
+          } else {
+            el.innerHTML = '<option value="" disabled selected>Select player...</option>';
+            appState.players.forEach(p => {
+              const opt = document.createElement('option');
+              opt.value = p.name;
+              opt.innerText = `${p.avatar || '\u{1F3F8}'} ${p.name}`;
+              el.appendChild(opt);
+            });
+          }
         }
       });
     }
@@ -3307,6 +3224,11 @@
       const container = document.getElementById('playersRosterList');
       container.innerHTML = '';
 
+      if (appState.players.length === 0) {
+        container.innerHTML = '<div style="font-size: 13px; color: var(--text-dim); text-align: center; padding: 16px;">No players registered yet. Enter a player name above and click Add!</div>';
+        return;
+      }
+
       appState.players.forEach(p => {
         // Count matches played
         const count = appState.matches.filter(m => 
@@ -3520,17 +3442,54 @@
       }
     }
 
-    function resetToInitialSampleData() {
-      if (confirm("Reset current database to initial players (Nitin, Rahul, Amit, Vikram, Karthik, Rohan) and sample matches?")) {
-        appState.players = [...INITIAL_PLAYERS];
-        appState.matches = [...INITIAL_MATCHES];
-        saveLocalData();
+    async function wipeAllData() {
+      const confirm1 = confirm("\u26A0\uFE0F DANGER: Delete ALL historical match logs and all player names?\n\nThis will permanently wipe the database and give you a clean slate.");
+      if (!confirm1) return;
+      const confirm2 = confirm("Please confirm once more: Are you absolutely sure? This cannot be undone.");
+      if (!confirm2) return;
+
+      try {
         if (isFirestoreActive && firestoreDb) {
-          seedFirestoreData();
+          // Delete all matches from Firestore
+          const matchSnapshot = await firestoreDb.collection("badminton_matches").get();
+          if (!matchSnapshot.empty) {
+            const batchMatches = firestoreDb.batch();
+            matchSnapshot.forEach(doc => batchMatches.delete(doc.ref));
+            await batchMatches.commit();
+          }
+
+          // Delete all players from Firestore
+          const playerSnapshot = await firestoreDb.collection("badminton_players").get();
+          if (!playerSnapshot.empty) {
+            const batchPlayers = firestoreDb.batch();
+            playerSnapshot.forEach(doc => batchPlayers.delete(doc.ref));
+            await batchPlayers.commit();
+          }
         }
+
+        // Clear local storage and memory
+        localStorage.removeItem('tk_baddy_players');
+        localStorage.removeItem('tk_baddy_matches');
+        appState.players = [];
+        appState.matches = [];
+        saveLocalData();
         updateUI();
-        closeDatabaseSettingsModal();
-        triggerGoldConfetti();
+        if (document.getElementById('databaseModal').classList.contains('show')) {
+          closeDatabaseSettingsModal();
+        }
+        if (document.getElementById('playersModal').classList.contains('show')) {
+          closePlayersModal();
+        }
+        alert("\u2705 Clean slate activated! All matches and player names have been completely wiped.");
+      } catch (err) {
+        console.error("Error wiping database:", err);
+        localStorage.removeItem('tk_baddy_players');
+        localStorage.removeItem('tk_baddy_matches');
+        appState.players = [];
+        appState.matches = [];
+        saveLocalData();
+        updateUI();
+        alert("Encountered an issue with remote Firestore deletion: " + err.message + "\nLocal data has been cleared.");
       }
     }
 

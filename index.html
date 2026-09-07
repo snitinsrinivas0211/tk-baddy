@@ -1540,7 +1540,153 @@
 
     /* Print / Utility */
     .hidden { display: none !important; }
-  </style>
+  
+    /* Main Navigation Tabs */
+    .tabs-nav-bar {
+      display: flex;
+      gap: 10px;
+      margin: 18px 0 22px 0;
+      border-bottom: 1px solid var(--border-subtle);
+      padding-bottom: 12px;
+      align-items: center;
+      flex-wrap: wrap;
+    }
+
+    .tab-pill-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 9px 18px;
+      border-radius: var(--radius-full);
+      font-size: 14px;
+      font-weight: 700;
+      color: var(--text-muted);
+      background: var(--bg-card);
+      border: 1px solid var(--border-subtle);
+      cursor: pointer;
+      transition: all var(--transition-fast);
+      user-select: none;
+    }
+
+    .tab-pill-btn:hover {
+      color: var(--text-main);
+      border-color: rgba(255, 255, 255, 0.2);
+      background: var(--bg-hover);
+    }
+
+    .tab-pill-btn.active {
+      color: #0b0f19;
+      background: var(--court-emerald-neon);
+      border-color: var(--court-emerald-neon);
+      box-shadow: 0 0 16px rgba(0, 245, 155, 0.4);
+    }
+
+    .tab-pill-btn.tab-honors.active {
+      color: #3b1d03;
+      background: linear-gradient(135deg, #ffd700 0%, #f59e0b 100%);
+      border-color: #ffd700;
+      box-shadow: 0 0 16px rgba(255, 215, 0, 0.4);
+    }
+
+    .tab-pill-action {
+      background: linear-gradient(135deg, rgba(255, 215, 0, 0.12) 0%, rgba(245, 158, 11, 0.08) 100%);
+      border: 1px solid rgba(255, 215, 0, 0.4);
+      color: #ffd700;
+    }
+
+    .tab-pill-action:hover {
+      background: linear-gradient(135deg, #ffd700 0%, #f59e0b 100%);
+      color: #3b1d03;
+      box-shadow: 0 4px 14px rgba(245, 158, 11, 0.35);
+    }
+
+    .tab-badge {
+      display: inline-block;
+      padding: 2px 7px;
+      border-radius: 10px;
+      font-size: 11px;
+      font-weight: 800;
+      background: rgba(0, 0, 0, 0.35);
+      color: inherit;
+    }
+
+    .tab-pill-btn.active .tab-badge {
+      background: rgba(0, 0, 0, 0.25);
+    }
+
+    /* Honors & Editions styling */
+    .honors-hero-card {
+      background: linear-gradient(135deg, rgba(255, 215, 0, 0.08) 0%, rgba(245, 158, 11, 0.03) 100%);
+      border: 1px solid rgba(255, 215, 0, 0.25);
+      border-radius: var(--radius-md);
+      padding: 18px 22px;
+      margin-bottom: 24px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 16px;
+      flex-wrap: wrap;
+    }
+
+    .edition-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-md);
+      padding: 16px 20px;
+      margin-bottom: 14px;
+      transition: border-color var(--transition-fast);
+    }
+
+    .edition-card:hover {
+      border-color: rgba(255, 215, 0, 0.35);
+    }
+
+    .edition-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 12px;
+      border-bottom: 1px solid var(--border-subtle);
+      padding-bottom: 10px;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    .edition-badge-tag {
+      display: inline-block;
+      background: rgba(255, 215, 0, 0.12);
+      border: 1px solid rgba(255, 215, 0, 0.3);
+      color: #ffd700;
+      font-size: 11px;
+      font-weight: 700;
+      padding: 2px 8px;
+      border-radius: 4px;
+      margin-right: 4px;
+      margin-bottom: 4px;
+    }
+
+    .team-player-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 4px 11px;
+      border-radius: var(--radius-full);
+      font-size: 13px;
+      font-weight: 600;
+    }
+
+    .champ-pill {
+      background: rgba(255, 215, 0, 0.14);
+      border: 1px solid rgba(255, 215, 0, 0.35);
+      color: #ffd700;
+    }
+
+    .runner-pill {
+      background: rgba(148, 163, 184, 0.14);
+      border: 1px solid rgba(148, 163, 184, 0.35);
+      color: #cbd5e1;
+    }
+</style>
 </head>
 <body>
 
@@ -1562,7 +1708,7 @@
             <div class="brand-subtitle">
               <span>ShuttleMasters &#127992;</span>
               <span>&#8226;</span>
-              <span id="activeWeekDisplay">Active Week 36</span>
+              <span id="activeWeekDisplay">Season 1 Active</span>
               <span>&#8226;</span>
               <span>Emerald Court Arena</span>
             </div>
@@ -1591,6 +1737,9 @@
           <button class="btn btn-emerald" onclick="openLogMatchModal()">
             <span>&#10133;</span> Log Match
           </button>
+          <button class="btn btn-emerald" onclick="openLogChampionsModal()" style="background: rgba(255, 215, 0, 0.18); color: #ffd700; border: 1px solid rgba(255, 215, 0, 0.4);">
+            <span>&#127942;</span> Log Champions
+          </button>
           <button class="btn btn-outline" onclick="openManagePlayersModal()">
             <span>&#128101;</span> Players
           </button>
@@ -1607,6 +1756,22 @@
       </div>
     </header>
 
+    <!-- Main Navigation Tabs -->
+    <div class="tabs-nav-bar">
+      <button class="tab-pill-btn active" id="tabBtnStandings" onclick="switchMainTab('standings')">
+        <span>&#127992;</span> Match Standings &amp; Games
+      </button>
+      <button class="tab-pill-btn tab-honors" id="tabBtnHonors" onclick="switchMainTab('honors')">
+        <span>&#127942;</span> Champions &amp; Finalists <span class="tab-badge" id="honorsTabBadge">0</span>
+      </button>
+      <button class="tab-pill-btn tab-pill-action" onclick="openLogChampionsModal()" style="margin-left: auto;">
+        <span>&#10133;</span> Log Champions &amp; Finalists for the Week
+      </button>
+    </div>
+
+    <!-- TAB 1: STANDINGS & MATCHES -->
+    <div id="standingsTabContent">
+
     <!-- SECTION 1: LIVE LEADERBOARD / STANDINGS TABLE -->
     <section>
       <div class="section-header">
@@ -1617,7 +1782,12 @@
           </div>
           <div class="section-sub">Computed dynamically from match history &#8226; Click any player for profile spotlight</div>
         </div>
-        <div class="filter-group">
+        <div class="filter-group" style="display: flex; gap: 8px; align-items: center; flex-wrap: wrap;">
+          <div class="pill-filter-group">
+            <button class="pill-btn active" id="genderFilterAll" onclick="handleGenderFilter('all', this)">All</button>
+            <button class="pill-btn" id="genderFilterMale" onclick="handleGenderFilter('Male', this)">&#9794;&#65039; Men</button>
+            <button class="pill-btn" id="genderFilterFemale" onclick="handleGenderFilter('Female', this)">&#9792;&#65039; Women</button>
+          </div>
           <button class="btn btn-outline btn-icon" onclick="refreshStandings()" title="Recalculate Standings">
             <span>&#128260;</span>
           </button>
@@ -1847,6 +2017,73 @@
       </div>
     </section>
 
+    </div>
+    <!-- END TAB 1 (STANDINGS & MATCHES) -->
+
+    <!-- TAB 2: CHAMPIONS & FINALISTS (HALL OF FAME) -->
+    <div id="honorsTabContent" style="display: none;">
+      <!-- Hero Banner -->
+      <div class="honors-hero-card">
+        <div>
+          <div style="font-size: 20px; font-weight: 800; color: #ffd700; display: flex; align-items: center; gap: 8px;">
+            <span>&#127942;</span> Weekly Roll of Honor &amp; Hall of Fame
+          </div>
+          <div style="font-size: 13px; color: var(--text-muted); margin-top: 4px;">
+            Official record of weekly championship title holders, runner-up finalists, and all-time hall of fame rankings.
+          </div>
+        </div>
+        <div style="display: flex; gap: 10px; flex-wrap: wrap;">
+          <button class="btn btn-gold" onclick="openLogChampionsModal()">
+            <span>&#127942;</span> Log Champions &amp; Finalists for the Week
+          </button>
+        </div>
+      </div>
+
+      <!-- Honors Leaderboard Section -->
+      <section style="margin-bottom: 30px;">
+        <div class="section-header">
+          <div>
+            <h2 class="section-title"><span>&#127942;</span> # Titles &amp; # Finals Appearances Leaderboard</h2>
+            <div class="section-subtitle">Ranked by Championships won, followed by total finals appearances</div>
+          </div>
+        </div>
+
+        <div class="table-container">
+          <table class="standings-table">
+            <thead>
+              <tr>
+                <th style="width: 70px;"># Rank</th>
+                <th>Player</th>
+                <th style="text-align: center;">Titles Won &#127942;</th>
+                <th style="text-align: center;">Runners Up &#129352;</th>
+                <th style="text-align: center;">Finals Played &#127919;</th>
+                <th style="text-align: center;">Finals Win %</th>
+                <th>Championship Editions Won</th>
+              </tr>
+            </thead>
+            <tbody id="honorsLeaderboardBody">
+              <!-- Dynamically populated rows -->
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <!-- Weekly Editions History Section -->
+      <section style="margin-bottom: 30px;">
+        <div class="section-header">
+          <div>
+            <h2 class="section-title"><span>&#128220;</span> Weekly Editions Archive</h2>
+            <div class="section-subtitle">Chronological history of weekly title winning and runner-up finalist teams</div>
+          </div>
+        </div>
+
+        <div id="editionsListContainer">
+          <!-- Dynamically populated edition cards -->
+        </div>
+      </section>
+    </div>
+    <!-- END TAB 2 -->
+
     <!-- ORGANIZER / ADMIN ENTRY SECTION (AT THE BOTTOM) -->
     <footer class="organizer-bottom-box" id="organizerBottomBox">
       <div class="organizer-icon" id="bottomLockIcon">&#128274;</div>
@@ -1920,63 +2157,120 @@
         <input type="hidden" id="editMatchId" value="">
         <div class="modal-body">
 
-          <!-- Format Selector -->
+          <!-- Format Selector (Dropdown: Default Doubles) -->
           <div class="form-group">
             <label class="form-label">Match Format</label>
-            <div class="pill-filter-group" style="width: 100%; display: flex;">
-              <button type="button" class="pill-btn active" id="modalFormatSingles" style="flex: 1;" onclick="setModalFormat('singles')">Singles (1v1)</button>
-              <button type="button" class="pill-btn" id="modalFormatDoubles" style="flex: 1;" onclick="setModalFormat('doubles')">Doubles (2v2)</button>
-            </div>
+            <select id="modalFormatSelect" class="form-select" onchange="setModalFormat(this.value)">
+              <option value="doubles" selected>Doubles (2v2)</option>
+              <option value="singles">Singles (1v1)</option>
+            </select>
           </div>
 
-          <!-- Date & Week -->
+          <!-- Date & Season -->
           <div class="score-inputs-grid">
             <div class="form-group">
               <label class="form-label">Match Date</label>
               <input type="date" id="matchDateInput" class="form-input" required>
             </div>
             <div class="form-group">
-              <label class="form-label">Championship Week</label>
-              <input type="number" id="matchWeekInput" class="form-input" min="1" max="52" value="36" required>
+              <label class="form-label">Championship Season</label>
+              <select id="matchSeasonSelect" class="form-select" required>
+                <option value="1" selected>Season 1</option>
+                <option value="2">Season 2</option>
+                <option value="3">Season 3</option>
+                <option value="4">Season 4</option>
+                <option value="5">Season 5</option>
+                <option value="6">Season 6</option>
+                <option value="7">Season 7</option>
+                <option value="8">Season 8</option>
+                <option value="9">Season 9</option>
+                <option value="10">Season 10</option>
+                <option value="11">Season 11</option>
+                <option value="12">Season 12</option>
+                <option value="13">Season 13</option>
+                <option value="14">Season 14</option>
+                <option value="15">Season 15</option>
+                <option value="16">Season 16</option>
+                <option value="17">Season 17</option>
+                <option value="18">Season 18</option>
+                <option value="19">Season 19</option>
+                <option value="20">Season 20</option>
+                <option value="21">Season 21</option>
+                <option value="22">Season 22</option>
+                <option value="23">Season 23</option>
+                <option value="24">Season 24</option>
+                <option value="25">Season 25</option>
+                <option value="26">Season 26</option>
+                <option value="27">Season 27</option>
+                <option value="28">Season 28</option>
+                <option value="29">Season 29</option>
+                <option value="30">Season 30</option>
+                <option value="31">Season 31</option>
+                <option value="32">Season 32</option>
+                <option value="33">Season 33</option>
+                <option value="34">Season 34</option>
+                <option value="35">Season 35</option>
+                <option value="36">Season 36</option>
+                <option value="37">Season 37</option>
+                <option value="38">Season 38</option>
+                <option value="39">Season 39</option>
+                <option value="40">Season 40</option>
+                <option value="41">Season 41</option>
+                <option value="42">Season 42</option>
+                <option value="43">Season 43</option>
+                <option value="44">Season 44</option>
+                <option value="45">Season 45</option>
+                <option value="46">Season 46</option>
+                <option value="47">Season 47</option>
+                <option value="48">Season 48</option>
+                <option value="49">Season 49</option>
+                <option value="50">Season 50</option>
+              </select>
             </div>
           </div>
 
-          <!-- Team 1 Selection -->
+          <!-- Team 1 Selection (Default Doubles) -->
           <div class="form-group">
             <label class="form-label" style="color: var(--court-emerald-neon);">Team 1 Player(s)</label>
             <div style="display: flex; gap: 8px;">
               <select id="team1Player1Select" class="form-select" style="flex: 1;" required></select>
-              <select id="team1Player2Select" class="form-select hidden" style="flex: 1;"></select>
+              <select id="team1Player2Select" class="form-select" style="flex: 1;" required></select>
             </div>
           </div>
 
-          <!-- Team 2 Selection -->
+          <!-- Team 2 Selection (Default Doubles) -->
           <div class="form-group">
             <label class="form-label" style="color: var(--cyber-cyan);">Team 2 Player(s)</label>
             <div style="display: flex; gap: 8px;">
               <select id="team2Player1Select" class="form-select" style="flex: 1;" required></select>
-              <select id="team2Player2Select" class="form-select hidden" style="flex: 1;"></select>
+              <select id="team2Player2Select" class="form-select" style="flex: 1;" required></select>
             </div>
           </div>
 
-          <!-- Set Scores -->
+          <!-- Set Scores with # Sets Selector -->
           <div class="form-group">
-            <label class="form-label">Set Scores (Best of 3 Sets)</label>
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
+              <label class="form-label" style="margin-bottom: 0;"># Sets</label>
+              <select id="matchSetsCountSelect" class="form-select" style="width: 130px; padding: 4px 8px; font-size: 13px;" onchange="handleSetsCountChange(this.value)">
+                <option value="1" selected>1</option>
+                <option value="3">Best of 3</option>
+              </select>
+            </div>
             <div style="display: flex; flex-direction: column; gap: 8px;">
               <!-- Set 1 -->
-              <div class="set-input-row">
+              <div class="set-input-row" id="setRow1">
                 <span class="set-input-label">Set 1:</span>
                 <input type="number" id="set1Team1" class="form-input" placeholder="T1 Score" min="0" max="30" required oninput="calculateLiveMatchWinner()">
                 <input type="number" id="set1Team2" class="form-input" placeholder="T2 Score" min="0" max="30" required oninput="calculateLiveMatchWinner()">
               </div>
-              <!-- Set 2 -->
-              <div class="set-input-row">
+              <!-- Set 2 (Hidden for 1 Set) -->
+              <div class="set-input-row hidden" id="setRow2">
                 <span class="set-input-label">Set 2:</span>
-                <input type="number" id="set2Team1" class="form-input" placeholder="T1 Score" min="0" max="30" required oninput="calculateLiveMatchWinner()">
-                <input type="number" id="set2Team2" class="form-input" placeholder="T2 Score" min="0" max="30" required oninput="calculateLiveMatchWinner()">
+                <input type="number" id="set2Team1" class="form-input" placeholder="T1 Score" min="0" max="30" oninput="calculateLiveMatchWinner()">
+                <input type="number" id="set2Team2" class="form-input" placeholder="T2 Score" min="0" max="30" oninput="calculateLiveMatchWinner()">
               </div>
-              <!-- Set 3 (Optional / Decider) -->
-              <div class="set-input-row">
+              <!-- Set 3 (Decider - Hidden for 1 Set) -->
+              <div class="set-input-row hidden" id="setRow3">
                 <span class="set-input-label">Set 3:</span>
                 <input type="number" id="set3Team1" class="form-input" placeholder="Decider (opt)" min="0" max="30" oninput="calculateLiveMatchWinner()">
                 <input type="number" id="set3Team2" class="form-input" placeholder="Decider (opt)" min="0" max="30" oninput="calculateLiveMatchWinner()">
@@ -2006,6 +2300,79 @@
     </div>
   </div>
 
+  <!-- Log / Edit Champions and Finalists Modal -->
+  <div class="modal-backdrop" id="championsModal">
+    <div class="modal-window" style="max-width: 580px;">
+      <div class="modal-header">
+        <div class="modal-title" id="championsModalTitle">
+          <span>&#127942;</span> Log Champions &amp; Finalists for the Week
+        </div>
+        <button class="modal-close-btn" onclick="closeChampionsModal()">&#215;</button>
+      </div>
+      <form id="championsForm" onsubmit="handleChampionsFormSubmit(event)">
+        <input type="hidden" id="editEditionId" value="">
+        <div class="modal-body">
+          <div class="score-inputs-grid">
+            <div class="form-group">
+              <label class="form-label">1. Championships Edition</label>
+              <input type="text" id="editionNameInput" class="form-input" placeholder="e.g. Edition 1" required>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Championship Date</label>
+              <input type="date" id="editionDateInput" class="form-input" required>
+            </div>
+          </div>
+
+          <!-- Title Winning Team (Champions - Up to 5 players) -->
+          <div class="form-group" style="background: rgba(255, 215, 0, 0.06); padding: 14px; border-radius: var(--radius-sm); border: 1px solid rgba(255, 215, 0, 0.25);">
+            <label class="form-label" style="color: #ffd700; font-size: 14px; font-weight: 800; display: flex; align-items: center; gap: 6px; margin-bottom: 4px;">
+              <span>&#127942;</span> 2. Title Winning Team (Up to 5 Players)
+            </label>
+            <div style="font-size: 12px; color: var(--text-dim); margin-bottom: 10px;">
+              Select all players who won this championship title:
+            </div>
+            <div style="display: flex; flex-direction: column; gap: 8px;">
+              <select id="champPlayer1" class="form-select" required></select>
+              <select id="champPlayer2" class="form-select"></select>
+              <select id="champPlayer3" class="form-select"></select>
+              <select id="champPlayer4" class="form-select"></select>
+              <select id="champPlayer5" class="form-select"></select>
+            </div>
+          </div>
+
+          <!-- Runners Up Team (Finalists - Up to 5 players) -->
+          <div class="form-group" style="background: rgba(148, 163, 184, 0.06); padding: 14px; border-radius: var(--radius-sm); border: 1px solid rgba(148, 163, 184, 0.25);">
+            <label class="form-label" style="color: #cbd5e1; font-size: 14px; font-weight: 800; display: flex; align-items: center; gap: 6px; margin-bottom: 4px;">
+              <span>&#129352;</span> 3. Runners Up Team (Up to 5 Players)
+            </label>
+            <div style="font-size: 12px; color: var(--text-dim); margin-bottom: 10px;">
+              Select all players who finished as runner-up finalists:
+            </div>
+            <div style="display: flex; flex-direction: column; gap: 8px;">
+              <select id="runnerPlayer1" class="form-select" required></select>
+              <select id="runnerPlayer2" class="form-select"></select>
+              <select id="runnerPlayer3" class="form-select"></select>
+              <select id="runnerPlayer4" class="form-select"></select>
+              <select id="runnerPlayer5" class="form-select"></select>
+            </div>
+          </div>
+
+          <!-- Edition Notes -->
+          <div class="form-group">
+            <label class="form-label">Finals Highlights / Notes (Optional)</label>
+            <input type="text" id="editionNotesInput" class="form-input" placeholder="e.g. Thrilling 21-19 decider on match point!">
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-outline" onclick="closeChampionsModal()">Cancel</button>
+          <button type="submit" class="btn btn-gold" id="saveEditionBtn">
+            <span>&#128190;</span> Save Champions &amp; Finalists
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
   <!-- 3. Manage Players Modal -->
   <div class="modal-backdrop" id="playersModal">
     <div class="modal-window">
@@ -2017,8 +2384,12 @@
       </div>
       <div class="modal-body">
         <!-- Add Player Form -->
-        <form onsubmit="handleAddPlayerSubmit(event)" style="display: flex; gap: 8px;">
-          <input type="text" id="newPlayerNameInput" class="form-input" placeholder="Player name (e.g. Anand)" required style="flex: 1;">
+        <form onsubmit="handleAddPlayerSubmit(event)" style="display: flex; gap: 8px; flex-wrap: wrap;">
+          <input type="text" id="newPlayerNameInput" class="form-input" placeholder="Player name (e.g. Anand)" required style="flex: 2; min-width: 130px;">
+          <select id="newPlayerGenderSelect" class="form-select" style="flex: 1; min-width: 105px;">
+            <option value="Male">&#9794;&#65039; Male</option>
+            <option value="Female">&#9792;&#65039; Female</option>
+          </select>
           <select id="newPlayerAvatarSelect" class="form-select" style="width: 70px;">
             <option value="&#127992;">&#127992;</option>
             <option value="&#128081;">&#128081;</option>
@@ -2086,7 +2457,7 @@
         <div style="font-size: 13px; color: var(--text-muted); line-height: 1.5;">
           <strong>TK Baddy Championships</strong> is connected to Google Cloud Firestore with real-time listeners across collections:
           <code style="color: var(--court-emerald-neon); background: rgba(0,0,0,0.4); padding: 2px 6px; border-radius: 4px;">badminton_matches</code> and 
-          <code style="color: var(--court-emerald-neon); background: rgba(0,0,0,0.4); padding: 2px 6px; border-radius: 4px;">badminton_players</code>.
+          <code style="color: var(--court-emerald-neon); background: rgba(0,0,0,0.4); padding: 2px 6px; border-radius: 4px;">badminton_players</code>, and <code style="color: var(--court-emerald-neon); background: rgba(0,0,0,0.4); padding: 2px 6px; border-radius: 4px;">badminton_editions</code>.
         </div>
 
         <div class="form-group" style="margin-top: 8px;">
@@ -2163,11 +2534,14 @@
     const appState = {
       players: [],
       matches: [],
+      editions: [],
+      activeMainTab: 'standings',
       isAdmin: false,
       sortColumn: 'winRate',
       sortAsc: false,
       filterPlayer: 'all',
       filterFormat: 'all',
+      filterGender: 'all',
       searchQuery: '',
       enteredPin: '',
       modalFormat: 'singles'
@@ -2183,6 +2557,10 @@
         if (storedPlayers && storedMatches) {
           appState.players = JSON.parse(storedPlayers);
           appState.matches = JSON.parse(storedMatches);
+          const storedEditions = localStorage.getItem('tk_baddy_editions');
+          if (storedEditions) {
+            appState.editions = JSON.parse(storedEditions);
+          }
           return true;
         }
       } catch (e) {
@@ -2195,6 +2573,7 @@
       try {
         localStorage.setItem('tk_baddy_players', JSON.stringify(appState.players));
         localStorage.setItem('tk_baddy_matches', JSON.stringify(appState.matches));
+        localStorage.setItem('tk_baddy_editions', JSON.stringify(appState.editions || []));
       } catch (e) {
         console.error("Local data save error", e);
       }
@@ -2238,6 +2617,35 @@
           console.warn("Firestore matches onSnapshot error:", err);
           fallbackToLocalStorage();
         });
+
+        // Listen to Championship Editions
+        try {
+          firestoreDb.collection("badminton_editions").orderBy("date", "desc").onSnapshot((snapshot) => {
+            if (!snapshot.empty) {
+              const editions = [];
+              snapshot.forEach(doc => editions.push({ id: doc.id, ...doc.data() }));
+              appState.editions = editions;
+            } else {
+              appState.editions = [];
+            }
+            saveLocalData();
+            updateUI();
+          }, (err) => {
+            console.warn("Firestore editions onSnapshot with orderBy error:", err);
+            firestoreDb.collection("badminton_editions").onSnapshot((snapshot) => {
+              const editions = [];
+              snapshot.forEach(doc => editions.push({ id: doc.id, ...doc.data() }));
+              editions.sort((a, b) => (b.date || '').localeCompare(a.date || ''));
+              appState.editions = editions;
+              saveLocalData();
+              updateUI();
+            }, (err2) => {
+              console.warn("Firestore editions listener error:", err2);
+            });
+          });
+        } catch (edErr) {
+          console.warn("Could not set up badminton_editions listener:", edErr);
+        }
 
         updateSyncBadge(true);
       } else {
@@ -2355,6 +2763,7 @@
           id: p.id,
           name: p.name,
           avatar: p.avatar || "\u{1F3F8}",
+          gender: p.gender || "Male",
           played: 0,
           won: 0,
           lost: 0,
@@ -2523,18 +2932,29 @@
       renderBadges(standings);
       renderMatchesFeed();
       populatePlayerDropdowns();
+      populateChampionsDropdowns();
+      renderHonorsUI();
     }
 
     function renderStandingsTable(standings) {
       const tbody = document.getElementById('standingsTableBody');
       tbody.innerHTML = '';
 
-      if (standings.length === 0) {
-        tbody.innerHTML = `<tr><td colspan="7" class="empty-state">No players registered yet. Unlock Organizer Mode (PIN: 2026) to add your first players!</td></tr>`;
+      let displayStandings = standings;
+      if (appState.filterGender && appState.filterGender !== 'all') {
+        displayStandings = standings.filter(p => (p.gender || 'Male') === appState.filterGender);
+      }
+
+      if (displayStandings.length === 0) {
+        if (standings.length === 0) {
+          tbody.innerHTML = `<tr><td colspan="7" class="empty-state">No players registered yet. Unlock Organizer Mode (PIN: 2026) to add your first players!</td></tr>`;
+        } else {
+          tbody.innerHTML = `<tr><td colspan="7" class="empty-state">No ${escapeHtml(appState.filterGender.toLowerCase())} players found in current standings.</td></tr>`;
+        }
         return;
       }
 
-      standings.forEach((p, idx) => {
+      displayStandings.forEach((p, idx) => {
         const rank = idx + 1;
         const tr = document.createElement('tr');
         if (rank === 1) tr.className = 'rank-1';
@@ -2564,6 +2984,7 @@
               <div class="player-name-wrapper">
                 <span class="player-name">
                   ${escapeHtml(p.name)}
+                  <span style="font-size: 11px; font-weight: 700; margin-left: 2px; color: ${p.gender === 'Female' ? '#f472b6' : '#60a5fa'};" title="${escapeHtml(p.gender || 'Male')}">${p.gender === 'Female' ? '\u2640' : '\u2642'}</span>
                   ${rank === 1 ? '<span style="font-size: 11px; color: var(--gold-bright); font-weight: 800;">CHAMPION</span>' : ''}
                 </span>
                 <div class="player-form">${recentDots}</div>
@@ -2763,7 +3184,7 @@
           const s2 = parseInt(s.t2) || 0;
           return `
             <div class="set-pill">
-              <span class="set-label">Set ${idx + 1}</span>
+              <span class="set-label">${(match.sets && match.sets.length === 1) ? 'Final' : 'Set ' + (idx + 1)}</span>
               <span class="set-score">
                 <span class="${s1 > s2 ? 'score-win' : 'score-loss'}">${s1}</span> - <span class="${s2 > s1 ? 'score-win' : 'score-loss'}">${s2}</span>
               </span>
@@ -2778,7 +3199,7 @@
               <span style="font-size: 11px; color: var(--text-dim);">\u2022</span>
               <span class="match-format-badge ${match.format}">${match.format === 'doubles' ? '\u{1F3F8}\u{1F3F8} Doubles' : '\u{1F3F8} Singles'}</span>
               <span style="font-size: 11px; color: var(--text-dim);">\u2022</span>
-              <span style="font-size: 11px; color: var(--text-muted); font-weight: 600;">Week ${match.weekNumber || '36'}</span>
+              <span style="font-size: 11px; color: var(--text-muted); font-weight: 600;">Season ${match.season || match.weekNumber || 1}</span>
             </div>
             <div class="match-admin-actions">
               <button class="btn btn-outline btn-icon" style="padding: 4px 8px; font-size: 12px;" onclick="openEditMatchModal('${match.id}')" title="Edit Match">\u270F\uFE0F</button>
@@ -2857,6 +3278,13 @@
     /* ==========================================================================
        7. TABLE SORTING & FILTER HANDLERS
        ========================================================================== */
+        function handleGenderFilter(gender, btn) {
+      appState.filterGender = gender;
+      document.querySelectorAll('#genderFilterAll, #genderFilterMale, #genderFilterFemale').forEach(b => b.classList.remove('active'));
+      if (btn) btn.classList.add('active');
+      renderStandingsTable(computeStandings());
+    }
+
     function sortTable(column) {
       if (appState.sortColumn === column) {
         appState.sortAsc = !appState.sortAsc;
@@ -2979,6 +3407,7 @@
       document.getElementById('bottomLockBtn').className = 'btn btn-outline';
 
       renderMatchesFeed(); // Show edit/delete buttons on match cards
+      renderHonorsUI();
 
       if (showCelebration) {
         triggerGoldConfetti();
@@ -3004,6 +3433,7 @@
       document.getElementById('bottomLockBtn').className = 'btn btn-gold';
 
       renderMatchesFeed(); // Hide edit/delete buttons
+      renderHonorsUI();
     }
 
     /* ==========================================================================
@@ -3018,8 +3448,11 @@
       document.getElementById('editMatchId').value = '';
       document.getElementById('matchModalTitle').innerHTML = '<span>\u{1F3F8}</span> Log New Match';
       document.getElementById('matchDateInput').value = new Date().toISOString().split('T')[0];
-      document.getElementById('matchWeekInput').value = 36;
-      setModalFormat('singles');
+      document.getElementById('matchSeasonSelect').value = "1";
+      document.getElementById('modalFormatSelect').value = "doubles";
+      setModalFormat("doubles");
+      document.getElementById('matchSetsCountSelect').value = "1";
+      handleSetsCountChange("1");
       calculateLiveMatchWinner();
       document.getElementById('matchModal').classList.add('show');
     }
@@ -3031,11 +3464,13 @@
       document.getElementById('matchForm').reset();
       document.getElementById('editMatchId').value = match.id;
       document.getElementById('matchModalTitle').innerHTML = '<span>\u270F\uFE0F</span> Edit Match';
-      document.getElementById('matchDateInput').value = match.date;
-      document.getElementById('matchWeekInput').value = match.weekNumber || 36;
+      document.getElementById('matchDateInput').value = match.date || new Date().toISOString().split('T')[0];
+      document.getElementById('matchSeasonSelect').value = String(match.season || match.weekNumber || 1);
       document.getElementById('matchNotesInput').value = match.notes || '';
 
-      setModalFormat(match.format || 'singles');
+      const format = match.format || "doubles";
+      document.getElementById('modalFormatSelect').value = format;
+      setModalFormat(format);
 
       // Set players
       const t1 = match.team1 || [];
@@ -3044,6 +3479,11 @@
       if (t1[1]) document.getElementById('team1Player2Select').value = t1[1];
       if (t2[0]) document.getElementById('team2Player1Select').value = t2[0];
       if (t2[1]) document.getElementById('team2Player2Select').value = t2[1];
+
+      // Sets count
+      const setsCount = (match.sets && match.sets.length > 1) ? "3" : "1";
+      document.getElementById('matchSetsCountSelect').value = setsCount;
+      handleSetsCountChange(setsCount);
 
       // Set scores
       if (match.sets && match.sets[0]) {
@@ -3069,30 +3509,86 @@
 
     function setModalFormat(format) {
       appState.modalFormat = format;
-      const btnSingles = document.getElementById('modalFormatSingles');
-      const btnDoubles = document.getElementById('modalFormatDoubles');
+      const formatSelect = document.getElementById('modalFormatSelect');
+      if (formatSelect && formatSelect.value !== format) {
+        formatSelect.value = format;
+      }
       const t1p2 = document.getElementById('team1Player2Select');
       const t2p2 = document.getElementById('team2Player2Select');
 
       if (format === 'doubles') {
-        btnDoubles.classList.add('active');
-        btnSingles.classList.remove('active');
         t1p2.classList.remove('hidden');
         t2p2.classList.remove('hidden');
         t1p2.required = true;
         t2p2.required = true;
       } else {
-        btnSingles.classList.add('active');
-        btnDoubles.classList.remove('active');
         t1p2.classList.add('hidden');
         t2p2.classList.add('hidden');
         t1p2.required = false;
         t2p2.required = false;
+        t1p2.value = '';
+        t2p2.value = '';
+      }
+    }
+
+    function handleSetsCountChange(val) {
+      const isSingleSet = val === "1" || val === 1;
+      const setRow2 = document.getElementById('setRow2');
+      const setRow3 = document.getElementById('setRow3');
+      const set2T1 = document.getElementById('set2Team1');
+      const set2T2 = document.getElementById('set2Team2');
+      const set3T1 = document.getElementById('set3Team1');
+      const set3T2 = document.getElementById('set3Team2');
+
+      if (isSingleSet) {
+        setRow2.classList.add('hidden');
+        setRow3.classList.add('hidden');
+        set2T1.required = false;
+        set2T2.required = false;
+        set2T1.value = '';
+        set2T2.value = '';
+        set3T1.value = '';
+        set3T2.value = '';
+      } else {
+        setRow2.classList.remove('hidden');
+        setRow3.classList.remove('hidden');
+        set2T1.required = true;
+        set2T2.required = true;
       }
       calculateLiveMatchWinner();
     }
 
     function calculateLiveMatchWinner() {
+      const setsCount = parseInt(document.getElementById('matchSetsCountSelect').value) || 1;
+      const previewBox = document.getElementById('liveWinnerPreview');
+
+      if (setsCount === 1) {
+        const s1t1Raw = document.getElementById('set1Team1').value;
+        const s1t2Raw = document.getElementById('set1Team2').value;
+        if (s1t1Raw === '' || s1t2Raw === '') {
+          previewBox.innerText = "Enter Set 1 score to determine match winner";
+          previewBox.style.color = "var(--text-muted)";
+          return 0;
+        }
+        const s1 = parseInt(s1t1Raw) || 0;
+        const s2 = parseInt(s1t2Raw) || 0;
+        if (s1 === s2) {
+          previewBox.innerText = "\u2696\uFE0F Scores tied (" + s1 + "-" + s2 + ") \u2014 A winner must lead by at least 1 point!";
+          previewBox.style.color = "var(--gold-bright)";
+          return 0;
+        }
+        if (s1 > s2) {
+          previewBox.innerText = "\u{1F3C6} Team 1 wins (" + s1 + "-" + s2 + ")";
+          previewBox.style.color = "var(--court-emerald-neon)";
+          return 1;
+        } else {
+          previewBox.innerText = "\u{1F3C6} Team 2 wins (" + s2 + "-" + s1 + ")";
+          previewBox.style.color = "var(--cyber-cyan)";
+          return 2;
+        }
+      }
+
+      // Best of 3 sets logic
       const s1t1 = parseInt(document.getElementById('set1Team1').value) || 0;
       const s1t2 = parseInt(document.getElementById('set1Team2').value) || 0;
       const s2t1 = parseInt(document.getElementById('set2Team1').value) || 0;
@@ -3116,23 +3612,22 @@
         else if (s3t2 > s3t1) t2SetsWon++;
       }
 
-      const previewBox = document.getElementById('liveWinnerPreview');
       if (t1SetsWon === 0 && t2SetsWon === 0) {
         previewBox.innerText = "Enter set scores to auto-calculate winner";
         previewBox.style.color = "var(--text-muted)";
         return 0;
       }
 
-      if (t1SetsWon > t2SetsWon) {
-        previewBox.innerText = `\u{1F3C6} Team 1 leads (${t1SetsWon}-${t2SetsWon}) \u2014 Winner: Team 1`;
+      if (t1SetsWon > t2SetsWon && t1SetsWon >= 2) {
+        previewBox.innerText = "\u{1F3C6} Team 1 leads (" + t1SetsWon + "-" + t2SetsWon + ") \u2014 Winner: Team 1";
         previewBox.style.color = "var(--court-emerald-neon)";
         return 1;
-      } else if (t2SetsWon > t1SetsWon) {
-        previewBox.innerText = `\u{1F3C6} Team 2 leads (${t2SetsWon}-${t1SetsWon}) \u2014 Winner: Team 2`;
+      } else if (t2SetsWon > t1SetsWon && t2SetsWon >= 2) {
+        previewBox.innerText = "\u{1F3C6} Team 2 leads (" + t2SetsWon + "-" + t1SetsWon + ") \u2014 Winner: Team 2";
         previewBox.style.color = "var(--cyber-cyan)";
         return 2;
       } else {
-        previewBox.innerText = `\u2696\uFE0F Sets tied (${t1SetsWon}-${t2SetsWon}) \u2014 Set 3 decider required!`;
+        previewBox.innerText = "\u2696\uFE0F Sets tied (" + t1SetsWon + "-" + t2SetsWon + ") \u2014 Set 3 decider required!";
         previewBox.style.color = "var(--gold-bright)";
         return 0;
       }
@@ -3143,7 +3638,7 @@
 
       const winner = calculateLiveMatchWinner();
       if (winner === 0) {
-        alert("Please enter decisive scores so a team wins at least 2 sets!");
+        alert("Please enter decisive scores so a winner is determined!");
         return;
       }
 
@@ -3166,25 +3661,31 @@
         return;
       }
 
+      const setsCount = parseInt(document.getElementById('matchSetsCountSelect').value) || 1;
       const sets = [
-        { t1: parseInt(document.getElementById('set1Team1').value) || 0, t2: parseInt(document.getElementById('set1Team2').value) || 0 },
-        { t1: parseInt(document.getElementById('set2Team1').value) || 0, t2: parseInt(document.getElementById('set2Team2').value) || 0 }
+        { t1: parseInt(document.getElementById('set1Team1').value) || 0, t2: parseInt(document.getElementById('set1Team2').value) || 0 }
       ];
 
-      const s3t1 = document.getElementById('set3Team1').value;
-      const s3t2 = document.getElementById('set3Team2').value;
-      if (s3t1 !== "" && s3t2 !== "") {
-        sets.push({ t1: parseInt(s3t1) || 0, t2: parseInt(s3t2) || 0 });
+      if (setsCount === 3) {
+        sets.push({ t1: parseInt(document.getElementById('set2Team1').value) || 0, t2: parseInt(document.getElementById('set2Team2').value) || 0 });
+        const s3t1 = document.getElementById('set3Team1').value;
+        const s3t2 = document.getElementById('set3Team2').value;
+        if (s3t1 !== "" && s3t2 !== "") {
+          sets.push({ t1: parseInt(s3t1) || 0, t2: parseInt(s3t2) || 0 });
+        }
       }
 
       const editId = document.getElementById('editMatchId').value;
       const isEdit = !!editId;
+      const seasonVal = parseInt(document.getElementById('matchSeasonSelect').value) || 1;
 
       const matchData = {
         id: editId || ("m_" + Date.now()),
         date: document.getElementById('matchDateInput').value,
-        weekNumber: parseInt(document.getElementById('matchWeekInput').value) || 36,
+        season: seasonVal,
+        weekNumber: seasonVal,
         format: appState.modalFormat,
+        setsCount: setsCount,
         team1: team1,
         team2: team2,
         sets: sets,
@@ -3244,10 +3745,15 @@
         row.style.borderRadius = 'var(--radius-sm)';
         row.style.border = '1px solid var(--border-subtle)';
 
+        const genderTag = p.gender === 'Female'
+          ? '<span style="font-size: 10px; font-weight: 600; background: rgba(236, 72, 153, 0.15); color: #f472b6; border: 1px solid rgba(236, 72, 153, 0.3); border-radius: 4px; padding: 1px 6px;">\u2640 Female</span>'
+          : '<span style="font-size: 10px; font-weight: 600; background: rgba(59, 130, 246, 0.15); color: #60a5fa; border: 1px solid rgba(59, 130, 246, 0.3); border-radius: 4px; padding: 1px 6px;">\u2642 Male</span>';
+
         row.innerHTML = `
           <div style="display: flex; align-items: center; gap: 8px;">
             <span style="font-size: 18px;">${p.avatar || '\u{1F3F8}'}</span>
             <span style="font-weight: 700; font-size: 14px;">${escapeHtml(p.name)}</span>
+            ${genderTag}
             <span style="font-size: 11px; color: var(--text-dim);">(${count} matches)</span>
           </div>
           <button class="btn btn-danger-outline btn-icon" style="padding: 2px 6px; font-size: 11px;" onclick="handleDeletePlayer('${p.id}', '${p.name}')">
@@ -3262,8 +3768,10 @@
       e.preventDefault();
       const nameInput = document.getElementById('newPlayerNameInput');
       const avatarSelect = document.getElementById('newPlayerAvatarSelect');
+      const genderSelect = document.getElementById('newPlayerGenderSelect');
       const name = nameInput.value.trim();
       const avatar = avatarSelect.value;
+      const gender = genderSelect ? genderSelect.value : 'Male';
 
       if (!name) return;
 
@@ -3275,6 +3783,7 @@
       const newPlayer = {
         name: name,
         avatar: avatar,
+        gender: gender,
         joinedDate: new Date().toISOString().split('T')[0],
         active: true
       };
@@ -3283,6 +3792,8 @@
       nameInput.value = '';
       renderPlayersRosterList();
       populatePlayerDropdowns();
+      populateChampionsDropdowns();
+      renderHonorsUI();
     }
 
     async function handleDeletePlayer(id, name) {
@@ -3290,6 +3801,8 @@
         await deletePlayerById(id);
         renderPlayersRosterList();
         populatePlayerDropdowns();
+        populateChampionsDropdowns();
+        renderHonorsUI();
       }
     }
 
@@ -3318,7 +3831,7 @@
           <div class="spotlight-details">
             <h3>${escapeHtml(p.name)}</h3>
             <div style="font-size: 13px; color: var(--gold-bright); font-weight: 700;">
-              Championship Rank: #${rank} ${rank === 1 ? '\u{1F451}' : ''}
+              Championship Rank: #${rank} ${rank === 1 ? '\u{1F451}' : ''} \u2022 ${p.gender === 'Female' ? '\u2640 Female' : '\u2642 Male'}
             </div>
             <div style="font-size: 12px; color: var(--text-muted); margin-top: 2px;">
               Win Rate: ${p.winRate.toFixed(1)}% \u2022 Max Streak: ${p.maxStreak} \u{1F525}
@@ -3367,9 +3880,9 @@
       const standings = computeStandings();
 
       // 1. Standings CSV
-      let standingsCsv = "Rank,Player Name,Played,Won,Lost,Win Rate (%),Points Scored,Points Conceded,Net Differential\n";
+      let standingsCsv = "Rank,Player Name,Gender,Played,Won,Lost,Win Rate (%),Points Scored,Points Conceded,Net Differential\n";
       standings.forEach((p, idx) => {
-        standingsCsv += `${idx + 1},"${p.name}",${p.played},${p.won},${p.lost},${p.winRate.toFixed(2)},${p.pointsScored},${p.pointsConceded},${p.diff}\n`;
+        standingsCsv += `${idx + 1},"${p.name}","${p.gender || 'Male'}",${p.played},${p.won},${p.lost},${p.winRate.toFixed(2)},${p.pointsScored},${p.pointsConceded},${p.diff}\n`;
       });
 
       // 2. Matches CSV
@@ -3382,11 +3895,22 @@
         matchesCsv += `"${m.id}","${m.date}",${m.weekNumber || 36},"${m.format}","${(m.team1 || []).join(' & ')}","${(m.team2 || []).join(' & ')}","${winnerName}","${s1}","${s2}","${s3}","${(m.notes || '').replace(/"/g, '""')}"\n`;
       });
 
-      // Trigger browser download
+      // 3. Editions CSV (Weekly Champions & Finalists)
+      let editionsCsv = "Edition,Date,Title Winning Team,Runners Up Team,Notes\n";
+      (appState.editions || []).forEach(ed => {
+        const champs = (ed.champions || []).join(' & ');
+        const runners = (ed.runnersUp || []).join(' & ');
+        editionsCsv += `"${ed.edition || ''}","${ed.date || ''}","${champs}","${runners}","${(ed.notes || '').replace(/"/g, '""')}"\n`;
+      });
+
+      // Trigger browser downloads
       downloadFileBlob(standingsCsv, "tk_baddy_standings.csv", "text/csv");
       setTimeout(() => {
         downloadFileBlob(matchesCsv, "tk_baddy_matches.csv", "text/csv");
       }, 500);
+      setTimeout(() => {
+        downloadFileBlob(editionsCsv, "tk_baddy_weekly_editions.csv", "text/csv");
+      }, 1000);
     }
 
     function downloadFileBlob(content, filename, type) {
@@ -3465,13 +3989,23 @@
             playerSnapshot.forEach(doc => batchPlayers.delete(doc.ref));
             await batchPlayers.commit();
           }
+
+          // Delete all championship editions from Firestore
+          const editionSnapshot = await firestoreDb.collection("badminton_editions").get();
+          if (!editionSnapshot.empty) {
+            const batchEditions = firestoreDb.batch();
+            editionSnapshot.forEach(doc => batchEditions.delete(doc.ref));
+            await batchEditions.commit();
+          }
         }
 
         // Clear local storage and memory
         localStorage.removeItem('tk_baddy_players');
         localStorage.removeItem('tk_baddy_matches');
+        localStorage.removeItem('tk_baddy_editions');
         appState.players = [];
         appState.matches = [];
+        appState.editions = [];
         saveLocalData();
         updateUI();
         if (document.getElementById('databaseModal').classList.contains('show')) {
@@ -3543,6 +4077,481 @@
     }
 
     // Initialize application on DOM ready
+    
+    /* ==========================================================================
+       TAB NAVIGATION & CHAMPIONS / FINALISTS ENGINE
+       ========================================================================== */
+    function switchMainTab(tabName) {
+      appState.activeMainTab = tabName;
+      const standingsContent = document.getElementById('standingsTabContent');
+      const honorsContent = document.getElementById('honorsTabContent');
+      const tabBtnStandings = document.getElementById('tabBtnStandings');
+      const tabBtnHonors = document.getElementById('tabBtnHonors');
+
+      if (tabName === 'honors') {
+        if (standingsContent) standingsContent.style.display = 'none';
+        if (honorsContent) honorsContent.style.display = 'block';
+        if (tabBtnStandings) tabBtnStandings.classList.remove('active');
+        if (tabBtnHonors) tabBtnHonors.classList.add('active');
+        renderHonorsUI();
+      } else {
+        if (standingsContent) standingsContent.style.display = 'block';
+        if (honorsContent) honorsContent.style.display = 'none';
+        if (tabBtnStandings) tabBtnStandings.classList.add('active');
+        if (tabBtnHonors) tabBtnHonors.classList.remove('active');
+      }
+    }
+
+    function openLogChampionsModal() {
+      if (!appState.isAdmin) {
+        openPinModal();
+        return;
+      }
+      populateChampionsDropdowns();
+      document.getElementById('championsForm').reset();
+      document.getElementById('editEditionId').value = '';
+      document.getElementById('championsModalTitle').innerHTML = '<span>\u{1F3C6}</span> Log Champions &amp; Finalists for the Week';
+      document.getElementById('editionDateInput').value = new Date().toISOString().split('T')[0];
+      const nextEdNum = (appState.editions || []).length + 1;
+      document.getElementById('editionNameInput').value = 'Edition ' + nextEdNum;
+      document.getElementById('championsModal').classList.add('show');
+    }
+
+    function closeChampionsModal() {
+      document.getElementById('championsModal').classList.remove('show');
+    }
+
+    function openEditEditionModal(editionId) {
+      if (!appState.isAdmin) {
+        openPinModal();
+        return;
+      }
+      const ed = (appState.editions || []).find(e => e.id === editionId);
+      if (!ed) return;
+
+      populateChampionsDropdowns();
+      document.getElementById('championsForm').reset();
+      document.getElementById('editEditionId').value = ed.id;
+      document.getElementById('championsModalTitle').innerHTML = '<span>\u270F\uFE0F</span> Edit Champions &amp; Finalists';
+      document.getElementById('editionNameInput').value = ed.edition || '';
+      document.getElementById('editionDateInput').value = ed.date || '';
+      document.getElementById('editionNotesInput').value = ed.notes || '';
+
+      const champs = Array.isArray(ed.champions) ? ed.champions : [];
+      const champSelects = ['champPlayer1', 'champPlayer2', 'champPlayer3', 'champPlayer4', 'champPlayer5'];
+      champSelects.forEach((id, idx) => {
+        const el = document.getElementById(id);
+        if (el) el.value = champs[idx] || '';
+      });
+
+      const runners = Array.isArray(ed.runnersUp) ? ed.runnersUp : [];
+      const runnerSelects = ['runnerPlayer1', 'runnerPlayer2', 'runnerPlayer3', 'runnerPlayer4', 'runnerPlayer5'];
+      runnerSelects.forEach((id, idx) => {
+        const el = document.getElementById(id);
+        if (el) el.value = runners[idx] || '';
+      });
+
+      document.getElementById('championsModal').classList.add('show');
+    }
+
+    function handleChampionsFormSubmit(e) {
+      e.preventDefault();
+      if (!appState.isAdmin) {
+        alert("Admin permission required to log championship editions.");
+        return;
+      }
+
+      const editionId = document.getElementById('editEditionId').value.trim();
+      const editionName = document.getElementById('editionNameInput').value.trim();
+      const editionDate = document.getElementById('editionDateInput').value.trim();
+      const notes = document.getElementById('editionNotesInput').value.trim();
+
+      // Collect Title Winning Team (Up to 5)
+      const champSelects = ['champPlayer1', 'champPlayer2', 'champPlayer3', 'champPlayer4', 'champPlayer5'];
+      const champions = [];
+      champSelects.forEach(id => {
+        const val = (document.getElementById(id).value || '').trim();
+        if (val && !champions.includes(val)) {
+          champions.push(val);
+        }
+      });
+
+      // Collect Runners Up Team (Up to 5)
+      const runnerSelects = ['runnerPlayer1', 'runnerPlayer2', 'runnerPlayer3', 'runnerPlayer4', 'runnerPlayer5'];
+      const runnersUp = [];
+      runnerSelects.forEach(id => {
+        const val = (document.getElementById(id).value || '').trim();
+        if (val && !runnersUp.includes(val)) {
+          runnersUp.push(val);
+        }
+      });
+
+      if (!editionName) {
+        alert("Please enter the Championship Edition title (e.g. Edition 1).");
+        return;
+      }
+
+      if (champions.length === 0) {
+        alert("Please select at least 1 player for the Title Winning Team!");
+        return;
+      }
+
+      if (runnersUp.length === 0) {
+        alert("Please select at least 1 player for the Runners Up Team!");
+        return;
+      }
+
+      // Disallow player being in both champions and runners up in same edition
+      const overlap = champions.filter(p => runnersUp.includes(p));
+      if (overlap.length > 0) {
+        alert("A player cannot be in both Champions and Runners Up teams for the same edition: " + overlap.join(", "));
+        return;
+      }
+
+      const editionData = {
+        edition: editionName,
+        date: editionDate || new Date().toISOString().split('T')[0],
+        champions: champions,
+        runnersUp: runnersUp,
+        notes: notes,
+        updatedAt: new Date().toISOString()
+      };
+
+      saveEdition(editionId, editionData);
+      closeChampionsModal();
+    }
+
+    function saveEdition(editionId, editionData) {
+      if (editionId) {
+        editionData.id = editionId;
+        if (isFirestoreActive && firestoreDb) {
+          firestoreDb.collection("badminton_editions").doc(editionId).set(editionData, { merge: true })
+            .then(() => showToast("Updated " + editionData.edition + " successfully!"))
+            .catch(err => {
+              console.error("Error updating edition in Firestore:", err);
+              saveEditionLocally(editionData);
+            });
+        } else {
+          saveEditionLocally(editionData);
+        }
+      } else {
+        const newId = "ed_" + Date.now();
+        editionData.id = newId;
+        editionData.createdAt = new Date().toISOString();
+        if (isFirestoreActive && firestoreDb) {
+          firestoreDb.collection("badminton_editions").doc(newId).set(editionData)
+            .then(() => showToast("Saved " + editionData.edition + " champions! \u{1F3C6}"))
+            .catch(err => {
+              console.error("Error creating edition in Firestore:", err);
+              saveEditionLocally(editionData);
+            });
+        } else {
+          saveEditionLocally(editionData);
+        }
+      }
+    }
+
+    function saveEditionLocally(editionData) {
+      const idx = (appState.editions || []).findIndex(e => e.id === editionData.id);
+      if (idx >= 0) {
+        appState.editions[idx] = editionData;
+      } else {
+        appState.editions.unshift(editionData);
+      }
+      saveLocalData();
+      updateUI();
+      showToast("Saved " + editionData.edition + " locally!");
+    }
+
+    function deleteEditionById(editionId) {
+      if (!appState.isAdmin) {
+        alert("Admin permission required.");
+        return;
+      }
+      const ed = (appState.editions || []).find(e => e.id === editionId);
+      const name = ed ? ed.edition : "this edition";
+      if (!confirm("Are you sure you want to delete " + name + "?")) {
+        return;
+      }
+
+      if (isFirestoreActive && firestoreDb) {
+        firestoreDb.collection("badminton_editions").doc(editionId).delete()
+          .then(() => showToast("Deleted " + name))
+          .catch(err => {
+            console.error("Error deleting edition:", err);
+            deleteEditionLocally(editionId);
+          });
+      } else {
+        deleteEditionLocally(editionId);
+      }
+    }
+
+    function deleteEditionLocally(editionId) {
+      appState.editions = (appState.editions || []).filter(e => e.id !== editionId);
+      saveLocalData();
+      updateUI();
+      showToast("Edition deleted locally");
+    }
+
+    function populateChampionsDropdowns() {
+      const champSelects = [
+        { id: 'champPlayer1', label: '-- Select Champion 1 (Required) --' },
+        { id: 'champPlayer2', label: '-- Select Champion 2 (Optional) --' },
+        { id: 'champPlayer3', label: '-- Select Champion 3 (Optional) --' },
+        { id: 'champPlayer4', label: '-- Select Champion 4 (Optional) --' },
+        { id: 'champPlayer5', label: '-- Select Champion 5 (Optional) --' }
+      ];
+      const runnerSelects = [
+        { id: 'runnerPlayer1', label: '-- Select Runner Up 1 (Required) --' },
+        { id: 'runnerPlayer2', label: '-- Select Runner Up 2 (Optional) --' },
+        { id: 'runnerPlayer3', label: '-- Select Runner Up 3 (Optional) --' },
+        { id: 'runnerPlayer4', label: '-- Select Runner Up 4 (Optional) --' },
+        { id: 'runnerPlayer5', label: '-- Select Runner Up 5 (Optional) --' }
+      ];
+
+      const allSelectDefs = [...champSelects, ...runnerSelects];
+      const sortedPlayers = [...(appState.players || [])].sort((a, b) => a.name.localeCompare(b.name));
+
+      allSelectDefs.forEach(def => {
+        const el = document.getElementById(def.id);
+        if (!el) return;
+        const currentVal = el.value;
+        if (sortedPlayers.length === 0) {
+          el.innerHTML = '<option value="" disabled selected>No players registered (Add in Organizer mode)</option>';
+          return;
+        }
+
+        let html = '<option value="">' + def.label + '</option>';
+        sortedPlayers.forEach(p => {
+          const genderTag = (p.gender === 'Female') ? ' \u2640\uFE0F' : ' \u2642\uFE0F';
+          const isSelected = p.name === currentVal ? 'selected' : '';
+          html += '<option value="' + escapeHtml(p.name) + '" ' + isSelected + '>' + (p.avatar || '\u{1F3F8}') + ' ' + escapeHtml(p.name) + genderTag + '</option>';
+        });
+        el.innerHTML = html;
+        if (currentVal) el.value = currentVal;
+      });
+    }
+
+    function computeHonorsStandings() {
+      const playerStats = {};
+
+      // Seed with all registered players
+      (appState.players || []).forEach(p => {
+        playerStats[p.name] = {
+          name: p.name,
+          avatar: p.avatar || '\u{1F3F8}',
+          gender: p.gender || 'Male',
+          titles: 0,
+          runnersUp: 0,
+          finals: 0,
+          editionsWon: []
+        };
+      });
+
+      // Accumulate across editions
+      (appState.editions || []).forEach(ed => {
+        const champs = Array.isArray(ed.champions) ? ed.champions : [];
+        const runners = Array.isArray(ed.runnersUp) ? ed.runnersUp : [];
+
+        champs.forEach(pName => {
+          if (!pName) return;
+          if (!playerStats[pName]) {
+            playerStats[pName] = {
+              name: pName,
+              avatar: '\u{1F3F8}',
+              gender: 'Male',
+              titles: 0,
+              runnersUp: 0,
+              finals: 0,
+              editionsWon: []
+            };
+          }
+          playerStats[pName].titles += 1;
+          playerStats[pName].finals += 1;
+          if (ed.edition && !playerStats[pName].editionsWon.includes(ed.edition)) {
+            playerStats[pName].editionsWon.push(ed.edition);
+          }
+        });
+
+        runners.forEach(pName => {
+          if (!pName) return;
+          if (!playerStats[pName]) {
+            playerStats[pName] = {
+              name: pName,
+              avatar: '\u{1F3F8}',
+              gender: 'Male',
+              titles: 0,
+              runnersUp: 0,
+              finals: 0,
+              editionsWon: []
+            };
+          }
+          playerStats[pName].runnersUp += 1;
+          playerStats[pName].finals += 1;
+        });
+      });
+
+      const list = Object.values(playerStats).map(p => {
+        const winRate = p.finals > 0 ? Math.round((p.titles / p.finals) * 100) : 0;
+        return { ...p, winRate };
+      });
+
+      // Sort by: 1) Titles (desc), 2) Finals appearances (desc), 3) Win Rate (desc), 4) Name (asc)
+      list.sort((a, b) => {
+        if (b.titles !== a.titles) return b.titles - a.titles;
+        if (b.finals !== a.finals) return b.finals - a.finals;
+        if (b.winRate !== a.winRate) return b.winRate - a.winRate;
+        return a.name.localeCompare(b.name);
+      });
+
+      return list;
+    }
+
+    function renderHonorsUI() {
+      const badgeCountEl = document.getElementById('honorsTabBadge');
+      if (badgeCountEl) {
+        badgeCountEl.textContent = (appState.editions || []).length;
+      }
+
+      // 1. Render Honors Leaderboard
+      const tbody = document.getElementById('honorsLeaderboardBody');
+      if (tbody) {
+        tbody.innerHTML = '';
+        const standings = computeHonorsStandings();
+
+        if (standings.length === 0) {
+          tbody.innerHTML = '<tr><td colspan="7" class="empty-state">No players or editions recorded yet. Register players and log weekly champions to see the leaderboard!</td></tr>';
+        } else {
+          standings.forEach((p, idx) => {
+            const tr = document.createElement('tr');
+            const rank = idx + 1;
+            let rankClass = '';
+            let rankCrown = '';
+            if (rank === 1 && p.titles > 0) {
+              rankClass = 'rank-1';
+              rankCrown = ' <span style="color: #ffd700;">\u{1F451}</span>';
+            } else if (rank === 2 && p.finals > 0) {
+              rankClass = 'rank-2';
+            } else if (rank === 3 && p.finals > 0) {
+              rankClass = 'rank-3';
+            }
+
+            const genderTag = p.gender === 'Female'
+              ? '<span style="font-size: 11px; font-weight: 700; margin-left: 4px; color: #ec4899;">\u2640\uFE0F</span>'
+              : '<span style="font-size: 11px; font-weight: 700; margin-left: 4px; color: #38bdf8;">\u2642\uFE0F</span>';
+
+            let editionsHtml = '';
+            if (p.editionsWon && p.editionsWon.length > 0) {
+              editionsHtml = p.editionsWon.map(e => '<span class="edition-badge-tag">\u{1F3C6} ' + escapeHtml(e) + '</span>').join(' ');
+            } else {
+              editionsHtml = '<span style="color: var(--text-dim); font-size: 12px;">-</span>';
+            }
+
+            const titlesDisplay = p.titles > 0
+              ? '<span style="font-weight: 800; font-size: 15px; color: #ffd700;">' + p.titles + ' \u{1F3C6}</span>'
+              : '<span style="color: var(--text-dim);">0</span>';
+
+            const runnersDisplay = p.runnersUp > 0
+              ? '<span style="font-weight: 700; color: #cbd5e1;">' + p.runnersUp + ' \u{1F948}</span>'
+              : '<span style="color: var(--text-dim);">0</span>';
+
+            const finalsDisplay = p.finals > 0
+              ? '<span style="font-weight: 700; color: #38bdf8;">' + p.finals + '</span>'
+              : '<span style="color: var(--text-dim);">0</span>';
+
+            const winRateDisplay = p.finals > 0
+              ? '<span style="font-weight: 700; color: ' + (p.winRate >= 60 ? 'var(--court-emerald-neon)' : 'var(--text-main)') + ';">' + p.winRate + '%</span>'
+              : '<span style="color: var(--text-dim);">-</span>';
+
+            tr.innerHTML = 
+              '<td class="rank-cell ' + rankClass + '">#' + rank + rankCrown + '</td>' +
+              '<td><div class="player-cell"><span class="player-avatar">' + (p.avatar || '\u{1F3F8}') + '</span><span class="player-name">' + escapeHtml(p.name) + '</span>' + genderTag + '</div></td>' +
+              '<td style="text-align: center;">' + titlesDisplay + '</td>' +
+              '<td style="text-align: center;">' + runnersDisplay + '</td>' +
+              '<td style="text-align: center;">' + finalsDisplay + '</td>' +
+              '<td style="text-align: center;">' + winRateDisplay + '</td>' +
+              '<td>' + editionsHtml + '</td>';
+            tbody.appendChild(tr);
+          });
+        }
+      }
+
+      // 2. Render Weekly Editions Feed
+      const feedContainer = document.getElementById('editionsListContainer');
+      if (feedContainer) {
+        feedContainer.innerHTML = '';
+        const editions = [...(appState.editions || [])].sort((a, b) => (b.date || '').localeCompare(a.date || ''));
+
+        if (editions.length === 0) {
+          feedContainer.innerHTML = 
+            '<div style="text-align: center; padding: 40px 20px; background: var(--bg-card); border-radius: var(--radius-md); border: 1px dashed var(--border-subtle); color: var(--text-muted);">' +
+              '<div style="font-size: 32px; margin-bottom: 8px;">\u{1F3C6}</div>' +
+              '<div style="font-size: 15px; font-weight: 700; color: var(--text-main);">No weekly editions logged yet</div>' +
+              '<div style="font-size: 13px; margin-top: 4px;">Record the title winning team and finalists to start the weekly roll of honor!</div>' +
+              '<button class="btn btn-gold" style="margin-top: 14px;" onclick="openLogChampionsModal()">' +
+                '<span>\u{1F3C6}</span> Log First Edition' +
+              '</button>' +
+            '</div>';
+        } else {
+          editions.forEach(ed => {
+            const card = document.createElement('div');
+            card.className = 'edition-card';
+
+            const champs = Array.isArray(ed.champions) ? ed.champions : [];
+            const runners = Array.isArray(ed.runnersUp) ? ed.runnersUp : [];
+
+            let champsPills = champs.map(name => {
+              const p = (appState.players || []).find(pl => pl.name === name);
+              const avatar = p ? (p.avatar || '\u{1F3F8}') : '\u{1F3F8}';
+              return '<span class="team-player-pill champ-pill">' + avatar + ' ' + escapeHtml(name) + '</span>';
+            }).join(' ');
+
+            let runnersPills = runners.map(name => {
+              const p = (appState.players || []).find(pl => pl.name === name);
+              const avatar = p ? (p.avatar || '\u{1F3F8}') : '\u{1F3F8}';
+              return '<span class="team-player-pill runner-pill">' + avatar + ' ' + escapeHtml(name) + '</span>';
+            }).join(' ');
+
+            let adminControls = '';
+            if (appState.isAdmin) {
+              adminControls = 
+                '<div style="display: flex; gap: 6px;">' +
+                  '<button class="btn btn-outline" style="padding: 4px 8px; font-size: 11px;" onclick="openEditEditionModal(\'' + ed.id + '\')">\u270F\uFE0F Edit</button>' +
+                  '<button class="btn btn-danger-outline" style="padding: 4px 8px; font-size: 11px; color: #ef4444; border-color: rgba(239, 68, 68, 0.4);" onclick="deleteEditionById(\'' + ed.id + '\')">\u{1F5D1}\uFE0F Delete</button>' +
+                '</div>';
+            }
+
+            let notesHtml = '';
+            if (ed.notes) {
+              notesHtml = '<div style="font-size: 12px; color: var(--text-dim); margin-top: 10px; font-style: italic;">\u{1F4DD} ' + escapeHtml(ed.notes) + '</div>';
+            }
+
+            card.innerHTML = 
+              '<div class="edition-header">' +
+                '<div style="display: flex; align-items: center; gap: 10px;">' +
+                  '<span style="font-size: 16px; font-weight: 800; color: #ffd700;">\u{1F3C6} ' + escapeHtml(ed.edition || 'Championship Edition') + '</span>' +
+                  '<span style="font-size: 12px; color: var(--text-dim);">\u{1F4C5} ' + (ed.date || '') + '</span>' +
+                '</div>' +
+                adminControls +
+              '</div>' +
+              '<div style="display: flex; flex-direction: column; gap: 10px;">' +
+                '<div>' +
+                  '<div style="font-size: 11px; font-weight: 700; color: #ffd700; margin-bottom: 5px; text-transform: uppercase; letter-spacing: 0.5px;">\u{1F3C6} Title Winning Team:</div>' +
+                  '<div style="display: flex; gap: 6px; flex-wrap: wrap;">' + (champsPills || '<span style="color: var(--text-dim);\">None</span>') + '</div>' +
+                '</div>' +
+                '<div>' +
+                  '<div style="font-size: 11px; font-weight: 700; color: #94a3b8; margin-bottom: 5px; text-transform: uppercase; letter-spacing: 0.5px;">\u{1F948} Runners Up Finalists:</div>' +
+                  '<div style="display: flex; gap: 6px; flex-wrap: wrap;">' + (runnersPills || '<span style="color: var(--text-dim);\">None</span>') + '</div>' +
+                '</div>' +
+              '</div>' +
+              notesHtml;
+
+            feedContainer.appendChild(card);
+          });
+        }
+      }
+    }
+
     window.addEventListener('DOMContentLoaded', () => {
       initDataSync();
     });

@@ -2661,22 +2661,13 @@
           markRemoteSuccess();
           if (!snapshot.empty) {
             const players = [];
-            snapshot.forEach(doc => players.push({ id: doc.id, ...doc.data() }));
+            snapshot.forEach(doc => players.push({ ...doc.data(), id: doc.id }));
             appState.players = players;
-            saveLocalData();
-            updateUI();
           } else {
-            // If remote is empty but local has players, sync them UP to Firestore!
-            if (appState.players && appState.players.length > 0) {
-              appState.players.forEach(p => {
-                const docId = p.id || ("p_" + p.name.replace(/\s+/g, '_').toLowerCase());
-                firestoreDb.collection("badminton_players").doc(docId).set(p, { merge: true })
-                  .catch(e => console.warn("Auto-sync player to Firestore:", e));
-              });
-            }
-            saveLocalData();
-            updateUI();
+            appState.players = [];
           }
+          saveLocalData();
+          updateUI();
         }, (err) => {
           markRemoteFailure(err);
         });
@@ -2686,21 +2677,13 @@
           markRemoteSuccess();
           if (!snapshot.empty) {
             const matches = [];
-            snapshot.forEach(doc => matches.push({ id: doc.id, ...doc.data() }));
+            snapshot.forEach(doc => matches.push({ ...doc.data(), id: doc.id }));
             appState.matches = matches;
-            saveLocalData();
-            updateUI();
           } else {
-            // If remote is empty but local has matches, sync them UP to Firestore!
-            if (appState.matches && appState.matches.length > 0) {
-              appState.matches.forEach(m => {
-                firestoreDb.collection("badminton_matches").doc(m.id).set(m, { merge: true })
-                  .catch(e => console.warn("Auto-sync match to Firestore:", e));
-              });
-            }
-            saveLocalData();
-            updateUI();
+            appState.matches = [];
           }
+          saveLocalData();
+          updateUI();
         }, (err) => {
           markRemoteFailure(err);
         });
@@ -2710,20 +2693,14 @@
           markRemoteSuccess();
           if (!snapshot.empty) {
             const editions = [];
-            snapshot.forEach(doc => editions.push({ id: doc.id, ...doc.data() }));
+            snapshot.forEach(doc => editions.push({ ...doc.data(), id: doc.id }));
             editions.sort((a, b) => (b.date || '').localeCompare(a.date || ''));
             appState.editions = editions;
-            saveLocalData();
-            updateUI();
           } else {
-            if (appState.editions && appState.editions.length > 0) {
-              appState.editions.forEach(ed => {
-                firestoreDb.collection("badminton_editions").doc(ed.id).set(ed, { merge: true })
-                  .catch(e => console.warn("Auto-sync edition to Firestore:", e));
-              });
-            }
-            updateUI();
+            appState.editions = [];
           }
+          saveLocalData();
+          updateUI();
         }, (err) => {
           markRemoteFailure(err);
         });
@@ -2778,74 +2755,106 @@
     }
 
     async function persistMatch(matchObj, isEdit = false) {
-      if (isFirestoreActive && firestoreDb) {
-        try {
-          if (isEdit && matchObj.id) {
-            await firestoreDb.collection("badminton_matches").doc(matchObj.id).set(matchObj, { merge: true });
-          } else {
-            const docRef = await firestoreDb.collection("badminton_matches").add(matchObj);
-            matchObj.id = docRef.id;
-          }
-          return;
-        } catch (e) {
-          console.warn("Firestore write failed, updating local state:", e);
-        }
-      }
+      const matchId = matchObj.id || ("m_" + Date.now());
+      matchObj.id = matchId;
 
-      // Local persistence fallback
-      if (isEdit) {
-        const idx = appState.matches.findIndex(m => m.id === matchObj.id);
-        if (idx !== -1) appState.matches[idx] = matchObj;
+      // Optimistically update local state immediately
+      const idx = appState.matches.findIndex(m => m.id === matchId);
+      if (idx !== -1) {
+        appState.matches[idx] = matchObj;
       } else {
-        matchObj.id = "m_" + Date.now();
         appState.matches.unshift(matchObj);
       }
       saveLocalData();
       updateUI();
+
+      if (isFirestoreActive && firestoreDb) {
+        try {
+          await firestoreDb.collection("badminton_matches").doc(matchId).set(matchObj, { merge: true });
+          showToast("Match saved to Firestore! \u{1F3F8}");
+        } catch (e) {
+          console.warn("Firestore write failed, saved locally:", e);
+          showToast("Saved locally (Firestore: " + e.message + ")", true);
+        }
+      } else {
+        showToast("Match saved locally");
+      }
     }
 
     async function deleteMatchById(matchId) {
+      // 1. Optimistically remove from local state immediately
+      appState.matches = (appState.matches || []).filter(m => m.id !== matchId);
+      saveLocalData();
+      updateUI();
+
+      // 2. Delete from Firestore if connected
       if (isFirestoreActive && firestoreDb) {
         try {
           await firestoreDb.collection("badminton_matches").doc(matchId).delete();
-          return;
+          const querySnap = await firestoreDb.collection("badminton_matches").where("id", "==", matchId).get();
+          if (!querySnap.empty) {
+            const batch = firestoreDb.batch();
+            querySnap.forEach(doc => batch.delete(doc.ref));
+            await batch.commit();
+          }
+          showToast("Match deleted successfully");
         } catch (e) {
-          console.warn("Firestore delete failed, deleting locally:", e);
+          console.warn("Firestore delete failed:", e);
+          showToast("Deleted locally (Firestore: " + e.message + ")", true);
         }
+      } else {
+        showToast("Match deleted locally");
       }
-      appState.matches = appState.matches.filter(m => m.id !== matchId);
-      saveLocalData();
-      updateUI();
     }
 
     async function persistPlayer(playerObj) {
-      if (isFirestoreActive && firestoreDb) {
-        try {
-          const ref = await firestoreDb.collection("badminton_players").add(playerObj);
-          playerObj.id = ref.id;
-          return;
-        } catch (e) {
-          console.warn("Firestore add player failed, saving locally:", e);
-        }
+      const docId = playerObj.id || ("p_" + Date.now());
+      playerObj.id = docId;
+
+      const idx = appState.players.findIndex(p => p.id === docId);
+      if (idx !== -1) {
+        appState.players[idx] = playerObj;
+      } else {
+        appState.players.push(playerObj);
       }
-      playerObj.id = "p_" + Date.now();
-      appState.players.push(playerObj);
       saveLocalData();
       updateUI();
+
+      if (isFirestoreActive && firestoreDb) {
+        try {
+          await firestoreDb.collection("badminton_players").doc(docId).set(playerObj, { merge: true });
+          showToast("Player added to Firestore!");
+        } catch (e) {
+          console.warn("Firestore add player failed, saved locally:", e);
+          showToast("Saved locally (Firestore: " + e.message + ")", true);
+        }
+      } else {
+        showToast("Player added locally");
+      }
     }
 
     async function deletePlayerById(playerId) {
+      appState.players = (appState.players || []).filter(p => p.id !== playerId);
+      saveLocalData();
+      updateUI();
+
       if (isFirestoreActive && firestoreDb) {
         try {
           await firestoreDb.collection("badminton_players").doc(playerId).delete();
-          return;
+          const querySnap = await firestoreDb.collection("badminton_players").where("id", "==", playerId).get();
+          if (!querySnap.empty) {
+            const batch = firestoreDb.batch();
+            querySnap.forEach(doc => batch.delete(doc.ref));
+            await batch.commit();
+          }
+          showToast("Player removed successfully");
         } catch (e) {
-          console.warn("Firestore delete player failed, removing locally:", e);
+          console.warn("Firestore delete player failed:", e);
+          showToast("Removed locally (Firestore: " + e.message + ")", true);
         }
+      } else {
+        showToast("Player removed locally");
       }
-      appState.players = appState.players.filter(p => p.id !== playerId);
-      saveLocalData();
-      updateUI();
     }
 
     /* ==========================================================================
@@ -3561,6 +3570,10 @@
     }
 
     function openEditMatchModal(matchId) {
+      if (!appState.isAdmin) {
+        openPinModal();
+        return;
+      }
       const match = appState.matches.find(m => m.id === matchId);
       if (!match) return;
 
@@ -3803,6 +3816,10 @@
     }
 
     async function confirmDeleteMatch(matchId) {
+      if (!appState.isAdmin) {
+        openPinModal();
+        return;
+      }
       if (confirm("Are you sure you want to delete this match? This will recalculate the leaderboard.")) {
         await deleteMatchById(matchId);
       }
@@ -4376,7 +4393,7 @@
 
     function deleteEditionById(editionId) {
       if (!appState.isAdmin) {
-        alert("Admin permission required.");
+        openPinModal();
         return;
       }
       const ed = (appState.editions || []).find(e => e.id === editionId);
@@ -4385,15 +4402,25 @@
         return;
       }
 
+      deleteEditionLocally(editionId);
+
       if (isFirestoreActive && firestoreDb) {
         firestoreDb.collection("badminton_editions").doc(editionId).delete()
-          .then(() => showToast("Deleted " + name))
+          .then(async () => {
+            try {
+              const querySnap = await firestoreDb.collection("badminton_editions").where("id", "==", editionId).get();
+              if (!querySnap.empty) {
+                const batch = firestoreDb.batch();
+                querySnap.forEach(doc => batch.delete(doc.ref));
+                await batch.commit();
+              }
+            } catch (ignore) {}
+            showToast("Deleted " + name);
+          })
           .catch(err => {
-            console.error("Error deleting edition:", err);
-            deleteEditionLocally(editionId);
+            console.error("Error deleting edition from Firestore:", err);
+            showToast("Deleted locally (Firestore: " + err.message + ")", true);
           });
-      } else {
-        deleteEditionLocally(editionId);
       }
     }
 

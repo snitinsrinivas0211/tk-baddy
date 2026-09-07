@@ -1693,9 +1693,118 @@
       border: 1px solid rgba(148, 163, 184, 0.35);
       color: #cbd5e1;
     }
-</style>
+
+    /* ==========================================================================
+       ANIMATED "BEAUTY DA!" WELCOME STAMP OVERLAY
+       ========================================================================== */
+    .beauty-stamp-overlay {
+      position: fixed;
+      inset: 0;
+      z-index: 999999;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: rgba(7, 11, 18, 0.75);
+      backdrop-filter: blur(5px);
+      -webkit-backdrop-filter: blur(5px);
+      cursor: pointer;
+      opacity: 1;
+      transition: opacity 0.5s ease, transform 0.5s ease;
+      padding: 20px;
+    }
+
+    .beauty-stamp-overlay.dismissed {
+      opacity: 0;
+      transform: scale(1.1);
+      pointer-events: none;
+    }
+
+    .beauty-stamp-box {
+      border: 5px dashed #ffd700;
+      outline: 3px solid #ffd700;
+      outline-offset: 6px;
+      border-radius: 18px;
+      padding: 22px 38px;
+      text-align: center;
+      background: rgba(15, 23, 42, 0.95);
+      box-shadow: 0 0 60px rgba(255, 215, 0, 0.45), inset 0 0 30px rgba(255, 215, 0, 0.18);
+      transform: rotate(-10deg) scale(0);
+      animation: stampSlam 0.48s cubic-bezier(0.175, 0.885, 0.32, 1.275) 0.15s forwards;
+      user-select: none;
+      -webkit-user-select: none;
+      max-width: 90vw;
+    }
+
+    .beauty-stamp-stars {
+      color: #ffd700;
+      font-size: 18px;
+      letter-spacing: 8px;
+      margin-bottom: 6px;
+      text-shadow: 0 0 10px rgba(255, 215, 0, 0.8);
+    }
+
+    .beauty-stamp-text {
+      font-family: 'Outfit', sans-serif;
+      font-size: clamp(38px, 10vw, 64px);
+      font-weight: 900;
+      color: #ffd700;
+      text-transform: uppercase;
+      letter-spacing: 3px;
+      text-shadow: 0 4px 20px rgba(255, 215, 0, 0.7), 0 0 40px rgba(245, 158, 11, 0.9);
+      line-height: 1.1;
+    }
+
+    .beauty-stamp-sub {
+      font-size: 13px;
+      font-weight: 800;
+      color: #38bdf8;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      margin-top: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+    }
+
+    .beauty-stamp-hint {
+      font-size: 11px;
+      color: var(--text-dim);
+      margin-top: 12px;
+      font-weight: 500;
+      letter-spacing: 0.5px;
+    }
+
+    @keyframes stampSlam {
+      0% {
+        opacity: 0;
+        transform: rotate(-25deg) scale(3.2);
+      }
+      60% {
+        opacity: 1;
+        transform: rotate(-8deg) scale(0.92);
+      }
+      80% {
+        transform: rotate(-11deg) scale(1.05);
+      }
+      100% {
+        opacity: 1;
+        transform: rotate(-10deg) scale(1);
+      }
+    }
+  </style>
 </head>
 <body>
+
+  <!-- Animated "Beauty Da!" Welcome Stamp Overlay -->
+  <div id="beautyDaOverlay" class="beauty-stamp-overlay" onclick="dismissBeautyDaStamp()">
+    <div class="beauty-stamp-box">
+      <div class="beauty-stamp-stars">&#9733; &#9733; &#9733;</div>
+      <div class="beauty-stamp-text">Beauty Da!</div>
+      <div class="beauty-stamp-sub">&#127992; TK BADDY &#127992;</div>
+      <div class="beauty-stamp-hint">Tap anywhere to enter</div>
+    </div>
+  </div>
 
   <!-- Floating Mobile Action Button (Admin Only) -->
   <button class="fab-log-btn" onclick="openLogMatchModal()">
@@ -4789,8 +4898,44 @@
       }
     }
 
+    function showBeautyDaStamp() {
+      const overlay = document.getElementById('beautyDaOverlay');
+      if (!overlay) return;
+      overlay.style.display = 'flex';
+      overlay.classList.remove('dismissed');
+
+      // Trigger celebratory confetti burst on stamp impact
+      setTimeout(() => {
+        try {
+          if (typeof confetti === 'function') {
+            confetti({
+              particleCount: 50,
+              spread: 80,
+              origin: { y: 0.5 },
+              colors: ['#ffd700', '#10b981', '#38bdf8', '#f59e0b', '#ffffff']
+            });
+          }
+        } catch (e) {}
+      }, 250);
+
+      // Automatically dismiss after 2.4 seconds
+      setTimeout(() => {
+        dismissBeautyDaStamp();
+      }, 2400);
+    }
+
+    function dismissBeautyDaStamp() {
+      const overlay = document.getElementById('beautyDaOverlay');
+      if (!overlay || overlay.classList.contains('dismissed')) return;
+      overlay.classList.add('dismissed');
+      setTimeout(() => {
+        overlay.style.display = 'none';
+      }, 500);
+    }
+
     window.addEventListener('DOMContentLoaded', () => {
       initDataSync();
+      setTimeout(showBeautyDaStamp, 200);
     });
   </script>
 </body>

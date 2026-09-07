@@ -600,13 +600,13 @@
 
     @media (min-width: 640px) {
       .stats-grid {
-        grid-template-columns: repeat(3, 1fr);
+        grid-template-columns: repeat(2, 1fr);
       }
     }
 
-    @media (min-width: 960px) {
+    @media (min-width: 900px) {
       .stats-grid {
-        grid-template-columns: repeat(6, 1fr);
+        grid-template-columns: repeat(4, 1fr);
       }
     }
 
@@ -1721,10 +1721,10 @@
     <div id="leaderboardTabContent">
       <div class="leaderboard-subnav">
         <div class="pill-filter-group" style="margin: 0;">
-          <button class="pill-btn active" id="subBtnMatches" onclick="toggleLeaderboardView('matches')">&#127992; Standings</button>
-          <button class="pill-btn" id="subBtnChampions" onclick="toggleLeaderboardView('champions')">&#127942; Titles &amp; Finalists</button>
+          <button class="pill-btn active" id="subBtnChampions" onclick="toggleLeaderboardView('champions')">&#127942; Titles</button>
+          <button class="pill-btn" id="subBtnMatches" onclick="toggleLeaderboardView('matches')">&#127992; Player Standings</button>
         </div>
-        <div id="standingsGenderFilters" class="pill-filter-group" style="margin: 0;">
+        <div id="standingsGenderFilters" class="pill-filter-group" style="margin: 0; display: none;">
           <button class="pill-btn active" id="genderFilterAll" onclick="handleGenderFilter('all', this)">All</button>
           <button class="pill-btn" id="genderFilterMale" onclick="handleGenderFilter('Male', this)">&#9794;&#65039; Men</button>
           <button class="pill-btn" id="genderFilterFemale" onclick="handleGenderFilter('Female', this)">&#9792;&#65039; Women</button>
@@ -1735,7 +1735,7 @@
       </div>
 
       <!-- View A: Live Match Standings Table -->
-      <div id="standingsMatchesSection">
+      <div id="standingsMatchesSection" style="display: none;">
         <div class="leaderboard-card">
           <div class="table-container">
             <table class="standings-table">
@@ -1758,14 +1758,14 @@
         </div>
       </div>
 
-      <!-- View B: Championship Titles & Finalists Hall of Fame -->
-      <div id="standingsHonorsSection" style="display: none;">
+      <!-- View B: Championship Titles Hall of Fame -->
+      <div id="standingsHonorsSection">
         <!-- Honors Leaderboard Section -->
       <section style="margin-bottom: 30px;">
         <div class="section-header">
           <div>
-            <h2 class="section-title"><span>&#127942;</span> # Titles &amp; # Finals Appearances Leaderboard</h2>
-            <div class="section-subtitle">Ranked by Championships won, followed by total finals appearances</div>
+            <h2 class="section-title"><span>&#127942;</span> Titles Leaderboard</h2>
+            <div class="section-subtitle">Ranked by championships won and tournament honors</div>
           </div>
         </div>
 
@@ -1777,8 +1777,7 @@
                 <th>Player</th>
                 <th style="text-align: center;">Titles Won &#127942;</th>
                 <th style="text-align: center;">Runners Up &#129352;</th>
-                <th style="text-align: center;">Finals Played &#127919;</th>
-                <th style="text-align: center;">Finals Win %</th>
+                <th style="text-align: center;">Seasons Played</th>
                 <th>Championship Seasons Won</th>
               </tr>
             </thead>
@@ -1793,8 +1792,7 @@
       <section style="margin-bottom: 30px;">
         <div class="section-header">
           <div>
-            <h2 class="section-title"><span>&#128220;</span> Weekly Championship Seasons Archive</h2>
-            <div class="section-subtitle">Chronological history of weekly title winning and runner-up finalist teams</div>
+            <h2 class="section-title"><span>&#128220;</span> Seasons Archive</h2>
           </div>
         </div>
 
@@ -1823,149 +1821,101 @@
       </div>
 
       <div class="badges-grid" id="badgesGrid">
-        <!-- Badge 1: Golden Racket -->
-        <div class="badge-card" id="badgeCard-goldenRacket">
-          <div class="badge-top">
-            <div class="badge-emblem">&#127992;</div>
-            <div class="badge-info">
-              <div class="badge-title">Golden Racket</div>
-              <div class="badge-desc">Won 5 consecutive matches in a row without a defeat.</div>
-            </div>
-          </div>
-          <div class="badge-holders" id="badgeHolders-goldenRacket">
-            <span class="badge-locked-tag">Locked &#8226; Requires 5-win streak</span>
-          </div>
-        </div>
-
-        <!-- Badge 2: Century Club -->
-        <div class="badge-card" id="badgeCard-centuryClub">
-          <div class="badge-top">
-            <div class="badge-emblem">&#128175;</div>
-            <div class="badge-info">
-              <div class="badge-title">Century Club</div>
-              <div class="badge-desc">Scored 100+ total cumulative points in championship play.</div>
-            </div>
-          </div>
-          <div class="badge-holders" id="badgeHolders-centuryClub">
-            <span class="badge-locked-tag">Locked &#8226; Requires 100 total points</span>
-          </div>
-        </div>
-
-        <!-- Badge 3: Comeback King -->
-        <div class="badge-card" id="badgeCard-comebackKing">
-          <div class="badge-top">
-            <div class="badge-emblem">&#128081;</div>
-            <div class="badge-info">
-              <div class="badge-title">Comeback King</div>
-              <div class="badge-desc">Won a 3-set match after dropping Set 1.</div>
-            </div>
-          </div>
-          <div class="badge-holders" id="badgeHolders-comebackKing">
-            <span class="badge-locked-tag">Locked &#8226; Requires 0-1 set comeback win</span>
-          </div>
-        </div>
-
-        <!-- Badge 4: Flawless Victory -->
-        <div class="badge-card" id="badgeCard-flawlessVictory">
+        <!-- Badge 1: Minnal Murali -->
+        <div class="badge-card" id="badgeCard-minnalMurali">
           <div class="badge-top">
             <div class="badge-emblem">&#9889;</div>
             <div class="badge-info">
-              <div class="badge-title">Flawless Victory</div>
-              <div class="badge-desc">Won in straight sets holding opponent under 11 pts in a set.</div>
+              <div class="badge-title">Minnal Murali</div>
+              <div class="badge-desc">Conceded less than 4 points to opponent in a game.</div>
             </div>
           </div>
-          <div class="badge-holders" id="badgeHolders-flawlessVictory">
-            <span class="badge-locked-tag">Locked &#8226; Requires 2-0 win holding opponent &lt;11 pts</span>
+          <div class="badge-holders" id="badgeHolders-minnalMurali">
+            <span class="badge-locked-tag">Locked &#8226; Conceded &lt;4 pts in a game</span>
           </div>
         </div>
 
-        <!-- Badge 5: Marathoner -->
-        <div class="badge-card" id="badgeCard-marathoner">
+        <!-- Badge 2: Beauty Da -->
+        <div class="badge-card" id="badgeCard-beautyDa">
           <div class="badge-top">
-            <div class="badge-emblem">&#127939;&#8205;&#9794;&#65039;</div>
+            <div class="badge-emblem">&#127942;</div>
             <div class="badge-info">
-              <div class="badge-title">Marathoner</div>
-              <div class="badge-desc">Attended and competed in 10+ championship matches/sessions.</div>
+              <div class="badge-title">Beauty Da</div>
+              <div class="badge-desc">Won 2 or more Championships.</div>
             </div>
           </div>
-          <div class="badge-holders" id="badgeHolders-marathoner">
-            <span class="badge-locked-tag">Locked &#8226; Requires 10+ matches played</span>
+          <div class="badge-holders" id="badgeHolders-beautyDa">
+            <span class="badge-locked-tag">Locked &#8226; Requires 2+ Championships</span>
+          </div>
+        </div>
+
+        <!-- Badge 3: Flawless Champion -->
+        <div class="badge-card" id="badgeCard-flawlessChampion">
+          <div class="badge-top">
+            <div class="badge-emblem">&#128081;</div>
+            <div class="badge-info">
+              <div class="badge-title">Flawless Champion</div>
+              <div class="badge-desc">Won a Championship season without losing a game.</div>
+            </div>
+          </div>
+          <div class="badge-holders" id="badgeHolders-flawlessChampion">
+            <span class="badge-locked-tag">Locked &#8226; Undefeated in a Championship season</span>
           </div>
         </div>
       </div>
     </section>
       <div style="margin-top: 24px;">
-        <!-- SECTION 2: CHAMPIONSHIP STATS GRID (EXACTLY 6 CARDS) -->
+        <!-- SECTION 2: ALL-TIME CHAMPIONSHIP STATS GRID (4 CARDS) -->
     <section>
       <div class="section-header">
         <div>
           <div class="section-title">
             <span class="section-icon">&#128202;</span>
-            <span>Championship Stats Grid</span>
+            <span>All-Time Championship Statistics</span>
           </div>
-          <div class="section-sub">Real-time season metrics and records</div>
+          <div class="section-sub">Cumulative records across all seasons</div>
         </div>
       </div>
 
       <div class="stats-grid">
-        <!-- 1. Total Matches Played -->
+        <!-- 1. Total Matches - total matches across seasons -->
         <div class="stat-card">
           <div class="stat-header">
             <span class="stat-card-title">Total Matches</span>
             <div class="stat-icon">&#127992;</div>
           </div>
           <div class="stat-value" id="statTotalMatches">0</div>
-          <div class="stat-sub"><span>&#128200;</span> Season matches</div>
+          <div class="stat-sub" id="statTotalMatchesSub"><span>&#128200;</span> Across all seasons</div>
         </div>
 
-        <!-- 2. Current Table Leader -->
-        <div class="stat-card gold-card">
-          <div class="stat-header">
-            <span class="stat-card-title">Table Leader</span>
-            <div class="stat-icon">&#128081;</div>
-          </div>
-          <div class="stat-value" id="statLeaderName">&#8212;</div>
-          <div class="stat-sub" id="statLeaderRate">100% Win Rate</div>
-        </div>
-
-        <!-- 3. Most Matches Won -->
+        <!-- 2. Most Active Player - Player featured in most matches across seasons -->
         <div class="stat-card">
+          <div class="stat-header">
+            <span class="stat-card-title">Most Active Player</span>
+            <div class="stat-icon">&#9889;</div>
+          </div>
+          <div class="stat-value" id="statActivePlayer">&#8212;</div>
+          <div class="stat-sub" id="statActiveGames">0 matches played</div>
+        </div>
+
+        <!-- 3. Most Wins - Individual Player with most wins across seasons -->
+        <div class="stat-card gold-card">
           <div class="stat-header">
             <span class="stat-card-title">Most Wins</span>
             <div class="stat-icon">&#129351;</div>
           </div>
           <div class="stat-value" id="statMostWinsPlayer">&#8212;</div>
-          <div class="stat-sub" id="statMostWinsCount">0 Wins</div>
+          <div class="stat-sub" id="statMostWinsCount">0 wins</div>
         </div>
 
-        <!-- 4. Longest Win Streak -->
+        <!-- 4. Most Wins (Doubles) - Pair of players with most match wins across seasons -->
         <div class="stat-card gold-card">
           <div class="stat-header">
-            <span class="stat-card-title">Longest Streak</span>
-            <div class="stat-icon">&#128293;</div>
+            <span class="stat-card-title">Most Wins (Doubles)</span>
+            <div class="stat-icon">&#129309;</div>
           </div>
-          <div class="stat-value" id="statStreakPlayer">&#8212;</div>
-          <div class="stat-sub" id="statStreakCount">0 in a row</div>
-        </div>
-
-        <!-- 5. Highest Single-Match Point Margin -->
-        <div class="stat-card">
-          <div class="stat-header">
-            <span class="stat-card-title">Highest Margin</span>
-            <div class="stat-icon">&#128165;</div>
-          </div>
-          <div class="stat-value" id="statHighestMargin">+0 pts</div>
-          <div class="stat-sub" id="statHighestMarginSub">Single match lead</div>
-        </div>
-
-        <!-- 6. Most Active Player -->
-        <div class="stat-card">
-          <div class="stat-header">
-            <span class="stat-card-title">Most Active</span>
-            <div class="stat-icon">&#9889;</div>
-          </div>
-          <div class="stat-value" id="statActivePlayer">&#8212;</div>
-          <div class="stat-sub" id="statActiveGames">0 games played</div>
+          <div class="stat-value" id="statDoublesPair" style="font-size: 15px; line-height: 1.25;">&#8212;</div>
+          <div class="stat-sub" id="statDoublesPairCount">0 pair wins</div>
         </div>
       </div>
     </section>
@@ -2564,6 +2514,7 @@
       matches: [],
       editions: [],
       activeMainTab: 'standings',
+      activeLeaderboardView: 'champions',
       isAdmin: false,
       sortColumn: 'winRate',
       sortAsc: false,
@@ -3095,110 +3046,170 @@
     }
 
     function renderStatsGrid(standings) {
-      const totalMatches = appState.matches.length;
-      document.getElementById('statTotalMatches').innerText = totalMatches;
+      const allMatches = appState.matches || [];
 
-      // 2. Table Leader
-      if (standings.length > 0 && standings[0].played > 0) {
-        document.getElementById('statLeaderName').innerText = standings[0].name;
-        document.getElementById('statLeaderRate').innerText = `${standings[0].winRate.toFixed(0)}% Win Rate (\u{1F451} #1)`;
+      // 1. Total Matches - total matches across seasons
+      const totalMatches = allMatches.length;
+      const elTotal = document.getElementById('statTotalMatches');
+      if (elTotal) elTotal.innerText = totalMatches;
+      const elTotalSub = document.getElementById('statTotalMatchesSub');
+      if (elTotalSub) elTotalSub.innerText = "Across all seasons";
+
+      // 2. Most Active Player - Player featured in most matches across seasons
+      const playedMap = {};
+      allMatches.forEach(m => {
+        const allInMatch = [...(m.team1 || []), ...(m.team2 || [])];
+        allInMatch.forEach(pName => {
+          playedMap[pName] = (playedMap[pName] || 0) + 1;
+        });
+      });
+
+      let maxPlayed = 0;
+      Object.values(playedMap).forEach(c => { if (c > maxPlayed) maxPlayed = c; });
+      const topActivePlayers = Object.entries(playedMap).filter(([_, c]) => c === maxPlayed && c > 0).map(([name]) => name);
+
+      const elActivePlayer = document.getElementById('statActivePlayer');
+      const elActiveGames = document.getElementById('statActiveGames');
+      if (topActivePlayers.length > 0) {
+        if (elActivePlayer) elActivePlayer.innerText = topActivePlayers.join(', ');
+        if (elActiveGames) elActiveGames.innerText = `${maxPlayed} matches played \u26A1`;
       } else {
-        document.getElementById('statLeaderName').innerText = "\u2014";
-        document.getElementById('statLeaderRate').innerText = "No matches yet";
+        if (elActivePlayer) elActivePlayer.innerText = "\u2014";
+        if (elActiveGames) elActiveGames.innerText = "0 matches played";
       }
 
-      // 3. Most Matches Won
-      let mostWinsPlayer = null;
-      let maxWins = -1;
-      standings.forEach(p => {
-        if (p.won > maxWins) {
-          maxWins = p.won;
-          mostWinsPlayer = p;
-        }
+      // 3. Most Wins - Individual Player with most wins across seasons
+      const winsMap = {};
+      allMatches.forEach(m => {
+        const winningTeam = m.winner === 1 ? (m.team1 || []) : (m.winner === 2 ? (m.team2 || []) : []);
+        winningTeam.forEach(pName => {
+          winsMap[pName] = (winsMap[pName] || 0) + 1;
+        });
       });
-      if (mostWinsPlayer && maxWins > 0) {
-        document.getElementById('statMostWinsPlayer').innerText = mostWinsPlayer.name;
-        document.getElementById('statMostWinsCount').innerText = `${maxWins} Matches Won`;
+
+      let maxWins = 0;
+      Object.values(winsMap).forEach(c => { if (c > maxWins) maxWins = c; });
+      const topWinsPlayers = Object.entries(winsMap).filter(([_, c]) => c === maxWins && c > 0).map(([name]) => name);
+
+      const elWinsPlayer = document.getElementById('statMostWinsPlayer');
+      const elWinsCount = document.getElementById('statMostWinsCount');
+      if (topWinsPlayers.length > 0) {
+        if (elWinsPlayer) elWinsPlayer.innerText = topWinsPlayers.join(', ');
+        if (elWinsCount) elWinsCount.innerText = `${maxWins} wins \u{1F947}`;
       } else {
-        document.getElementById('statMostWinsPlayer').innerText = "\u2014";
-        document.getElementById('statMostWinsCount').innerText = "0 Wins";
+        if (elWinsPlayer) elWinsPlayer.innerText = "\u2014";
+        if (elWinsCount) elWinsCount.innerText = "0 wins";
       }
 
-      // 4. Longest Win Streak
-      let maxStreakPlayer = null;
-      let highestStreak = 0;
-      standings.forEach(p => {
-        if (p.maxStreak > highestStreak) {
-          highestStreak = p.maxStreak;
-          maxStreakPlayer = p;
+      // 4. Most Wins (Doubles) - Pair of players with most match wins across seasons
+      const doublesWinsMap = {};
+      allMatches.forEach(m => {
+        let winners = [];
+        if (m.winner === 1 && (m.team1 || []).length === 2) {
+          winners = m.team1;
+        } else if (m.winner === 2 && (m.team2 || []).length === 2) {
+          winners = m.team2;
         }
-      });
-      if (maxStreakPlayer && highestStreak > 0) {
-        document.getElementById('statStreakPlayer').innerText = maxStreakPlayer.name;
-        document.getElementById('statStreakCount').innerText = `${highestStreak} Wins in a row \u{1F525}`;
-      } else {
-        document.getElementById('statStreakPlayer').innerText = "\u2014";
-        document.getElementById('statStreakCount').innerText = "0 Streak";
-      }
 
-      // 5. Highest Single-Match Point Margin
-      let highestMargin = 0;
-      let marginDetails = "Single match lead";
-      appState.matches.forEach(m => {
-        if (m.sets && m.sets.length > 0) {
-          m.sets.forEach(s => {
-            const s1 = parseInt(s.t1) || 0;
-            const s2 = parseInt(s.t2) || 0;
-            const diff = Math.abs(s1 - s2);
-            if (diff > highestMargin) {
-              highestMargin = diff;
-              const leader = s1 > s2 ? m.team1.join('/') : m.team2.join('/');
-              marginDetails = `+${diff} pts (${leader} ${Math.max(s1, s2)}-${Math.min(s1, s2)})`;
-            }
-          });
+        if (winners.length === 2) {
+          const pairKey = [...winners].sort().join(' & ');
+          doublesWinsMap[pairKey] = (doublesWinsMap[pairKey] || 0) + 1;
         }
       });
-      document.getElementById('statHighestMargin').innerText = highestMargin > 0 ? `+${highestMargin} pts` : "+0 pts";
-      document.getElementById('statHighestMarginSub').innerText = marginDetails;
 
-      // 6. Most Active Player
-      let mostActivePlayer = null;
-      let maxPlayed = -1;
-      standings.forEach(p => {
-        if (p.played > maxPlayed) {
-          maxPlayed = p.played;
-          mostActivePlayer = p;
-        }
-      });
-      if (mostActivePlayer && maxPlayed > 0) {
-        document.getElementById('statActivePlayer').innerText = mostActivePlayer.name;
-        document.getElementById('statActiveGames').innerText = `${maxPlayed} games played \u26A1`;
+      let maxDoublesWins = 0;
+      Object.values(doublesWinsMap).forEach(c => { if (c > maxDoublesWins) maxDoublesWins = c; });
+      const topDoublesPairs = Object.entries(doublesWinsMap).filter(([_, c]) => c === maxDoublesWins && c > 0).map(([name]) => name);
+
+      const elDoublesPair = document.getElementById('statDoublesPair');
+      const elDoublesCount = document.getElementById('statDoublesPairCount');
+      if (topDoublesPairs.length > 0) {
+        if (elDoublesPair) elDoublesPair.innerText = topDoublesPairs.join(' / ');
+        if (elDoublesCount) elDoublesCount.innerText = `${maxDoublesWins} wins as pair \u{1F91D}`;
       } else {
-        document.getElementById('statActivePlayer').innerText = "\u2014";
-        document.getElementById('statActiveGames').innerText = "0 games";
+        if (elDoublesPair) elDoublesPair.innerText = "\u2014";
+        if (elDoublesCount) elDoublesCount.innerText = "0 doubles wins";
       }
     }
 
     function renderBadges(standings) {
-      // 1. Golden Racket (Won 5 matches in a row)
-      const goldenRacketHolders = standings.filter(p => p.maxStreak >= 5);
-      renderBadgeStatus('goldenRacket', goldenRacketHolders, 'Requires 5-win streak');
+      const allPlayers = Array.from(new Set([
+        ...(appState.players || []).map(p => p.name),
+        ...((standings || []).map(s => s.name))
+      ])).filter(Boolean);
 
-      // 2. Century Club (Scored 100+ total points)
-      const centuryHolders = standings.filter(p => p.pointsScored >= 100);
-      renderBadgeStatus('centuryClub', centuryHolders, 'Requires 100 total points');
+      // 1. Minnal Murali: Conceded less than 4 points to opponent in a game (< 4 pts)
+      const minnalHolders = [];
+      allPlayers.forEach(pName => {
+        let earned = false;
+        (appState.matches || []).forEach(match => {
+          const isT1 = (match.team1 || []).includes(pName);
+          const isT2 = (match.team2 || []).includes(pName);
+          if (!isT1 && !isT2) return;
 
-      // 3. Comeback King (Won match after losing set 1)
-      const comebackHolders = standings.filter(p => p.comebackWins >= 1);
-      renderBadgeStatus('comebackKing', comebackHolders, 'Requires 0-1 set comeback win');
+          (match.sets || []).forEach(s => {
+            const s1 = parseInt(s.t1) || 0;
+            const s2 = parseInt(s.t2) || 0;
+            if (isT1 && s1 > s2 && s2 < 4) earned = true;
+            if (isT2 && s2 > s1 && s1 < 4) earned = true;
+          });
+        });
+        if (earned) {
+          minnalHolders.push({ name: pName });
+        }
+      });
+      renderBadgeStatus('minnalMurali', minnalHolders, 'Conceded <4 pts in a game');
 
-      // 4. Flawless Victory (Won 2-0 holding opponent under 11 pts)
-      const flawlessHolders = standings.filter(p => p.flawlessWins >= 1);
-      renderBadgeStatus('flawlessVictory', flawlessHolders, 'Requires straight sets with <11 pts opponent');
+      // 2. Beauty Da: Won 2 or more Championships
+      const titlesCountMap = {};
+      (appState.editions || []).forEach(ed => {
+        (ed.champions || []).forEach(champName => {
+          titlesCountMap[champName] = (titlesCountMap[champName] || 0) + 1;
+        });
+      });
+      const beautyHolders = allPlayers
+        .filter(pName => (titlesCountMap[pName] || 0) >= 2)
+        .map(pName => ({ name: pName }));
+      renderBadgeStatus('beautyDa', beautyHolders, 'Requires 2+ Championships');
 
-      // 5. Marathoner (Played 10+ championship matches)
-      const marathonerHolders = standings.filter(p => p.played >= 10);
-      renderBadgeStatus('marathoner', marathonerHolders, 'Requires 10+ matches played');
+      // 3. Flawless Champion: Won a Championship season without losing a game
+      const flawlessHolders = [];
+      allPlayers.forEach(pName => {
+        let earned = false;
+
+        (appState.editions || []).forEach(ed => {
+          const isChamp = (ed.champions || []).includes(pName);
+          if (!isChamp) return;
+
+          const seasonNum = parseInt(ed.season) || 1;
+          const seasonMatches = (appState.matches || []).filter(m => {
+            const mSeason = parseInt(m.season || m.weekNumber) || 1;
+            return mSeason === seasonNum && ((m.team1 || []).includes(pName) || (m.team2 || []).includes(pName));
+          });
+
+          let lostAnyGame = false;
+          seasonMatches.forEach(m => {
+            const isT1 = (m.team1 || []).includes(pName);
+            (m.sets || []).forEach(s => {
+              const s1 = parseInt(s.t1) || 0;
+              const s2 = parseInt(s.t2) || 0;
+              if (isT1 && s1 <= s2) lostAnyGame = true;
+              if (!isT1 && s2 <= s1) lostAnyGame = true;
+            });
+            if (isT1 && m.winner !== 1) lostAnyGame = true;
+            if (!isT1 && m.winner !== 2) lostAnyGame = true;
+          });
+
+          if (!lostAnyGame) {
+            earned = true;
+          }
+        });
+
+        if (earned) {
+          flawlessHolders.push({ name: pName });
+        }
+      });
+      renderBadgeStatus('flawlessChampion', flawlessHolders, 'Undefeated in a Championship season');
     }
 
     function renderBadgeStatus(badgeKey, holders, requirementText) {
@@ -4199,31 +4210,37 @@
         // Default: leaderboard
         if (leaderboardContent) leaderboardContent.style.display = 'block';
         if (tabBtnLeaderboard) tabBtnLeaderboard.classList.add('active');
-        renderStandingsTable(computeStandings());
+        if (appState.activeLeaderboardView === 'matches') {
+          toggleLeaderboardView('matches');
+        } else {
+          toggleLeaderboardView('champions');
+        }
       }
     }
 
     function toggleLeaderboardView(view) {
+      appState.activeLeaderboardView = view;
       const matchesSection = document.getElementById('standingsMatchesSection');
       const honorsSection = document.getElementById('standingsHonorsSection');
       const subBtnMatches = document.getElementById('subBtnMatches');
       const subBtnChampions = document.getElementById('subBtnChampions');
       const genderFilters = document.getElementById('standingsGenderFilters');
 
-      if (view === 'champions') {
-        if (matchesSection) matchesSection.style.display = 'none';
-        if (honorsSection) honorsSection.style.display = 'block';
-        if (subBtnMatches) subBtnMatches.classList.remove('active');
-        if (subBtnChampions) subBtnChampions.classList.add('active');
-        if (genderFilters) genderFilters.style.display = 'none';
-        renderHonorsUI();
-      } else {
+      if (view === 'matches') {
         if (matchesSection) matchesSection.style.display = 'block';
         if (honorsSection) honorsSection.style.display = 'none';
         if (subBtnMatches) subBtnMatches.classList.add('active');
         if (subBtnChampions) subBtnChampions.classList.remove('active');
         if (genderFilters) genderFilters.style.display = 'flex';
         renderStandingsTable(computeStandings());
+      } else {
+        // 'champions' (Titles view)
+        if (matchesSection) matchesSection.style.display = 'none';
+        if (honorsSection) honorsSection.style.display = 'block';
+        if (subBtnMatches) subBtnMatches.classList.remove('active');
+        if (subBtnChampions) subBtnChampions.classList.add('active');
+        if (genderFilters) genderFilters.style.display = 'none';
+        renderHonorsUI();
       }
     }
 
@@ -4482,6 +4499,13 @@
     function computeHonorsStandings() {
       const playerStats = {};
 
+      const normalizeSeason = (s) => {
+        if (s === null || s === undefined) return '';
+        const str = String(s).trim();
+        const m = str.match(/\d+/);
+        return m ? 'Season ' + m[0] : str;
+      };
+
       // Seed with all registered players
       (appState.players || []).forEach(p => {
         playerStats[p.name] = {
@@ -4490,7 +4514,7 @@
           gender: p.gender || 'Male',
           titles: 0,
           runnersUp: 0,
-          finals: 0,
+          seasonsSet: new Set(),
           editionsWon: []
         };
       });
@@ -4499,6 +4523,7 @@
       (appState.editions || []).forEach(ed => {
         const champs = Array.isArray(ed.champions) ? ed.champions : [];
         const runners = Array.isArray(ed.runnersUp) ? ed.runnersUp : [];
+        const seasonKey = normalizeSeason(ed.edition);
 
         champs.forEach(pName => {
           if (!pName) return;
@@ -4509,12 +4534,12 @@
               gender: 'Male',
               titles: 0,
               runnersUp: 0,
-              finals: 0,
+              seasonsSet: new Set(),
               editionsWon: []
             };
           }
           playerStats[pName].titles += 1;
-          playerStats[pName].finals += 1;
+          if (seasonKey) playerStats[pName].seasonsSet.add(seasonKey);
           if (ed.edition && !playerStats[pName].editionsWon.includes(ed.edition)) {
             playerStats[pName].editionsWon.push(ed.edition);
           }
@@ -4529,25 +4554,49 @@
               gender: 'Male',
               titles: 0,
               runnersUp: 0,
-              finals: 0,
+              seasonsSet: new Set(),
               editionsWon: []
             };
           }
           playerStats[pName].runnersUp += 1;
-          playerStats[pName].finals += 1;
+          if (seasonKey) playerStats[pName].seasonsSet.add(seasonKey);
+        });
+      });
+
+      // Also accumulate seasons played from match history
+      (appState.matches || []).forEach(m => {
+        const seasonKey = normalizeSeason(m.season || m.weekNumber || 'Season 1');
+        if (!seasonKey) return;
+        const allMatchPlayers = [...(m.team1 || []), ...(m.team2 || [])];
+        allMatchPlayers.forEach(pName => {
+          if (!pName) return;
+          if (!playerStats[pName]) {
+            playerStats[pName] = {
+              name: pName,
+              avatar: '\u{1F3F8}',
+              gender: 'Male',
+              titles: 0,
+              runnersUp: 0,
+              seasonsSet: new Set(),
+              editionsWon: []
+            };
+          }
+          playerStats[pName].seasonsSet.add(seasonKey);
         });
       });
 
       const list = Object.values(playerStats).map(p => {
-        const winRate = p.finals > 0 ? Math.round((p.titles / p.finals) * 100) : 0;
-        return { ...p, winRate };
+        return {
+          ...p,
+          seasonsPlayed: p.seasonsSet ? p.seasonsSet.size : 0
+        };
       });
 
-      // Sort by: 1) Titles (desc), 2) Finals appearances (desc), 3) Win Rate (desc), 4) Name (asc)
+      // Sort by: 1) Titles (desc), 2) Runners Up (desc), 3) Seasons Played (desc), 4) Name (asc)
       list.sort((a, b) => {
         if (b.titles !== a.titles) return b.titles - a.titles;
-        if (b.finals !== a.finals) return b.finals - a.finals;
-        if (b.winRate !== a.winRate) return b.winRate - a.winRate;
+        if (b.runnersUp !== a.runnersUp) return b.runnersUp - a.runnersUp;
+        if (b.seasonsPlayed !== a.seasonsPlayed) return b.seasonsPlayed - a.seasonsPlayed;
         return a.name.localeCompare(b.name);
       });
 
@@ -4567,7 +4616,7 @@
         const standings = computeHonorsStandings();
 
         if (standings.length === 0) {
-          tbody.innerHTML = '<tr><td colspan="7" class="empty-state">No players or editions recorded yet. Register players and log weekly champions to see the leaderboard!</td></tr>';
+          tbody.innerHTML = '<tr><td colspan="6" class="empty-state">No players or editions recorded yet. Register players and log weekly champions to see the leaderboard!</td></tr>';
         } else {
           standings.forEach((p, idx) => {
             const tr = document.createElement('tr');
@@ -4577,9 +4626,9 @@
             if (rank === 1 && p.titles > 0) {
               rankClass = 'rank-1';
               rankCrown = ' <span style="color: #ffd700;">\u{1F451}</span>';
-            } else if (rank === 2 && p.finals > 0) {
+            } else if (rank === 2 && (p.titles > 0 || p.runnersUp > 0)) {
               rankClass = 'rank-2';
-            } else if (rank === 3 && p.finals > 0) {
+            } else if (rank === 3 && (p.titles > 0 || p.runnersUp > 0)) {
               rankClass = 'rank-3';
             }
 
@@ -4602,21 +4651,14 @@
               ? '<span style="font-weight: 700; color: #cbd5e1;">' + p.runnersUp + ' \u{1F948}</span>'
               : '<span style="color: var(--text-dim);">0</span>';
 
-            const finalsDisplay = p.finals > 0
-              ? '<span style="font-weight: 700; color: #38bdf8;">' + p.finals + '</span>'
-              : '<span style="color: var(--text-dim);">0</span>';
-
-            const winRateDisplay = p.finals > 0
-              ? '<span style="font-weight: 700; color: ' + (p.winRate >= 60 ? 'var(--court-emerald-neon)' : 'var(--text-main)') + ';">' + p.winRate + '%</span>'
-              : '<span style="color: var(--text-dim);">-</span>';
+            const seasonsDisplay = '<span style="font-weight: 700; color: var(--text-main);">' + (p.seasonsPlayed || 0) + '</span>';
 
             tr.innerHTML = 
               '<td class="rank-cell ' + rankClass + '">#' + rank + rankCrown + '</td>' +
               '<td><div class="player-cell"><span class="player-name">' + escapeHtml(p.name) + '</span>' + genderTag + '</div></td>' +
               '<td style="text-align: center;">' + titlesDisplay + '</td>' +
               '<td style="text-align: center;">' + runnersDisplay + '</td>' +
-              '<td style="text-align: center;">' + finalsDisplay + '</td>' +
-              '<td style="text-align: center;">' + winRateDisplay + '</td>' +
+              '<td style="text-align: center;">' + seasonsDisplay + '</td>' +
               '<td>' + editionsHtml + '</td>';
             tbody.appendChild(tr);
           });
@@ -4701,4 +4743,3 @@
   </script>
 </body>
 </html>
-

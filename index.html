@@ -2436,23 +2436,13 @@
       <div class="modal-body">
         <!-- Add Player Form -->
         <form onsubmit="handleAddPlayerSubmit(event)" style="display: flex; gap: 8px; flex-wrap: wrap;">
-          <input type="text" id="newPlayerNameInput" class="form-input" placeholder="Player name (e.g. Anand)" required style="flex: 2; min-width: 130px;">
-          <select id="newPlayerGenderSelect" class="form-select" style="flex: 1; min-width: 105px;">
+          <input type="text" id="newPlayerNameInput" class="form-input" placeholder="Player name (e.g. Anand)" required style="flex: 2; min-width: 140px;">
+          <select id="newPlayerGenderSelect" class="form-select" style="flex: 1; min-width: 120px;">
             <option value="Male">&#9794;&#65039; Male</option>
             <option value="Female">&#9792;&#65039; Female</option>
           </select>
-          <select id="newPlayerAvatarSelect" class="form-select" style="width: 70px;">
-            <option value="&#127992;">&#127992;</option>
-            <option value="&#128081;">&#128081;</option>
-            <option value="&#9889;">&#9889;</option>
-            <option value="&#128293;">&#128293;</option>
-            <option value="&#127919;">&#127919;</option>
-            <option value="&#128640;">&#128640;</option>
-            <option value="&#128170;">&#128170;</option>
-            <option value="&#127775;">&#127775;</option>
-          </select>
           <button type="submit" class="btn btn-emerald">
-            <span>&#10133;</span> Add
+            <span>&#10133;</span> Add Player
           </button>
         </form>
 
@@ -3031,8 +3021,7 @@
           <td class="rank-cell">${rankBadgeHtml}</td>
           <td>
             <div class="player-cell">
-              <div class="player-avatar">${p.avatar || '\u{1F3F8}'}</div>
-              <div class="player-name-wrapper">
+                    <div class="player-name-wrapper">
                 <span class="player-name">
                   ${escapeHtml(p.name)}
                   <span style="font-size: 11px; font-weight: 700; margin-left: 2px; color: ${p.gender === 'Female' ? '#f472b6' : '#60a5fa'};" title="${escapeHtml(p.gender || 'Male')}">${p.gender === 'Female' ? '\u2640' : '\u2642'}</span>
@@ -3169,7 +3158,7 @@
       if (holders.length > 0) {
         card.classList.add('unlocked');
         container.innerHTML = holders.map(h => 
-          `<span class="badge-holder-tag">${h.avatar || '\u{1F3F8}'} ${escapeHtml(h.name)}</span>`
+          `<span class="badge-holder-tag">${escapeHtml(h.name)}</span>`
         ).join('');
       } else {
         card.classList.remove('unlocked');
@@ -3296,7 +3285,7 @@
       appState.players.forEach(p => {
         const opt = document.createElement('option');
         opt.value = p.name;
-        opt.innerText = `${p.avatar || '\u{1F3F8}'} ${p.name}`;
+        opt.innerText = p.name;
         if (p.name === currentVal) opt.selected = true;
         filterSelect.appendChild(opt);
       });
@@ -3318,7 +3307,7 @@
             appState.players.forEach(p => {
               const opt = document.createElement('option');
               opt.value = p.name;
-              opt.innerText = `${p.avatar || '\u{1F3F8}'} ${p.name}`;
+              opt.innerText = p.name;
               el.appendChild(opt);
             });
           }
@@ -3802,7 +3791,6 @@
 
         row.innerHTML = `
           <div style="display: flex; align-items: center; gap: 8px;">
-            <span style="font-size: 18px;">${p.avatar || '\u{1F3F8}'}</span>
             <span style="font-weight: 700; font-size: 14px;">${escapeHtml(p.name)}</span>
             ${genderTag}
             <span style="font-size: 11px; color: var(--text-dim);">(${count} matches)</span>
@@ -3818,10 +3806,8 @@
     async function handleAddPlayerSubmit(e) {
       e.preventDefault();
       const nameInput = document.getElementById('newPlayerNameInput');
-      const avatarSelect = document.getElementById('newPlayerAvatarSelect');
       const genderSelect = document.getElementById('newPlayerGenderSelect');
       const name = nameInput.value.trim();
-      const avatar = avatarSelect.value;
       const gender = genderSelect ? genderSelect.value : 'Male';
 
       if (!name) return;
@@ -3833,7 +3819,6 @@
 
       const newPlayer = {
         name: name,
-        avatar: avatar,
         gender: gender,
         joinedDate: new Date().toISOString().split('T')[0],
         active: true
@@ -3878,7 +3863,7 @@
 
       body.innerHTML = `
         <div class="spotlight-header">
-          <div class="spotlight-avatar">${p.avatar || '\u{1F3F8}'}</div>
+          <div class="spotlight-avatar" style="font-size: 18px; font-weight: 800; color: var(--court-emerald-neon);">#${rank}</div>
           <div class="spotlight-details">
             <h3>${escapeHtml(p.name)}</h3>
             <div style="font-size: 13px; color: var(--gold-bright); font-weight: 700;">
@@ -4389,7 +4374,7 @@
         sortedPlayers.forEach(p => {
           const genderTag = (p.gender === 'Female') ? ' \u2640\uFE0F' : ' \u2642\uFE0F';
           const isSelected = p.name === currentVal ? 'selected' : '';
-          html += '<option value="' + escapeHtml(p.name) + '" ' + isSelected + '>' + (p.avatar || '\u{1F3F8}') + ' ' + escapeHtml(p.name) + genderTag + '</option>';
+          html += '<option value="' + escapeHtml(p.name) + '" ' + isSelected + '>' + escapeHtml(p.name) + genderTag + '</option>';
         });
         el.innerHTML = html;
         if (currentVal) el.value = currentVal;
@@ -4529,7 +4514,7 @@
 
             tr.innerHTML = 
               '<td class="rank-cell ' + rankClass + '">#' + rank + rankCrown + '</td>' +
-              '<td><div class="player-cell"><span class="player-avatar">' + (p.avatar || '\u{1F3F8}') + '</span><span class="player-name">' + escapeHtml(p.name) + '</span>' + genderTag + '</div></td>' +
+              '<td><div class="player-cell"><span class="player-name">' + escapeHtml(p.name) + '</span>' + genderTag + '</div></td>' +
               '<td style="text-align: center;">' + titlesDisplay + '</td>' +
               '<td style="text-align: center;">' + runnersDisplay + '</td>' +
               '<td style="text-align: center;">' + finalsDisplay + '</td>' +
@@ -4565,15 +4550,11 @@
             const runners = Array.isArray(ed.runnersUp) ? ed.runnersUp : [];
 
             let champsPills = champs.map(name => {
-              const p = (appState.players || []).find(pl => pl.name === name);
-              const avatar = p ? (p.avatar || '\u{1F3F8}') : '\u{1F3F8}';
-              return '<span class="team-player-pill champ-pill">' + avatar + ' ' + escapeHtml(name) + '</span>';
+              return '<span class="team-player-pill champ-pill">' + escapeHtml(name) + '</span>';
             }).join(' ');
 
             let runnersPills = runners.map(name => {
-              const p = (appState.players || []).find(pl => pl.name === name);
-              const avatar = p ? (p.avatar || '\u{1F3F8}') : '\u{1F3F8}';
-              return '<span class="team-player-pill runner-pill">' + avatar + ' ' + escapeHtml(name) + '</span>';
+              return '<span class="team-player-pill runner-pill">' + escapeHtml(name) + '</span>';
             }).join(' ');
 
             let adminControls = '';

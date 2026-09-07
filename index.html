@@ -2528,19 +2528,28 @@
        Replace with your Firebase project credentials or keep fallback demo mode.
        ========================================================================== */
     const DEFAULT_FIREBASE_CONFIG = {
-      apiKey: "AIzaSyTK-Baddy-Championships-2026-DemoKey",
+      apiKey: "AIzaSyCoNMThW3JdkjeCIG1URduHwSDsLgqT9Qk",
       authDomain: "tk-baddy-championships.firebaseapp.com",
-      projectId: "tk-baddy-championships-2026",
-      storageBucket: "tk-baddy-championships.appspot.com",
-      messagingSenderId: "109876543210",
-      appId: "1:109876543210:web:abcdef1234567890"
+      projectId: "tk-baddy-championships",
+      storageBucket: "tk-baddy-championships.firebasestorage.app",
+      messagingSenderId: "13799200654",
+      appId: "1:13799200654:web:bcdc9525fe4bc99c7076df"
     };
 
     let activeFirebaseConfig = DEFAULT_FIREBASE_CONFIG;
     try {
       const savedConfig = localStorage.getItem('tk_baddy_firebase_config');
       if (savedConfig) {
-        activeFirebaseConfig = JSON.parse(savedConfig);
+        const parsed = JSON.parse(savedConfig);
+        // Only override if custom config is valid and not an old demo key
+        if (parsed && parsed.apiKey && !parsed.apiKey.includes('DemoKey')) {
+          activeFirebaseConfig = parsed;
+        } else {
+          activeFirebaseConfig = DEFAULT_FIREBASE_CONFIG;
+          localStorage.setItem('tk_baddy_firebase_config', JSON.stringify(DEFAULT_FIREBASE_CONFIG));
+        }
+      } else {
+        localStorage.setItem('tk_baddy_firebase_config', JSON.stringify(DEFAULT_FIREBASE_CONFIG));
       }
     } catch (e) {
       console.warn("Could not load stored Firebase config", e);
@@ -2633,40 +2642,72 @@
       }
 
       if (isFirestoreActive && firestoreDb) {
+        let hasActiveRemote = false;
+
+        const markRemoteSuccess = () => {
+          hasActiveRemote = true;
+          updateSyncBadge(true);
+        };
+
+        const markRemoteFailure = (err) => {
+          console.warn("Firestore connection/sync issue:", err);
+          if (!hasActiveRemote) {
+            updateSyncBadge(false, err.message);
+          }
+        };
+
         // Listen to Players
         firestoreDb.collection("badminton_players").onSnapshot((snapshot) => {
+          markRemoteSuccess();
           if (!snapshot.empty) {
             const players = [];
             snapshot.forEach(doc => players.push({ id: doc.id, ...doc.data() }));
             appState.players = players;
             saveLocalData();
             updateUI();
-          } else if (appState.players.length === 0) {
+          } else {
+            // If remote is empty but local has players, sync them UP to Firestore!
+            if (appState.players && appState.players.length > 0) {
+              appState.players.forEach(p => {
+                const docId = p.id || ("p_" + p.name.replace(/\s+/g, '_').toLowerCase());
+                firestoreDb.collection("badminton_players").doc(docId).set(p, { merge: true })
+                  .catch(e => console.warn("Auto-sync player to Firestore:", e));
+              });
+            }
             saveLocalData();
             updateUI();
           }
         }, (err) => {
-          console.warn("Firestore players onSnapshot error:", err);
+          markRemoteFailure(err);
         });
 
         // Listen to Matches
         firestoreDb.collection("badminton_matches").orderBy("date", "desc").onSnapshot((snapshot) => {
+          markRemoteSuccess();
           if (!snapshot.empty) {
             const matches = [];
             snapshot.forEach(doc => matches.push({ id: doc.id, ...doc.data() }));
             appState.matches = matches;
             saveLocalData();
             updateUI();
-          } else if (appState.matches.length === 0) {
+          } else {
+            // If remote is empty but local has matches, sync them UP to Firestore!
+            if (appState.matches && appState.matches.length > 0) {
+              appState.matches.forEach(m => {
+                firestoreDb.collection("badminton_matches").doc(m.id).set(m, { merge: true })
+                  .catch(e => console.warn("Auto-sync match to Firestore:", e));
+              });
+            }
             saveLocalData();
             updateUI();
           }
         }, (err) => {
-          console.warn("Firestore matches onSnapshot error:", err);
+          markRemoteFailure(err);
         });
 
         // Listen to Championship Editions / Seasons
         firestoreDb.collection("badminton_editions").onSnapshot((snapshot) => {
+          markRemoteSuccess();
           if (!snapshot.empty) {
             const editions = [];
             snapshot.forEach(doc => editions.push({ id: doc.id, ...doc.data() }));
@@ -2675,7 +2716,6 @@
             saveLocalData();
             updateUI();
           } else {
-            // If remote is empty but local has editions, automatically upload them to Firestore!
             if (appState.editions && appState.editions.length > 0) {
               appState.editions.forEach(ed => {
                 firestoreDb.collection("badminton_editions").doc(ed.id).set(ed, { merge: true })
@@ -2685,13 +2725,8 @@
             updateUI();
           }
         }, (err) => {
-          console.warn("Firestore editions listener error:", err);
-          if (err.code === 'permission-denied') {
-            console.error("PERMISSION_DENIED on badminton_editions: check Firestore Security Rules!");
-          }
+          markRemoteFailure(err);
         });
-
-        updateSyncBadge(true);
       } else {
         fallbackToLocalStorage();
       }
@@ -2708,15 +2743,33 @@
       updateUI();
     }
 
-    function updateSyncBadge(isRemote) {
+    function updateSyncBadge(isRemote, errorMsg = "") {
       const pill = document.getElementById('syncStatusPill');
       const text = document.getElementById('syncStatusText');
+      if (!pill || !text) return;
+
       if (isRemote) {
         pill.className = "sync-status-pill connected";
+        pill.style.background = "rgba(0, 245, 155, 0.12)";
+        pill.style.borderColor = "rgba(0, 245, 155, 0.4)";
+        pill.style.color = "var(--court-emerald-neon)";
         text.innerText = "Firestore Live Sync";
+        pill.title = "Connected to Google Cloud Firestore. Changes sync live across all devices!";
       } else {
         pill.className = "sync-status-pill local";
-        text.innerText = "Local Standings (Offline Ready)";
+        pill.style.background = "rgba(245, 158, 11, 0.15)";
+        pill.style.borderColor = "rgba(245, 158, 11, 0.4)";
+        pill.style.color = "#fbbf24";
+        if (activeFirebaseConfig && (activeFirebaseConfig.apiKey || '').includes('DemoKey')) {
+          text.innerText = "Demo Config (Local Mode)";
+          pill.title = "Click here to add your real Firebase Config so edits sync between Desktop and Phone!";
+        } else if (errorMsg) {
+          text.innerText = "Offline / Local Mode";
+          pill.title = "Firestore error: " + errorMsg + ". Click to check configuration.";
+        } else {
+          text.innerText = "Local Standings (Offline Ready)";
+          pill.title = "Operating locally on this browser. Click to configure cloud sync.";
+        }
       }
     }
 
@@ -4612,3 +4665,4 @@
   </script>
 </body>
 </html>
+

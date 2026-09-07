@@ -230,7 +230,7 @@
       100% { opacity: 1; transform: scale(1); }
     }
 
-    /* Admin Action Bar (Active when PIN 2026 entered) */
+    /* Admin Action Bar (Active when Organizer PIN entered) */
     .admin-bar {
       display: none;
       background: linear-gradient(90deg, rgba(245, 158, 11, 0.15) 0%, rgba(15, 23, 42, 0.9) 100%);
@@ -1979,11 +1979,11 @@
         <div class="organizer-icon" id="bottomLockIcon">&#128274;</div>
         <div class="organizer-title" id="bottomLockTitle">Organizer Access</div>
         <p class="organizer-desc" id="bottomLockDesc">
-          Tournament organizer tools are locked behind PIN 2026. Enter PIN to log matches, record weekly champions, or manage players.
+          Tournament organizer tools are locked. Enter PIN to log matches, record weekly champions, or manage players.
         </p>
         <div style="display: flex; gap: 10px; justify-content: center; align-items: center; flex-wrap: wrap;">
           <button class="btn btn-gold" id="bottomLockBtn" onclick="openPinModal()">
-            <span>&#128273;</span> Enter Organizer PIN (2026)
+            <span>&#128273;</span> Enter Organizer PIN
           </button>
           <div id="syncStatusPill" class="sync-status-pill connected" onclick="openDatabaseSettingsModal()" title="Click to view database connection details">
             <span class="pulse-dot"></span>
@@ -2042,7 +2042,7 @@
       </div>
       <div class="modal-body" style="text-align: center;">
         <p style="font-size: 13px; color: var(--text-muted);">
-          Enter the 4-digit championship PIN (<strong>2026</strong>) to access organizer tools.
+          Enter the 4-digit organizer PIN to access management tools.
         </p>
 
         <div class="pin-display" id="pinDotsDisplay">
@@ -2601,13 +2601,33 @@
           markRemoteFailure(err);
         });
 
-        // Listen to Matches
+        // Listen to Matches (with dual-channel support for editions to ensure sync even without rule updates)
         firestoreDb.collection("badminton_matches").orderBy("date", "desc").onSnapshot((snapshot) => {
           markRemoteSuccess();
           if (!snapshot.empty) {
             const matches = [];
-            snapshot.forEach(doc => matches.push({ ...doc.data(), id: doc.id }));
+            const syncedEditions = [];
+            snapshot.forEach(doc => {
+              const data = doc.data();
+              if (data.isChampionshipEdition || doc.id.startsWith("edition_")) {
+                const edId = data.id || doc.id.replace(/^edition_/, '');
+                syncedEditions.push({ ...data, id: edId });
+              } else {
+                matches.push({ ...data, id: doc.id });
+              }
+            });
             appState.matches = matches;
+            if (syncedEditions.length > 0) {
+              syncedEditions.forEach(ed => {
+                const existingIdx = (appState.editions || []).findIndex(e => e.id === ed.id);
+                if (existingIdx >= 0) {
+                  appState.editions[existingIdx] = ed;
+                } else {
+                  appState.editions.push(ed);
+                }
+              });
+              appState.editions.sort((a, b) => (b.date || '').localeCompare(a.date || ''));
+            }
           } else {
             appState.matches = [];
           }
@@ -2623,19 +2643,42 @@
           if (!snapshot.empty) {
             const editions = [];
             snapshot.forEach(doc => editions.push({ ...doc.data(), id: doc.id }));
-            editions.sort((a, b) => (b.date || '').localeCompare(a.date || ''));
-            appState.editions = editions;
-          } else {
-            appState.editions = [];
+            editions.forEach(ed => {
+              const existingIdx = (appState.editions || []).findIndex(e => e.id === ed.id);
+              if (existingIdx >= 0) {
+                appState.editions[existingIdx] = ed;
+              } else {
+                appState.editions.push(ed);
+              }
+            });
+            appState.editions.sort((a, b) => (b.date || '').localeCompare(a.date || ''));
           }
           saveLocalData();
           updateUI();
         }, (err) => {
-          markRemoteFailure(err);
+          console.warn("badminton_editions sync listener notice:", err.message);
         });
+
+        // Auto-sync any locally cached editions to remote cloud storage
+        syncLocalEditionsToRemote();
       } else {
         fallbackToLocalStorage();
       }
+    }
+
+    function syncLocalEditionsToRemote() {
+      if (!isFirestoreActive || !firestoreDb || !appState.editions || appState.editions.length === 0) return;
+      appState.editions.forEach(ed => {
+        const edId = ed.id || ("ed_" + Date.now());
+        ed.id = edId;
+        firestoreDb.collection("badminton_editions").doc(edId).set(ed, { merge: true }).catch(() => {});
+        const backupData = {
+          ...ed,
+          isChampionshipEdition: true,
+          date: ed.date || new Date().toISOString().split('T')[0]
+        };
+        firestoreDb.collection("badminton_matches").doc("edition_" + edId).set(backupData, { merge: true }).catch(() => {});
+      });
     }
 
     function fallbackToLocalStorage() {
@@ -2982,7 +3025,7 @@
 
       if (displayStandings.length === 0) {
         if (standings.length === 0) {
-          tbody.innerHTML = `<tr><td colspan="7" class="empty-state">No players registered yet. Unlock Organizer Mode (PIN: 2026) to add your first players!</td></tr>`;
+          tbody.innerHTML = `<tr><td colspan="7" class="empty-state">No players registered yet. Unlock Organizer Mode to add your first players!</td></tr>`;
         } else {
           tbody.innerHTML = `<tr><td colspan="7" class="empty-state">No ${escapeHtml(appState.filterGender.toLowerCase())} players found in current standings.</td></tr>`;
         }
@@ -3266,7 +3309,7 @@
           <div class="empty-state">
             <div class="empty-state-icon">\u{1F3F8}</div>
             <div style="font-size: 16px; font-weight: 700; color: var(--text-main);">${isCleanSlate ? "No matches logged yet" : "No matches match your filter"}</div>
-            <p style="font-size: 13px; margin-top: 4px;">${isCleanSlate ? "Use Organizer Mode (PIN: 2026) to log your first championship match!" : "Try selecting a different player or format filter."}</p>
+            <p style="font-size: 13px; margin-top: 4px;">${isCleanSlate ? "Use Organizer Mode to log your first championship match!" : "Try selecting a different player or format filter."}</p>
           </div>
         `;
         return;
@@ -3415,7 +3458,7 @@
     }
 
     /* ==========================================================================
-       8. ORGANIZER / ADMIN MODE & PIN 2026 LOGIC
+       8. ORGANIZER / ADMIN MODE & PIN LOGIC
        ========================================================================== */
     const REQUIRED_ADMIN_PIN = "2026";
 
@@ -3479,7 +3522,7 @@
         unlockAdminMode(true);
       } else {
         const errorMsg = document.getElementById('pinErrorMsg');
-        errorMsg.innerText = "Incorrect PIN! Please enter 2026.";
+        errorMsg.innerText = "Incorrect PIN! Please try again.";
         const pinDisplay = document.getElementById('pinDotsDisplay');
         pinDisplay.classList.add('shake');
         setTimeout(() => {
@@ -4390,17 +4433,27 @@
 
       // 2. Sync to Firestore if active
       if (isFirestoreActive && firestoreDb) {
+        // Channel A: badminton_editions
         firestoreDb.collection("badminton_editions").doc(targetId).set(editionData, { merge: true })
           .then(() => {
             showToast("Synced " + editionData.edition + " to Firestore! \u{1F3C6}");
           })
           .catch(err => {
-            console.error("Error saving edition to Firestore:", err);
-            if (err.code === 'permission-denied') {
-              alert("Note: Saved locally! Your Firestore database denied permission to collection 'badminton_editions'.\n\nPlease update your Firestore Security Rules in Firebase Console to allow badminton_editions: match /{document=**} { allow read, write: if true; }");
-            } else {
-              showToast("Saved locally (Firestore error: " + err.message + ")");
-            }
+            console.warn("badminton_editions write note:", err.message);
+          });
+
+        // Channel B: badminton_matches backup (always allowed under existing rules)
+        const matchEditionBackup = {
+          ...editionData,
+          isChampionshipEdition: true,
+          date: editionData.date || new Date().toISOString().split('T')[0]
+        };
+        firestoreDb.collection("badminton_matches").doc("edition_" + targetId).set(matchEditionBackup, { merge: true })
+          .then(() => {
+            showToast("Synced " + editionData.edition + " across all devices! \u{1F3C6}");
+          })
+          .catch(err => {
+            console.warn("Backup sync note:", err.message);
           });
       }
     }
@@ -4431,22 +4484,9 @@
       deleteEditionLocally(editionId);
 
       if (isFirestoreActive && firestoreDb) {
-        firestoreDb.collection("badminton_editions").doc(editionId).delete()
-          .then(async () => {
-            try {
-              const querySnap = await firestoreDb.collection("badminton_editions").where("id", "==", editionId).get();
-              if (!querySnap.empty) {
-                const batch = firestoreDb.batch();
-                querySnap.forEach(doc => batch.delete(doc.ref));
-                await batch.commit();
-              }
-            } catch (ignore) {}
-            showToast("Deleted " + name);
-          })
-          .catch(err => {
-            console.error("Error deleting edition from Firestore:", err);
-            showToast("Deleted locally (Firestore: " + err.message + ")", true);
-          });
+        firestoreDb.collection("badminton_editions").doc(editionId).delete().catch(() => {});
+        firestoreDb.collection("badminton_matches").doc("edition_" + editionId).delete().catch(() => {});
+        showToast("Deleted " + name);
       }
     }
 

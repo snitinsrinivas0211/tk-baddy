@@ -2058,7 +2058,7 @@
                 <th style="text-align: center;">Runners Up &#129352;</th>
                 <th style="text-align: center;">Finals Played &#127919;</th>
                 <th style="text-align: center;">Finals Win %</th>
-                <th>Championship Editions Won</th>
+                <th>Championship Seasons Won</th>
               </tr>
             </thead>
             <tbody id="honorsLeaderboardBody">
@@ -2072,7 +2072,7 @@
       <section style="margin-bottom: 30px;">
         <div class="section-header">
           <div>
-            <h2 class="section-title"><span>&#128220;</span> Weekly Editions Archive</h2>
+            <h2 class="section-title"><span>&#128220;</span> Weekly Championship Seasons Archive</h2>
             <div class="section-subtitle">Chronological history of weekly title winning and runner-up finalist teams</div>
           </div>
         </div>
@@ -2314,8 +2314,59 @@
         <div class="modal-body">
           <div class="score-inputs-grid">
             <div class="form-group">
-              <label class="form-label">1. Championships Edition</label>
-              <input type="text" id="editionNameInput" class="form-input" placeholder="e.g. Edition 1" required>
+              <label class="form-label">Championship Season</label>
+              <select id="editionSeasonSelect" class="form-select" required>
+                <option value="1" selected>Season 1</option>
+                <option value="2">Season 2</option>
+                <option value="3">Season 3</option>
+                <option value="4">Season 4</option>
+                <option value="5">Season 5</option>
+                <option value="6">Season 6</option>
+                <option value="7">Season 7</option>
+                <option value="8">Season 8</option>
+                <option value="9">Season 9</option>
+                <option value="10">Season 10</option>
+                <option value="11">Season 11</option>
+                <option value="12">Season 12</option>
+                <option value="13">Season 13</option>
+                <option value="14">Season 14</option>
+                <option value="15">Season 15</option>
+                <option value="16">Season 16</option>
+                <option value="17">Season 17</option>
+                <option value="18">Season 18</option>
+                <option value="19">Season 19</option>
+                <option value="20">Season 20</option>
+                <option value="21">Season 21</option>
+                <option value="22">Season 22</option>
+                <option value="23">Season 23</option>
+                <option value="24">Season 24</option>
+                <option value="25">Season 25</option>
+                <option value="26">Season 26</option>
+                <option value="27">Season 27</option>
+                <option value="28">Season 28</option>
+                <option value="29">Season 29</option>
+                <option value="30">Season 30</option>
+                <option value="31">Season 31</option>
+                <option value="32">Season 32</option>
+                <option value="33">Season 33</option>
+                <option value="34">Season 34</option>
+                <option value="35">Season 35</option>
+                <option value="36">Season 36</option>
+                <option value="37">Season 37</option>
+                <option value="38">Season 38</option>
+                <option value="39">Season 39</option>
+                <option value="40">Season 40</option>
+                <option value="41">Season 41</option>
+                <option value="42">Season 42</option>
+                <option value="43">Season 43</option>
+                <option value="44">Season 44</option>
+                <option value="45">Season 45</option>
+                <option value="46">Season 46</option>
+                <option value="47">Season 47</option>
+                <option value="48">Season 48</option>
+                <option value="49">Season 49</option>
+                <option value="50">Season 50</option>
+              </select>
             </div>
             <div class="form-group">
               <label class="form-label">Championship Date</label>
@@ -4112,8 +4163,11 @@
       document.getElementById('editEditionId').value = '';
       document.getElementById('championsModalTitle').innerHTML = '<span>\u{1F3C6}</span> Log Champions &amp; Finalists for the Week';
       document.getElementById('editionDateInput').value = new Date().toISOString().split('T')[0];
-      const nextEdNum = (appState.editions || []).length + 1;
-      document.getElementById('editionNameInput').value = 'Edition ' + nextEdNum;
+      const nextSeason = (appState.editions || []).length + 1;
+      const seasonSelect = document.getElementById('editionSeasonSelect');
+      if (seasonSelect) {
+        seasonSelect.value = (nextSeason <= 50) ? String(nextSeason) : "1";
+      }
       document.getElementById('championsModal').classList.add('show');
     }
 
@@ -4133,7 +4187,14 @@
       document.getElementById('championsForm').reset();
       document.getElementById('editEditionId').value = ed.id;
       document.getElementById('championsModalTitle').innerHTML = '<span>\u270F\uFE0F</span> Edit Champions &amp; Finalists';
-      document.getElementById('editionNameInput').value = ed.edition || '';
+      const seasonSelect = document.getElementById('editionSeasonSelect');
+      if (seasonSelect) {
+        let seasonNum = ed.season;
+        if (!seasonNum && ed.edition) {
+          seasonNum = ed.edition.replace(/\D/g, '');
+        }
+        seasonSelect.value = seasonNum ? String(seasonNum) : "1";
+      }
       document.getElementById('editionDateInput').value = ed.date || '';
       document.getElementById('editionNotesInput').value = ed.notes || '';
 
@@ -4162,7 +4223,9 @@
       }
 
       const editionId = document.getElementById('editEditionId').value.trim();
-      const editionName = document.getElementById('editionNameInput').value.trim();
+      const seasonSelect = document.getElementById('editionSeasonSelect');
+      const seasonNum = seasonSelect ? seasonSelect.value : "1";
+      const editionName = "Season " + seasonNum;
       const editionDate = document.getElementById('editionDateInput').value.trim();
       const notes = document.getElementById('editionNotesInput').value.trim();
 
@@ -4187,7 +4250,7 @@
       });
 
       if (!editionName) {
-        alert("Please enter the Championship Edition title (e.g. Edition 1).");
+        alert("Please select a Championship Season.");
         return;
       }
 
@@ -4210,6 +4273,7 @@
 
       const editionData = {
         edition: editionName,
+        season: parseInt(seasonNum, 10),
         date: editionDate || new Date().toISOString().split('T')[0],
         champions: champions,
         runnersUp: runnersUp,
@@ -4486,10 +4550,10 @@
           feedContainer.innerHTML = 
             '<div style="text-align: center; padding: 40px 20px; background: var(--bg-card); border-radius: var(--radius-md); border: 1px dashed var(--border-subtle); color: var(--text-muted);">' +
               '<div style="font-size: 32px; margin-bottom: 8px;">\u{1F3C6}</div>' +
-              '<div style="font-size: 15px; font-weight: 700; color: var(--text-main);">No weekly editions logged yet</div>' +
+              '<div style="font-size: 15px; font-weight: 700; color: var(--text-main);">No championship seasons logged yet</div>' +
               '<div style="font-size: 13px; margin-top: 4px;">Record the title winning team and finalists to start the weekly roll of honor!</div>' +
               '<button class="btn btn-gold" style="margin-top: 14px;" onclick="openLogChampionsModal()">' +
-                '<span>\u{1F3C6}</span> Log First Edition' +
+                '<span>\u{1F3C6}</span> Log First Season' +
               '</button>' +
             '</div>';
         } else {

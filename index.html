@@ -2595,15 +2595,17 @@
       try {
         const storedPlayers = localStorage.getItem('tk_baddy_players');
         const storedMatches = localStorage.getItem('tk_baddy_matches');
-        if (storedPlayers && storedMatches) {
-          appState.players = JSON.parse(storedPlayers);
-          appState.matches = JSON.parse(storedMatches);
-          const storedEditions = localStorage.getItem('tk_baddy_editions');
-          if (storedEditions) {
-            appState.editions = JSON.parse(storedEditions);
-          }
-          return true;
+        const storedEditions = localStorage.getItem('tk_baddy_editions');
+        if (storedPlayers) {
+          try { appState.players = JSON.parse(storedPlayers) || []; } catch (e) {}
         }
+        if (storedMatches) {
+          try { appState.matches = JSON.parse(storedMatches) || []; } catch (e) {}
+        }
+        if (storedEditions) {
+          try { appState.editions = JSON.parse(storedEditions) || []; } catch (e) {}
+        }
+        return true;
       } catch (e) {
         console.error("Local data load error", e);
       }
@@ -2612,8 +2614,8 @@
 
     function saveLocalData() {
       try {
-        localStorage.setItem('tk_baddy_players', JSON.stringify(appState.players));
-        localStorage.setItem('tk_baddy_matches', JSON.stringify(appState.matches));
+        localStorage.setItem('tk_baddy_players', JSON.stringify(appState.players || []));
+        localStorage.setItem('tk_baddy_matches', JSON.stringify(appState.matches || []));
         localStorage.setItem('tk_baddy_editions', JSON.stringify(appState.editions || []));
       } catch (e) {
         console.error("Local data save error", e);
@@ -2621,6 +2623,10 @@
     }
 
     function initDataSync() {
+      // 1. Immediately load local data so memory and UI are NEVER blank or lost
+      loadLocalData();
+      updateUI();
+
       // Check admin status in session
       if (sessionStorage.getItem('tk_admin_active') === 'true') {
         unlockAdminMode(false);
@@ -2633,14 +2639,14 @@
             const players = [];
             snapshot.forEach(doc => players.push({ id: doc.id, ...doc.data() }));
             appState.players = players;
-          } else {
-            appState.players = [];
+            saveLocalData();
+            updateUI();
+          } else if (appState.players.length === 0) {
+            saveLocalData();
+            updateUI();
           }
-          saveLocalData();
-          updateUI();
         }, (err) => {
           console.warn("Firestore players onSnapshot error:", err);
-          fallbackToLocalStorage();
         });
 
         // Listen to Matches
@@ -2649,44 +2655,41 @@
             const matches = [];
             snapshot.forEach(doc => matches.push({ id: doc.id, ...doc.data() }));
             appState.matches = matches;
-          } else {
-            appState.matches = [];
-          }
-          saveLocalData();
-          updateUI();
-        }, (err) => {
-          console.warn("Firestore matches onSnapshot error:", err);
-          fallbackToLocalStorage();
-        });
-
-        // Listen to Championship Editions
-        try {
-          firestoreDb.collection("badminton_editions").orderBy("date", "desc").onSnapshot((snapshot) => {
-            if (!snapshot.empty) {
-              const editions = [];
-              snapshot.forEach(doc => editions.push({ id: doc.id, ...doc.data() }));
-              appState.editions = editions;
-            } else {
-              appState.editions = [];
-            }
             saveLocalData();
             updateUI();
-          }, (err) => {
-            console.warn("Firestore editions onSnapshot with orderBy error:", err);
-            firestoreDb.collection("badminton_editions").onSnapshot((snapshot) => {
-              const editions = [];
-              snapshot.forEach(doc => editions.push({ id: doc.id, ...doc.data() }));
-              editions.sort((a, b) => (b.date || '').localeCompare(a.date || ''));
-              appState.editions = editions;
-              saveLocalData();
-              updateUI();
-            }, (err2) => {
-              console.warn("Firestore editions listener error:", err2);
-            });
-          });
-        } catch (edErr) {
-          console.warn("Could not set up badminton_editions listener:", edErr);
-        }
+          } else if (appState.matches.length === 0) {
+            saveLocalData();
+            updateUI();
+          }
+        }, (err) => {
+          console.warn("Firestore matches onSnapshot error:", err);
+        });
+
+        // Listen to Championship Editions / Seasons
+        firestoreDb.collection("badminton_editions").onSnapshot((snapshot) => {
+          if (!snapshot.empty) {
+            const editions = [];
+            snapshot.forEach(doc => editions.push({ id: doc.id, ...doc.data() }));
+            editions.sort((a, b) => (b.date || '').localeCompare(a.date || ''));
+            appState.editions = editions;
+            saveLocalData();
+            updateUI();
+          } else {
+            // If remote is empty but local has editions, automatically upload them to Firestore!
+            if (appState.editions && appState.editions.length > 0) {
+              appState.editions.forEach(ed => {
+                firestoreDb.collection("badminton_editions").doc(ed.id).set(ed, { merge: true })
+                  .catch(e => console.warn("Auto-sync edition to Firestore:", e));
+              });
+            }
+            updateUI();
+          }
+        }, (err) => {
+          console.warn("Firestore editions listener error:", err);
+          if (err.code === 'permission-denied') {
+            console.error("PERMISSION_DENIED on badminton_editions: check Firestore Security Rules!");
+          }
+        });
 
         updateSyncBadge(true);
       } else {
@@ -3025,7 +3028,14 @@
                 <span class="player-name">
                   ${escapeHtml(p.name)}
                   <span style="font-size: 11px; font-weight: 700; margin-left: 2px; color: ${p.gender === 'Female' ? '#f472b6' : '#60a5fa'};" title="${escapeHtml(p.gender || 'Male')}">${p.gender === 'Female' ? '\u2640' : '\u2642'}</span>
-                  ${rank === 1 ? '<span style="font-size: 11px; color: var(--gold-bright); font-weight: 800;">CHAMPION</span>' : ''}
+                  ${(() => {
+                    const honors = (typeof computeHonorsStandings === 'function') ? computeHonorsStandings() : [];
+                    const hPlayer = honors.find(h => h.name === p.name);
+                    if (hPlayer && hPlayer.titles > 0) {
+                      return `<span style="font-size: 11px; font-weight: 700; color: #ffd700; background: rgba(255, 215, 0, 0.12); padding: 1px 6px; border-radius: 4px; border: 1px solid rgba(255, 215, 0, 0.3);" title="${hPlayer.titles} Championship Titles">\u{1F3C6} ${hPlayer.titles} Title${hPlayer.titles > 1 ? 's' : ''}</span>`;
+                    }
+                    return (rank === 1) ? '<span style="font-size: 11px; color: var(--gold-bright); font-weight: 800;">CHAMPION</span>' : '';
+                  })()}
                 </span>
                 <div class="player-form">${recentDots}</div>
               </div>
@@ -4271,32 +4281,31 @@
     }
 
     function saveEdition(editionId, editionData) {
-      if (editionId) {
-        editionData.id = editionId;
-        if (isFirestoreActive && firestoreDb) {
-          firestoreDb.collection("badminton_editions").doc(editionId).set(editionData, { merge: true })
-            .then(() => showToast("Updated " + editionData.edition + " successfully!"))
-            .catch(err => {
-              console.error("Error updating edition in Firestore:", err);
-              saveEditionLocally(editionData);
-            });
-        } else {
-          saveEditionLocally(editionData);
-        }
-      } else {
-        const newId = "ed_" + Date.now();
-        editionData.id = newId;
+      const isNew = !editionId;
+      const targetId = editionId || ("ed_" + Date.now());
+      editionData.id = targetId;
+      if (isNew) {
         editionData.createdAt = new Date().toISOString();
-        if (isFirestoreActive && firestoreDb) {
-          firestoreDb.collection("badminton_editions").doc(newId).set(editionData)
-            .then(() => showToast("Saved " + editionData.edition + " champions! \u{1F3C6}"))
-            .catch(err => {
-              console.error("Error creating edition in Firestore:", err);
-              saveEditionLocally(editionData);
-            });
-        } else {
-          saveEditionLocally(editionData);
-        }
+      }
+      editionData.updatedAt = new Date().toISOString();
+
+      // 1. Immediately save locally so data is NEVER lost even on page refresh
+      saveEditionLocally(editionData);
+
+      // 2. Sync to Firestore if active
+      if (isFirestoreActive && firestoreDb) {
+        firestoreDb.collection("badminton_editions").doc(targetId).set(editionData, { merge: true })
+          .then(() => {
+            showToast("Synced " + editionData.edition + " to Firestore! \u{1F3C6}");
+          })
+          .catch(err => {
+            console.error("Error saving edition to Firestore:", err);
+            if (err.code === 'permission-denied') {
+              alert("Note: Saved locally! Your Firestore database denied permission to collection 'badminton_editions'.\n\nPlease update your Firestore Security Rules in Firebase Console to allow badminton_editions: match /{document=**} { allow read, write: if true; }");
+            } else {
+              showToast("Saved locally (Firestore error: " + err.message + ")");
+            }
+          });
       }
     }
 

@@ -31,6 +31,9 @@
   <!-- Canvas Confetti for match logging celebrations -->
   <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.3/dist/confetti.browser.min.js"></script>
 
+  <!-- Chart.js for ELO Trends Graph -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.2/dist/chart.umd.min.js"></script>
+
   <style>
     /* ==========================================================================
        CSS DESIGN SYSTEM & THEME TOKENS
@@ -130,6 +133,232 @@
       font-family: var(--font-display);
       font-weight: 700;
       letter-spacing: -0.02em;
+    }
+
+    /* Burger Menu & ELO Trends Styles */
+    .header-top {
+      display: flex;
+      align-items: center;
+      justify-content: space-between !important;
+      width: 100%;
+      position: relative;
+    }
+
+    .brand-group {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      min-width: 0;
+      flex: 1;
+    }
+
+    .header-menu-wrap {
+      position: relative;
+      flex-shrink: 0;
+      margin-left: 8px;
+    }
+
+    .burger-menu-btn {
+      width: 40px;
+      height: 40px;
+      border-radius: var(--radius-md);
+      background: rgba(13, 21, 38, 0.85);
+      border: 1px solid var(--border-subtle);
+      cursor: pointer;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      gap: 5px;
+      padding: 0;
+      transition: all 0.2s ease;
+    }
+
+    .burger-menu-btn:hover {
+      background: rgba(0, 245, 155, 0.12);
+      border-color: var(--court-emerald-neon);
+      box-shadow: 0 0 12px rgba(0, 245, 155, 0.25);
+    }
+
+    .burger-bar {
+      display: block;
+      width: 20px;
+      height: 2px;
+      background: #fff;
+      border-radius: 2px;
+      transition: all 0.25s ease;
+    }
+
+    .burger-menu-btn.open .burger-bar:nth-child(1) {
+      transform: translateY(7px) rotate(45deg);
+    }
+
+    .burger-menu-btn.open .burger-bar:nth-child(2) {
+      opacity: 0;
+    }
+
+    .burger-menu-btn.open .burger-bar:nth-child(3) {
+      transform: translateY(-7px) rotate(-45deg);
+    }
+
+    .burger-dropdown {
+      display: none;
+      position: absolute;
+      top: calc(100% + 8px);
+      right: 0;
+      background: rgba(13, 21, 38, 0.98);
+      border: 1px solid var(--court-border);
+      border-radius: var(--radius-md);
+      box-shadow: 0 12px 32px rgba(0, 0, 0, 0.8), 0 0 20px rgba(0, 245, 155, 0.15);
+      min-width: 230px;
+      z-index: 1000;
+      padding: 6px;
+      backdrop-filter: blur(12px);
+      animation: fadeIn 0.2s ease;
+    }
+
+    .burger-dropdown.show {
+      display: block;
+    }
+
+    .burger-menu-item {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 10px 12px;
+      border-radius: var(--radius-sm);
+      cursor: pointer;
+      transition: background 0.15s ease;
+      color: #fff;
+    }
+
+    .burger-menu-item:hover {
+      background: rgba(0, 245, 155, 0.15);
+    }
+
+    .burger-item-icon {
+      font-size: 20px;
+      flex-shrink: 0;
+    }
+
+    .burger-item-title {
+      font-weight: 700;
+      font-size: 14px;
+      color: #fff;
+    }
+
+    .burger-item-subtitle {
+      font-size: 11px;
+      color: var(--text-dim);
+      margin-top: 2px;
+    }
+
+    /* ELO Trends Tab View Styles */
+    .elo-trends-container {
+      margin-bottom: 30px;
+    }
+
+    .elo-trends-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 16px;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+
+    .elo-selectors-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-md);
+      padding: 16px;
+      margin-bottom: 16px;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+    }
+
+    @media (max-width: 600px) {
+      .elo-selectors-card {
+        grid-template-columns: 1fr;
+        gap: 12px;
+      }
+    }
+
+    .elo-selector-col label {
+      font-size: 12.5px;
+      font-weight: 700;
+      margin-bottom: 6px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .elo-compare-summary {
+      display: grid;
+      grid-template-columns: 1fr auto 1fr;
+      gap: 12px;
+      align-items: center;
+      margin-bottom: 16px;
+    }
+
+    @media (max-width: 600px) {
+      .elo-compare-summary {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .elo-player-card {
+      background: rgba(13, 20, 36, 0.85);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-sm);
+      padding: 12px 14px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .elo-player-card.p1 {
+      border-color: rgba(0, 245, 155, 0.4);
+      box-shadow: 0 0 15px rgba(0, 245, 155, 0.08);
+    }
+
+    .elo-player-card.p2 {
+      border-color: rgba(255, 215, 0, 0.4);
+      box-shadow: 0 0 15px rgba(255, 215, 0, 0.08);
+    }
+
+    .elo-thumb-circle {
+      width: 44px;
+      height: 44px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 800;
+      font-size: 18px;
+      flex-shrink: 0;
+      overflow: hidden;
+    }
+
+    .elo-chart-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-md);
+      padding: 16px;
+      position: relative;
+    }
+
+    .elo-chart-wrapper {
+      position: relative;
+      height: 380px;
+      width: 100%;
+    }
+
+    @media (max-width: 600px) {
+      .elo-chart-wrapper {
+        height: 300px;
+      }
     }
 
     /* Header Styles */
@@ -1951,12 +2180,28 @@
 
   <div class="app-container">
 
-    <!-- Header Section (Clean single line on mobile) -->
+    <!-- Header Section with Burger Menu -->
     <header class="app-header">
       <div class="header-top">
         <div class="brand-group">
           <div class="shuttle-logo">&#127992;</div>
           <h1 class="brand-title">TK Baddy Championships</h1>
+        </div>
+        <div class="header-menu-wrap">
+          <button class="burger-menu-btn" id="burgerMenuBtn" onclick="toggleBurgerMenu(event)" aria-label="Menu" title="Menu">
+            <span class="burger-bar"></span>
+            <span class="burger-bar"></span>
+            <span class="burger-bar"></span>
+          </button>
+          <div class="burger-dropdown" id="burgerDropdown">
+            <div class="burger-menu-item" onclick="openEloTrendsTab()">
+              <span class="burger-item-icon">&#128200;</span>
+              <div class="burger-item-content">
+                <div class="burger-item-title">ELO Trends</div>
+                <div class="burger-item-subtitle">Compare rating progression</div>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
     </header>
@@ -2186,6 +2431,65 @@
     <!-- =========================================================================
          TAB 3: MATCH HISTORY CONTENT
          ========================================================================= -->
+    <!-- =========================================================================
+         TAB 4: ELO TRENDS COMPARISON (Loaded via Burger Menu)
+         ========================================================================= -->
+    <div id="eloTrendsTabContent" style="display: none;">
+      <div class="elo-trends-container">
+        <div class="elo-trends-header">
+          <div>
+            <h2 class="section-title"><span>&#128200;</span> ELO Rating Trends</h2>
+            <div class="section-subtitle">Track and compare rating progression match-by-match from Match 1 to recent match</div>
+          </div>
+          <button class="btn btn-outline" style="font-size: 12px; padding: 6px 12px;" onclick="switchMainTab('leaderboard')">
+            <span>&#8592;</span> Back to Leaderboard
+          </button>
+        </div>
+
+        <!-- Player Selection Controls -->
+        <div class="elo-selectors-card">
+          <div class="elo-selector-col">
+            <label for="eloPlayer1Select" style="color: #00f59b;">
+              <span style="display: inline-block; width: 10px; height: 10px; border-radius: 50%; background: #00f59b;"></span>
+              Player 1
+            </label>
+            <select id="eloPlayer1Select" class="form-select" onchange="handleEloPlayerSelectionChange()">
+              <!-- Populated dynamically -->
+            </select>
+          </div>
+          <div class="elo-selector-col">
+            <label for="eloPlayer2Select" style="color: #ffd700;">
+              <span style="display: inline-block; width: 10px; height: 10px; border-radius: 50%; background: #ffd700;"></span>
+              Player 2
+            </label>
+            <select id="eloPlayer2Select" class="form-select" onchange="handleEloPlayerSelectionChange()">
+              <!-- Populated dynamically -->
+            </select>
+          </div>
+        </div>
+
+        <!-- Comparison Summary Cards -->
+        <div class="elo-compare-summary" id="eloCompareSummary">
+          <!-- Populated dynamically -->
+        </div>
+
+        <!-- ELO Trends Line Chart -->
+        <div class="elo-chart-card">
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; flex-wrap: wrap; gap: 8px;">
+            <div style="font-weight: 700; font-size: 14px; color: var(--text-main);">
+              Rating Trajectory (Baseline: 1200)
+            </div>
+            <div style="font-size: 11px; color: var(--text-dim);">
+              Hover or tap points to inspect match results & rating deltas
+            </div>
+          </div>
+          <div class="elo-chart-wrapper">
+            <canvas id="eloTrendsChart"></canvas>
+          </div>
+        </div>
+      </div>
+    </div>
+
     <div id="historyTabContent" style="display: none;">
       <!-- SECTION 4: MATCH HISTORY FEED -->
     <section>
@@ -4802,11 +5106,39 @@
     /* ==========================================================================
        TAB NAVIGATION & CHAMPIONS / FINALISTS ENGINE
        ========================================================================== */
+    /* Burger Menu Controls */
+    function toggleBurgerMenu(e) {
+      if (e) e.stopPropagation();
+      const menu = document.getElementById('burgerDropdown');
+      const btn = document.getElementById('burgerMenuBtn');
+      if (menu) menu.classList.toggle('show');
+      if (btn) btn.classList.toggle('open');
+    }
+
+    function closeBurgerMenu() {
+      const menu = document.getElementById('burgerDropdown');
+      const btn = document.getElementById('burgerMenuBtn');
+      if (menu) menu.classList.remove('show');
+      if (btn) btn.classList.remove('open');
+    }
+
+    document.addEventListener('click', (e) => {
+      if (!e.target.closest('.header-menu-wrap')) {
+        closeBurgerMenu();
+      }
+    });
+
+    function openEloTrendsTab() {
+      closeBurgerMenu();
+      switchMainTab('elotrends');
+    }
+
     function switchMainTab(tabName) {
       appState.activeMainTab = tabName;
       const leaderboardContent = document.getElementById('leaderboardTabContent');
       const badgesContent = document.getElementById('badgesTabContent');
       const historyContent = document.getElementById('historyTabContent');
+      const eloTrendsContent = document.getElementById('eloTrendsTabContent');
 
       const tabBtnLeaderboard = document.getElementById('tabBtnLeaderboard');
       const tabBtnBadges = document.getElementById('tabBtnBadges');
@@ -4815,12 +5147,16 @@
       if (leaderboardContent) leaderboardContent.style.display = 'none';
       if (badgesContent) badgesContent.style.display = 'none';
       if (historyContent) historyContent.style.display = 'none';
+      if (eloTrendsContent) eloTrendsContent.style.display = 'none';
 
       if (tabBtnLeaderboard) tabBtnLeaderboard.classList.remove('active');
       if (tabBtnBadges) tabBtnBadges.classList.remove('active');
       if (tabBtnHistory) tabBtnHistory.classList.remove('active');
 
-      if (tabName === 'badges') {
+      if (tabName === 'elotrends') {
+        if (eloTrendsContent) eloTrendsContent.style.display = 'block';
+        initEloTrendsView();
+      } else if (tabName === 'badges') {
         if (badgesContent) badgesContent.style.display = 'block';
         if (tabBtnBadges) tabBtnBadges.classList.add('active');
         renderStatsGrid(computeStandings());
@@ -4839,6 +5175,480 @@
           toggleLeaderboardView('champions');
         }
       }
+    }
+
+    /* ==========================================================================
+       ELO TRENDS COMPUTATION & CHART ENGINE
+       ========================================================================== */
+    let eloChartInstance = null;
+
+    function initEloTrendsView() {
+      const p1Select = document.getElementById('eloPlayer1Select');
+      const p2Select = document.getElementById('eloPlayer2Select');
+      if (!p1Select || !p2Select) return;
+
+      const standings = computeStandings();
+      if (standings.length === 0) return;
+
+      const currentP1 = p1Select.value;
+      const currentP2 = p2Select.value;
+
+      p1Select.innerHTML = '';
+      p2Select.innerHTML = '';
+
+      standings.forEach((p, idx) => {
+        const opt1 = document.createElement('option');
+        opt1.value = p.name;
+        opt1.textContent = `#${idx + 1} ${p.name} (${p.elo || 1200} ELO)`;
+        p1Select.appendChild(opt1);
+
+        const opt2 = document.createElement('option');
+        opt2.value = p.name;
+        opt2.textContent = `#${idx + 1} ${p.name} (${p.elo || 1200} ELO)`;
+        p2Select.appendChild(opt2);
+      });
+
+      // Default selection: Player #1 and Player #2 if not already set
+      if (currentP1 && standings.some(s => s.name === currentP1)) {
+        p1Select.value = currentP1;
+      } else {
+        p1Select.value = standings[0] ? standings[0].name : '';
+      }
+
+      if (currentP2 && standings.some(s => s.name === currentP2)) {
+        p2Select.value = currentP2;
+      } else {
+        p2Select.value = standings[1] ? standings[1].name : (standings[0] ? standings[0].name : '');
+      }
+
+      renderEloTrendsChart();
+    }
+
+    function handleEloPlayerSelectionChange() {
+      renderEloTrendsChart();
+    }
+
+    function computeEloHistoryForPlayers(p1Name, p2Name) {
+      const chronoMatches = [...appState.matches].sort((a, b) => {
+        const da = a.date || '';
+        const db = b.date || '';
+        if (da !== db) return da.localeCompare(db);
+        const ca = a.createdAt || '';
+        const cb = b.createdAt || '';
+        if (ca !== cb) return ca.localeCompare(cb);
+        return (a.id || '').localeCompare(b.id || '');
+      });
+
+      const currentRatings = {};
+      appState.players.forEach(p => {
+        currentRatings[p.name] = 1200;
+      });
+
+      const labels = ['Start'];
+      const p1Series = [1200];
+      const p2Series = [1200];
+      const matchMeta = [{
+        matchNum: 0,
+        date: 'Baseline',
+        p1Delta: null,
+        p2Delta: null,
+        p1Rating: 1200,
+        p2Rating: 1200,
+        summary: 'Baseline rating 1200'
+      }];
+
+      let p1Peak = 1200;
+      let p1Low = 1200;
+      let p2Peak = 1200;
+      let p2Low = 1200;
+
+      chronoMatches.forEach((m, idx) => {
+        const team1 = m.team1 || [];
+        const team2 = m.team2 || [];
+        const isT1Winner = m.winner === 1;
+        const matchNum = idx + 1;
+
+        [...team1, ...team2].forEach(p => {
+          if (currentRatings[p] === undefined) currentRatings[p] = 1200;
+        });
+
+        let t1Delta = 0;
+        let t2Delta = 0;
+        let p1Delta = null;
+        let p2Delta = null;
+
+        if (team1.length > 0 && team2.length > 0) {
+          const r1 = team1.reduce((acc, p) => acc + (currentRatings[p] || 1200), 0) / team1.length;
+          const r2 = team2.reduce((acc, p) => acc + (currentRatings[p] || 1200), 0) / team2.length;
+          const e1 = 1.0 / (1.0 + Math.pow(10, (r2 - r1) / 400.0));
+          const e2 = 1.0 - e1;
+
+          if (isT1Winner) {
+            const delta = Math.round(32 * (1.0 - e1));
+            t1Delta = delta;
+            t2Delta = -delta;
+          } else {
+            const delta = Math.round(32 * (1.0 - e2));
+            t1Delta = -delta;
+            t2Delta = delta;
+          }
+
+          team1.forEach(p => {
+            currentRatings[p] = Math.min(2000, Math.max(400, (currentRatings[p] || 1200) + t1Delta));
+            if (p === p1Name) p1Delta = t1Delta;
+            if (p === p2Name) p2Delta = t1Delta;
+          });
+
+          team2.forEach(p => {
+            currentRatings[p] = Math.min(2000, Math.max(400, (currentRatings[p] || 1200) + t2Delta));
+            if (p === p1Name) p1Delta = t2Delta;
+            if (p === p2Name) p2Delta = t2Delta;
+          });
+        }
+
+        const rP1 = currentRatings[p1Name] !== undefined ? currentRatings[p1Name] : 1200;
+        const rP2 = currentRatings[p2Name] !== undefined ? currentRatings[p2Name] : 1200;
+
+        if (rP1 > p1Peak) p1Peak = rP1;
+        if (rP1 < p1Low) p1Low = rP1;
+        if (rP2 > p2Peak) p2Peak = rP2;
+        if (rP2 < p2Low) p2Low = rP2;
+
+        labels.push(`M${matchNum}`);
+        p1Series.push(rP1);
+        p2Series.push(rP2);
+
+        const winnerNames = isT1Winner ? team1.join(' & ') : team2.join(' & ');
+        const loserNames = isT1Winner ? team2.join(' & ') : team1.join(' & ');
+        const setsScore = (m.sets || []).map(s => `${s.t1}-${s.t2}`).join(', ');
+
+        matchMeta.push({
+          matchNum: matchNum,
+          date: m.date || '',
+          format: m.format || 'Doubles',
+          winnerNames: winnerNames,
+          loserNames: loserNames,
+          score: setsScore,
+          p1Delta: p1Delta,
+          p2Delta: p2Delta,
+          p1Rating: rP1,
+          p2Rating: rP2
+        });
+      });
+
+      return {
+        labels,
+        p1Series,
+        p2Series,
+        matchMeta,
+        p1Current: currentRatings[p1Name] !== undefined ? currentRatings[p1Name] : 1200,
+        p2Current: currentRatings[p2Name] !== undefined ? currentRatings[p2Name] : 1200,
+        p1Peak,
+        p1Low,
+        p2Peak,
+        p2Low,
+        totalMatches: chronoMatches.length
+      };
+    }
+
+    function renderEloTrendsChart() {
+      const p1Select = document.getElementById('eloPlayer1Select');
+      const p2Select = document.getElementById('eloPlayer2Select');
+      if (!p1Select || !p2Select) return;
+
+      const p1Name = p1Select.value;
+      const p2Name = p2Select.value;
+      if (!p1Name || !p2Name) return;
+
+      const hist = computeEloHistoryForPlayers(p1Name, p2Name);
+
+      // Render summary comparison cards
+      const summaryDiv = document.getElementById('eloCompareSummary');
+      if (summaryDiv) {
+        const p1Player = (appState.players || []).find(p => p.name === p1Name);
+        const p2Player = (appState.players || []).find(p => p.name === p2Name);
+
+        const p1Photo = p1Player && p1Player.photoUrl ? formatDirectPhotoUrl(p1Player.photoUrl) : '';
+        const p2Photo = p2Player && p2Player.photoUrl ? formatDirectPhotoUrl(p2Player.photoUrl) : '';
+
+        const p1Avatar = p1Photo
+          ? `<img src="${escapeHtml(p1Photo)}" referrerpolicy="no-referrer" style="width: 100%; height: 100%; object-fit: cover;" onerror="this.parentElement.innerText='${p1Name.charAt(0).toUpperCase()}';">`
+          : p1Name.charAt(0).toUpperCase();
+
+        const p2Avatar = p2Photo
+          ? `<img src="${escapeHtml(p2Photo)}" referrerpolicy="no-referrer" style="width: 100%; height: 100%; object-fit: cover;" onerror="this.parentElement.innerText='${p2Name.charAt(0).toUpperCase()}';">`
+          : p2Name.charAt(0).toUpperCase();
+
+        const p1Net = hist.p1Current - 1200;
+        const p2Net = hist.p2Current - 1200;
+
+        const diff = hist.p1Current - hist.p2Current;
+        let diffLead = '';
+        if (diff > 0) {
+          diffLead = `<span style="color: #00f59b; font-weight: 800;">${escapeHtml(p1Name)} +${diff}</span>`;
+        } else if (diff < 0) {
+          diffLead = `<span style="color: #ffd700; font-weight: 800;">${escapeHtml(p2Name)} +${Math.abs(diff)}</span>`;
+        } else {
+          diffLead = `<span style="color: var(--text-dim); font-weight: 700;">Tied Rating</span>`;
+        }
+
+        summaryDiv.innerHTML = `
+          <div class="elo-player-card p1">
+            <div class="elo-thumb-circle" style="background: rgba(0, 245, 155, 0.2); border: 2px solid #00f59b; color: #00f59b;">
+              ${p1Avatar}
+            </div>
+            <div style="flex: 1; min-width: 0;">
+              <div style="font-weight: 800; font-size: 15px; color: #fff;">${escapeHtml(p1Name)}</div>
+              <div style="font-size: 13px; color: #00f59b; font-weight: 700; margin-top: 1px;">
+                Current: ${hist.p1Current} <span style="font-size: 11px; color: ${p1Net >= 0 ? '#00f59b' : '#ef4444'};">(${p1Net >= 0 ? '+' : ''}${p1Net})</span>
+              </div>
+              <div style="font-size: 11px; color: var(--text-dim); margin-top: 2px;">
+                Peak: ${hist.p1Peak} &bull; Low: ${hist.p1Low}
+              </div>
+            </div>
+          </div>
+
+          <div style="text-align: center; padding: 4px 8px;">
+            <div style="font-size: 11px; font-weight: 800; text-transform: uppercase; color: var(--text-muted); letter-spacing: 1px;">DIFF</div>
+            <div style="font-size: 13px; margin-top: 2px;">${diffLead}</div>
+          </div>
+
+          <div class="elo-player-card p2">
+            <div class="elo-thumb-circle" style="background: rgba(255, 215, 0, 0.2); border: 2px solid #ffd700; color: #ffd700;">
+              ${p2Avatar}
+            </div>
+            <div style="flex: 1; min-width: 0;">
+              <div style="font-weight: 800; font-size: 15px; color: #fff;">${escapeHtml(p2Name)}</div>
+              <div style="font-size: 13px; color: #ffd700; font-weight: 700; margin-top: 1px;">
+                Current: ${hist.p2Current} <span style="font-size: 11px; color: ${p2Net >= 0 ? '#ffd700' : '#ef4444'};">(${p2Net >= 0 ? '+' : ''}${p2Net})</span>
+              </div>
+              <div style="font-size: 11px; color: var(--text-dim); margin-top: 2px;">
+                Peak: ${hist.p2Peak} &bull; Low: ${hist.p2Low}
+              </div>
+            </div>
+          </div>
+        `;
+      }
+
+      // Draw graph
+      const canvas = document.getElementById('eloTrendsChart');
+      if (!canvas) return;
+
+      if (typeof Chart !== 'undefined') {
+        if (eloChartInstance) {
+          eloChartInstance.destroy();
+        }
+
+        const ctx = canvas.getContext('2d');
+        const grad1 = ctx.createLinearGradient(0, 0, 0, 300);
+        grad1.addColorStop(0, 'rgba(0, 245, 155, 0.2)');
+        grad1.addColorStop(1, 'rgba(0, 245, 155, 0.0)');
+
+        const grad2 = ctx.createLinearGradient(0, 0, 0, 300);
+        grad2.addColorStop(0, 'rgba(255, 215, 0, 0.2)');
+        grad2.addColorStop(1, 'rgba(255, 215, 0, 0.0)');
+
+        eloChartInstance = new Chart(ctx, {
+          type: 'line',
+          data: {
+            labels: hist.labels,
+            datasets: [
+              {
+                label: p1Name,
+                data: hist.p1Series,
+                borderColor: '#00f59b',
+                backgroundColor: grad1,
+                fill: true,
+                tension: 0.2,
+                borderWidth: 2.5,
+                pointRadius: (ctx) => {
+                  const idx = ctx.dataIndex;
+                  if (idx === 0) return 3;
+                  const m = hist.matchMeta[idx];
+                  return (m && m.p1Delta !== null) ? 3.5 : 0;
+                },
+                pointHoverRadius: 6,
+                pointBackgroundColor: '#00f59b',
+                pointBorderColor: '#fff',
+                pointBorderWidth: 1.5,
+              },
+              {
+                label: p2Name,
+                data: hist.p2Series,
+                borderColor: '#ffd700',
+                backgroundColor: grad2,
+                fill: true,
+                tension: 0.2,
+                borderWidth: 2.5,
+                pointRadius: (ctx) => {
+                  const idx = ctx.dataIndex;
+                  if (idx === 0) return 3;
+                  const m = hist.matchMeta[idx];
+                  return (m && m.p2Delta !== null) ? 3.5 : 0;
+                },
+                pointHoverRadius: 6,
+                pointBackgroundColor: '#ffd700',
+                pointBorderColor: '#fff',
+                pointBorderWidth: 1.5,
+              }
+            ]
+          },
+          options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            interaction: {
+              mode: 'index',
+              intersect: false,
+            },
+            plugins: {
+              legend: {
+                display: true,
+                position: 'top',
+                labels: {
+                  color: '#e2e8f0',
+                  font: { family: 'Outfit, sans-serif', size: 13, weight: '700' },
+                  usePointStyle: true,
+                  pointStyle: 'circle',
+                  padding: 16
+                }
+              },
+              tooltip: {
+                backgroundColor: 'rgba(13, 21, 38, 0.95)',
+                titleColor: '#ffd700',
+                bodyColor: '#f1f5f9',
+                borderColor: 'rgba(0, 245, 155, 0.3)',
+                borderWidth: 1,
+                padding: 12,
+                cornerRadius: 8,
+                titleFont: { family: 'Outfit, sans-serif', size: 13, weight: '800' },
+                bodyFont: { family: 'Plus Jakarta Sans, sans-serif', size: 12 },
+                callbacks: {
+                  title: function(items) {
+                    if (!items || !items.length) return '';
+                    const idx = items[0].dataIndex;
+                    const m = hist.matchMeta[idx];
+                    if (!m || m.matchNum === 0) return 'Baseline (Start): 1200';
+                    return `Match #${m.matchNum} (${m.date || 'Date N/A'})`;
+                  },
+                  label: function(item) {
+                    const idx = item.dataIndex;
+                    const m = hist.matchMeta[idx];
+                    const isP1 = item.datasetIndex === 0;
+                    const pName = isP1 ? p1Name : p2Name;
+                    const rating = item.formattedValue;
+                    const delta = isP1 ? (m ? m.p1Delta : null) : (m ? m.p2Delta : null);
+                    if (delta !== null) {
+                      const sign = delta > 0 ? '+' : '';
+                      return ` ${pName}: ${rating} (${sign}${delta} in match)`;
+                    }
+                    return ` ${pName}: ${rating}`;
+                  },
+                  afterBody: function(items) {
+                    if (!items || !items.length) return [];
+                    const idx = items[0].dataIndex;
+                    const m = hist.matchMeta[idx];
+                    if (!m || m.matchNum === 0) return [];
+                    const lines = [];
+                    if (m.p1Delta !== null || m.p2Delta !== null) {
+                      lines.push(`Result: ${m.winnerNames} def. ${m.loserNames}`);
+                      if (m.score) lines.push(`Score: ${m.score}`);
+                    }
+                    return lines;
+                  }
+                }
+              }
+            },
+            scales: {
+              x: {
+                grid: {
+                  color: 'rgba(255, 255, 255, 0.04)'
+                },
+                ticks: {
+                  color: '#94a3b8',
+                  font: { family: 'Plus Jakarta Sans, sans-serif', size: 11 },
+                  maxRotation: 0,
+                  autoSkip: true,
+                  maxTicksLimit: 12
+                }
+              },
+              y: {
+                grid: {
+                  color: 'rgba(255, 255, 255, 0.06)'
+                },
+                ticks: {
+                  color: '#94a3b8',
+                  font: { family: 'Plus Jakarta Sans, sans-serif', size: 11 },
+                  stepSize: 50
+                }
+              }
+            }
+          }
+        });
+      } else {
+        // Native Canvas Fallback if Chart.js is not loaded
+        drawNativeCanvasEloChart(canvas, hist, p1Name, p2Name);
+      }
+    }
+
+    function drawNativeCanvasEloChart(canvas, hist, p1Name, p2Name) {
+      const ctx = canvas.getContext('2d');
+      const w = canvas.parentElement.clientWidth || 400;
+      const h = canvas.parentElement.clientHeight || 300;
+      canvas.width = w;
+      canvas.height = h;
+
+      ctx.clearRect(0, 0, w, h);
+      ctx.fillStyle = 'rgba(7, 11, 18, 0.5)';
+      ctx.fillRect(0, 0, w, h);
+
+      const padding = { top: 30, right: 20, bottom: 40, left: 50 };
+      const chartW = w - padding.left - padding.right;
+      const chartH = h - padding.top - padding.bottom;
+
+      const allVals = [...hist.p1Series, ...hist.p2Series];
+      const minVal = Math.floor((Math.min(...allVals) - 50) / 50) * 50;
+      const maxVal = Math.ceil((Math.max(...allVals) + 50) / 50) * 50;
+
+      // Draw Y grid
+      ctx.strokeStyle = 'rgba(255, 255, 255, 0.06)';
+      ctx.fillStyle = '#94a3b8';
+      ctx.font = '11px sans-serif';
+      ctx.textAlign = 'right';
+
+      const steps = 5;
+      for (let i = 0; i <= steps; i++) {
+        const val = minVal + ((maxVal - minVal) / steps) * i;
+        const y = padding.top + chartH - (i / steps) * chartH;
+        ctx.beginPath();
+        ctx.moveTo(padding.left, y);
+        ctx.lineTo(padding.left + chartW, y);
+        ctx.stroke();
+        ctx.fillText(Math.round(val), padding.left - 8, y + 4);
+      }
+
+      // Draw series
+      function drawLine(series, color) {
+        ctx.strokeStyle = color;
+        ctx.lineWidth = 2.5;
+        ctx.beginPath();
+        series.forEach((val, idx) => {
+          const x = padding.left + (idx / (series.length - 1)) * chartW;
+          const y = padding.top + chartH - ((val - minVal) / (maxVal - minVal)) * chartH;
+          if (idx === 0) ctx.moveTo(x, y);
+          else ctx.lineTo(x, y);
+        });
+        ctx.stroke();
+      }
+
+      drawLine(hist.p1Series, '#00f59b');
+      drawLine(hist.p2Series, '#ffd700');
+
+      // Legend
+      ctx.textAlign = 'left';
+      ctx.fillStyle = '#00f59b';
+      ctx.fillText(`\u25CF ${p1Name}`, padding.left + 10, 20);
+      ctx.fillStyle = '#ffd700';
+      ctx.fillText(`\u25CF ${p2Name}`, padding.left + 120, 20);
     }
 
     function toggleLeaderboardView(view) {

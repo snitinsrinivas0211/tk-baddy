@@ -1427,14 +1427,23 @@
     }
 
     /* Player Spotlight Modal / Player Profile Card */
+    #playerSpotlightModal .modal-window {
+      max-width: 440px;
+      width: calc(100% - 24px);
+      margin: 0 auto;
+    }
+    #playerSpotlightModal .modal-body {
+      padding: 12px;
+    }
     .player-profile-card {
       background: linear-gradient(145deg, rgba(13, 20, 36, 0.95), rgba(7, 11, 20, 0.98));
       border: 1px solid rgba(0, 245, 155, 0.25);
       border-radius: var(--radius-md);
-      padding: 20px 16px;
+      padding: 16px 14px;
       box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5), 0 0 20px rgba(0, 245, 155, 0.08);
       position: relative;
       overflow: hidden;
+      text-align: center;
     }
     .player-profile-card::before {
       content: '';
@@ -1444,24 +1453,26 @@
     }
     .player-profile-hero {
       display: flex;
+      flex-direction: column;
       align-items: center;
-      gap: 16px;
-      padding-bottom: 16px;
+      justify-content: center;
+      padding-bottom: 12px;
       border-bottom: 1px solid rgba(255, 255, 255, 0.08);
     }
     .player-profile-avatar-box {
-      width: 72px;
-      height: 72px;
+      width: clamp(110px, 32vw, 140px);
+      height: clamp(110px, 32vw, 140px);
       border-radius: 50%;
       background: linear-gradient(135deg, #059669 0%, #00f59b 100%);
       display: flex;
       align-items: center;
       justify-content: center;
-      box-shadow: 0 0 20px var(--court-glow);
-      border: 2.5px solid #fff;
+      box-shadow: 0 0 28px rgba(0, 245, 155, 0.45), 0 0 10px rgba(255, 215, 0, 0.3);
+      border: 3.5px solid #fff;
       overflow: hidden;
       flex-shrink: 0;
       position: relative;
+      margin-bottom: 10px;
     }
     .player-profile-img {
       width: 100%;
@@ -1471,7 +1482,7 @@
     }
     .player-profile-avatar-fallback {
       font-family: var(--font-display);
-      font-size: 28px;
+      font-size: clamp(44px, 12vw, 56px);
       font-weight: 800;
       color: #052e16;
       display: flex;
@@ -1480,9 +1491,14 @@
       width: 100%;
       height: 100%;
     }
+    .player-profile-info {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
     .player-profile-name {
       font-family: var(--font-display);
-      font-size: 24px;
+      font-size: 26px;
       font-weight: 900;
       letter-spacing: -0.5px;
       color: #fff;
@@ -1491,18 +1507,19 @@
     .player-profile-sub {
       display: flex;
       align-items: center;
+      justify-content: center;
       gap: 8px;
-      margin-top: 5px;
+      margin-top: 4px;
       flex-wrap: wrap;
     }
     .player-profile-rank {
-      font-size: 13px;
+      font-size: 13.5px;
       font-weight: 800;
       color: #ffd700;
       letter-spacing: 0.3px;
     }
     .player-profile-gender {
-      font-size: 12px;
+      font-size: 11.5px;
       font-weight: 700;
       padding: 1px 7px;
       border-radius: 4px;
@@ -1516,7 +1533,7 @@
       background: rgba(255, 215, 0, 0.12);
       border: 1px solid rgba(255, 215, 0, 0.35);
       border-radius: 6px;
-      padding: 3px 10px;
+      padding: 4px 12px;
       font-size: 13.5px;
       font-weight: 800;
       color: #ffd700;
@@ -1532,10 +1549,10 @@
       color: var(--text-dim);
     }
     .player-profile-summary {
-      font-size: 13.5px;
+      font-size: 13px;
       color: var(--text-muted);
       font-weight: 600;
-      padding: 12px 4px 6px 4px;
+      padding: 10px 4px 4px 4px;
       text-align: center;
     }
     .player-avatar-img-sm {
@@ -4528,7 +4545,7 @@
         <div class="player-profile-card">
           <div class="player-profile-hero">
             ${avatarHtml}
-            <div style="flex: 1; min-width: 0;">
+            <div class="player-profile-info">
               <div class="player-profile-name">${escapeHtml(p.name)}</div>
               <div class="player-profile-sub">
                 <span class="player-profile-rank">Overall Rank: #${rank} ${rankBadge}</span>

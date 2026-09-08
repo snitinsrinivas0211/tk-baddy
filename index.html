@@ -1864,6 +1864,7 @@
                 <tr>
                   <th class="rank-cell">#</th>
                   <th class="sortable" onclick="sortTable('name')">Player Name &#8597;</th>
+                  <th class="sortable" onclick="sortTable('elo')" style="text-align: center;">ELO &#9889; &#8597;</th>
                   <th class="sortable" onclick="sortTable('played')">P &#8597;</th>
                   <th class="sortable" onclick="sortTable('won')">W &#8597;</th>
                   <th class="sortable" onclick="sortTable('lost')">L &#8597;</th>
@@ -2637,7 +2638,7 @@
       activeMainTab: 'standings',
       activeLeaderboardView: 'champions',
       isAdmin: false,
-      sortColumn: 'winRate',
+      sortColumn: 'elo',
       sortAsc: false,
       filterPlayer: 'all',
       filterFormat: 'all',
@@ -2956,13 +2957,16 @@
     function computeStandings() {
       const statsMap = {};
 
-      // Initialize all registered players
+      // Initialize all registered players with baseline ELO 1200
       appState.players.forEach(p => {
         statsMap[p.name] = {
           id: p.id,
           name: p.name,
           avatar: p.avatar || "\u{1F3F8}",
           gender: p.gender || "Male",
+          elo: 1200,
+          peakElo: 1200,
+          lowestElo: 1200,
           played: 0,
           won: 0,
           lost: 0,
@@ -2979,13 +2983,79 @@
         };
       });
 
-      // Sort matches chronologically for streak and form calculation
-      const chronoMatches = [...appState.matches].sort((a, b) => new Date(a.date) - new Date(b.date));
+      // Sort matches deterministically in chronological sequence
+      const chronoMatches = [...appState.matches].sort((a, b) => {
+        const da = a.date || '';
+        const db = b.date || '';
+        if (da !== db) return da.localeCompare(db);
+        const ca = a.createdAt || '';
+        const cb = b.createdAt || '';
+        if (ca !== cb) return ca.localeCompare(cb);
+        return (a.id || '').localeCompare(b.id || '');
+      });
 
       chronoMatches.forEach(match => {
         const team1 = match.team1 || [];
         const team2 = match.team2 || [];
         const isT1Winner = match.winner === 1;
+
+        // Ensure all participating players exist in statsMap with baseline 1200
+        [...team1, ...team2].forEach(pName => {
+          if (!statsMap[pName]) {
+            statsMap[pName] = {
+              id: "p_" + pName.toLowerCase(),
+              name: pName,
+              avatar: "\u{1F3F8}",
+              gender: "Male",
+              elo: 1200,
+              peakElo: 1200,
+              lowestElo: 1200,
+              played: 0, won: 0, lost: 0,
+              pointsScored: 0, pointsConceded: 0, diff: 0, winRate: 0,
+              recentForm: [], streak: 0, maxStreak: 0, comebackWins: 0, flawlessWins: 0, h2h: {}
+            };
+          }
+        });
+
+        // Calculate ELO rating change for this match
+        if (team1.length > 0 && team2.length > 0) {
+          const r1 = team1.reduce((acc, p) => acc + (statsMap[p].elo || 1200), 0) / team1.length;
+          const r2 = team2.reduce((acc, p) => acc + (statsMap[p].elo || 1200), 0) / team2.length;
+
+          const e1 = 1.0 / (1.0 + Math.pow(10, (r2 - r1) / 400.0));
+          const e2 = 1.0 - e1;
+
+          let t1Delta = 0;
+          let t2Delta = 0;
+
+          if (isT1Winner) {
+            const delta = Math.round(32 * (1.0 - e1));
+            t1Delta = delta;
+            t2Delta = -delta;
+          } else {
+            const delta = Math.round(32 * (1.0 - e2));
+            t1Delta = -delta;
+            t2Delta = delta;
+          }
+
+          match.eloDelta = Math.abs(isT1Winner ? t1Delta : t2Delta);
+          match.t1EloDelta = t1Delta;
+          match.t2EloDelta = t2Delta;
+
+          team1.forEach(p => {
+            const newElo = Math.min(2000, Math.max(400, statsMap[p].elo + t1Delta));
+            statsMap[p].elo = newElo;
+            if (newElo > statsMap[p].peakElo) statsMap[p].peakElo = newElo;
+            if (newElo < statsMap[p].lowestElo) statsMap[p].lowestElo = newElo;
+          });
+
+          team2.forEach(p => {
+            const newElo = Math.min(2000, Math.max(400, statsMap[p].elo + t2Delta));
+            statsMap[p].elo = newElo;
+            if (newElo > statsMap[p].peakElo) statsMap[p].peakElo = newElo;
+            if (newElo < statsMap[p].lowestElo) statsMap[p].lowestElo = newElo;
+          });
+        }
 
         let t1TotalPts = 0;
         let t2TotalPts = 0;
@@ -3108,8 +3178,10 @@
           return appState.sortAsc ? fieldA.localeCompare(fieldB) : fieldB.localeCompare(fieldA);
         }
 
-        // Default tie-break logic: WinRate -> Won -> Diff -> Played
+        // Default tie-break logic: ELO -> WinRate -> Won -> Diff -> Played
         if (fieldA === fieldB) {
+          if (a.elo !== b.elo) return b.elo - a.elo;
+          if (a.winRate !== b.winRate) return b.winRate - a.winRate;
           if (a.won !== b.won) return b.won - a.won;
           if (a.diff !== b.diff) return b.diff - a.diff;
           return b.played - a.played;
@@ -3146,9 +3218,9 @@
 
       if (displayStandings.length === 0) {
         if (standings.length === 0) {
-          tbody.innerHTML = `<tr><td colspan="7" class="empty-state">No players registered yet. Unlock Organizer Mode to add your first players!</td></tr>`;
+          tbody.innerHTML = `<tr><td colspan="8" class="empty-state">No players registered yet. Unlock Organizer Mode to add your first players!</td></tr>`;
         } else {
-          tbody.innerHTML = `<tr><td colspan="7" class="empty-state">No ${escapeHtml(appState.filterGender.toLowerCase())} players found in current standings.</td></tr>`;
+          tbody.innerHTML = `<tr><td colspan="8" class="empty-state">No ${escapeHtml(appState.filterGender.toLowerCase())} players found in current standings.</td></tr>`;
         }
         return;
       }
@@ -3195,6 +3267,11 @@
                 <div class="player-form">${recentDots}</div>
               </div>
             </div>
+          </td>
+          <td style="text-align: center;">
+            <span style="font-weight: 800; font-size: 13.5px; color: ${(p.elo >= 1300) ? '#ffd700' : ((p.elo >= 1200) ? 'var(--court-emerald-neon)' : '#94a3b8')}; background: rgba(0,0,0,0.3); padding: 3px 8px; border-radius: 6px; border: 1px solid rgba(255,255,255,0.08);" title="Peak: ${p.peakElo || 1200} | Low: ${p.lowestElo || 1200}">
+              ${p.elo || 1200}
+            </span>
           </td>
           <td><strong>${p.played}</strong></td>
           <td style="color: var(--court-emerald-neon); font-weight: 700;">${p.won}</td>
@@ -3465,6 +3542,7 @@
               <span class="match-format-badge ${match.format}">${match.format === 'doubles' ? '\u{1F3F8}\u{1F3F8} Doubles' : '\u{1F3F8} Singles'}</span>
               <span style="font-size: 11px; color: var(--text-dim);">\u2022</span>
               <span style="font-size: 11px; color: var(--text-muted); font-weight: 600;">Season ${match.season || match.weekNumber || 1}</span>
+              ${match.eloDelta ? `<span style="font-size: 11px; color: var(--text-dim);">\u2022</span><span style="font-size: 11px; font-weight: 700; color: #ffd700; background: rgba(245, 158, 11, 0.15); border: 1px solid rgba(245, 158, 11, 0.3); padding: 2px 6px; border-radius: 4px;" title="Rating change for this match">\u26A1 \u00B1${match.eloDelta} ELO</span>` : ''}
             </div>
             <div class="match-admin-actions">
               <button class="btn btn-outline btn-icon" style="padding: 4px 8px; font-size: 12px;" onclick="openEditMatchModal('${match.id}')" title="Edit Match">\u270F\uFE0F</button>
@@ -4094,6 +4172,9 @@
             <h3>${escapeHtml(p.name)}</h3>
             <div style="font-size: 13px; color: var(--gold-bright); font-weight: 700;">
               Championship Rank: #${rank} ${rank === 1 ? '\u{1F451}' : ''} \u2022 ${p.gender === 'Female' ? '\u2640 Female' : '\u2642 Male'}
+            </div>
+            <div style="font-size: 13px; color: #ffd700; font-weight: 800; margin-top: 3px;">
+              \u26A1 ELO Rating: ${p.elo || 1200} <span style="font-size: 11px; color: var(--text-dim); font-weight: 600;">(Peak: ${p.peakElo || 1200} | Low: ${p.lowestElo || 1200})</span>
             </div>
             <div style="font-size: 12px; color: var(--text-muted); margin-top: 2px;">
               Win Rate: ${p.winRate.toFixed(1)}% \u2022 Max Streak: ${p.maxStreak} \u{1F525}

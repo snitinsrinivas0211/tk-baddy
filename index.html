@@ -732,6 +732,45 @@
       font-size: 14px;
     }
 
+    .desktop-lbl {
+      display: inline;
+    }
+    .mobile-lbl {
+      display: none;
+    }
+    .desktop-titles-badge {
+      display: inline-block;
+    }
+    .mobile-titles-badge {
+      display: none;
+    }
+    .player-subline {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+    }
+    .elo-badge-cell {
+      font-weight: 800;
+      font-size: 13.5px;
+      background: rgba(0, 0, 0, 0.3);
+      padding: 3px 8px;
+      border-radius: 6px;
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      display: inline-block;
+    }
+    th.sortable.active-sort {
+      color: var(--court-emerald-neon) !important;
+    }
+    th.sortable.active-sort .sort-arrow {
+      color: var(--court-emerald-neon);
+      opacity: 1;
+    }
+    .sort-arrow {
+      font-size: 10px;
+      opacity: 0.6;
+      margin-left: 2px;
+    }
+
     .player-cell {
       display: flex;
       align-items: center;
@@ -2157,6 +2196,164 @@
       flex-wrap: wrap;
     }
 
+    @media (max-width: 640px) {
+      .app-container {
+        padding: 10px 8px;
+      }
+      .leaderboard-card {
+        border-radius: var(--radius-md);
+      }
+      .table-container {
+        width: 100%;
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+      }
+      table.standings-table.match-standings-table {
+        width: 100%;
+        table-layout: fixed;
+        font-size: 11.5px;
+      }
+      table.standings-table.match-standings-table th {
+        padding: 8px 1px;
+        font-size: 9.5px;
+        letter-spacing: 0;
+        text-align: center;
+      }
+      table.standings-table.match-standings-table th.th-player {
+        text-align: left;
+        padding-left: 4px;
+      }
+      table.standings-table.match-standings-table th.rank-cell {
+        width: 24px;
+        padding: 8px 1px;
+        text-align: center;
+      }
+      table.standings-table.match-standings-table th.th-elo {
+        width: 44px;
+        padding: 8px 1px;
+      }
+      table.standings-table.match-standings-table th.th-stat {
+        width: 21px;
+        padding: 8px 1px;
+      }
+      table.standings-table.match-standings-table th.th-wr {
+        width: 44px;
+        padding: 8px 1px;
+      }
+      table.standings-table.match-standings-table th.th-diff {
+        width: 35px;
+        padding: 8px 1px;
+      }
+      table.standings-table.match-standings-table td {
+        padding: 7px 1px;
+        font-size: 11.5px;
+      }
+      table.standings-table.match-standings-table td.rank-cell {
+        width: 24px;
+        padding: 7px 1px;
+        text-align: center;
+      }
+      .rank-badge {
+        width: 20px;
+        height: 20px;
+        font-size: 10.5px;
+      }
+      table.standings-table.match-standings-table td.player-col-cell {
+        padding: 6px 2px 6px 4px;
+        text-align: left;
+        overflow: hidden;
+      }
+      .player-cell {
+        gap: 0;
+      }
+      .player-name {
+        font-size: 12px;
+        gap: 2px;
+        line-height: 1.2;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+      }
+      .player-display-name {
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+        display: inline-block;
+        vertical-align: middle;
+      }
+      .player-gender-icon {
+        font-size: 10px !important;
+      }
+      .player-subline {
+        display: flex;
+        align-items: center;
+        gap: 3px;
+        margin-top: 2px;
+      }
+      .player-form {
+        gap: 2px;
+      }
+      .form-dot {
+        width: 5px;
+        height: 5px;
+      }
+      table.standings-table.match-standings-table td.elo-col-cell {
+        width: 44px;
+        padding: 7px 1px;
+        text-align: center;
+      }
+      .elo-badge-cell {
+        font-size: 11px;
+        padding: 2px 3px;
+        letter-spacing: -0.02em;
+      }
+      table.standings-table.match-standings-table td.stat-col-cell {
+        width: 21px;
+        padding: 7px 1px;
+        text-align: center;
+        font-size: 11.5px;
+      }
+      table.standings-table.match-standings-table td.winrate-col-cell {
+        width: 44px;
+        padding: 7px 1px;
+        text-align: center;
+      }
+      .winrate-pill {
+        padding: 1px 3px;
+        font-size: 10px;
+        letter-spacing: -0.02em;
+        gap: 0;
+      }
+      table.standings-table.match-standings-table td.diff-col-cell {
+        width: 35px;
+        padding: 7px 1px;
+        text-align: center;
+        font-size: 10.5px;
+        font-weight: 700;
+      }
+      .desktop-lbl {
+        display: none !important;
+      }
+      .mobile-lbl {
+        display: inline !important;
+      }
+      .desktop-titles-badge {
+        display: none !important;
+      }
+      .mobile-titles-badge {
+        display: inline-flex !important;
+        align-items: center;
+        font-size: 9.5px;
+        font-weight: 800;
+        color: #ffd700;
+        background: rgba(255, 215, 0, 0.15);
+        padding: 0 4px;
+        border-radius: 3px;
+        border: 1px solid rgba(255, 215, 0, 0.3);
+        line-height: 14px;
+      }
+    }
+
     @media (max-width: 540px) {
       .leaderboard-subnav {
         flex-direction: column;
@@ -2443,17 +2640,29 @@
       <div id="standingsMatchesSection" style="display: none;">
         <div class="leaderboard-card">
           <div class="table-container">
-            <table class="standings-table">
+            <table class="standings-table match-standings-table">
               <thead>
                 <tr>
                   <th class="rank-cell">#</th>
-                  <th class="sortable" onclick="sortTable('name')">Player Name &#8597;</th>
-                  <th class="sortable" onclick="sortTable('elo')" style="text-align: center;">ELO &#9889; &#8597;</th>
-                  <th class="sortable" onclick="sortTable('played')">P &#8597;</th>
-                  <th class="sortable" onclick="sortTable('won')">W &#8597;</th>
-                  <th class="sortable" onclick="sortTable('lost')">L &#8597;</th>
-                  <th class="sortable" onclick="sortTable('winRate')">Win Rate &#8597;</th>
-                  <th class="sortable" onclick="sortTable('diff')">+/- Net Pts &#8597;</th>
+                  <th class="sortable th-player" onclick="sortTable('name')">
+                    <span class="desktop-lbl">Player Name <span class="sort-arrow">&#8597;</span></span>
+                    <span class="mobile-lbl">Player</span>
+                  </th>
+                  <th class="sortable th-elo" onclick="sortTable('elo')" style="text-align: center;">
+                    <span class="desktop-lbl">ELO &#9889; <span class="sort-arrow">&#8597;</span></span>
+                    <span class="mobile-lbl">ELO</span>
+                  </th>
+                  <th class="sortable th-stat th-stat-played" onclick="sortTable('played')" style="text-align: center;" title="Matches Played">P</th>
+                  <th class="sortable th-stat th-stat-won" onclick="sortTable('won')" style="text-align: center;" title="Matches Won">W</th>
+                  <th class="sortable th-stat th-stat-lost" onclick="sortTable('lost')" style="text-align: center;" title="Matches Lost">L</th>
+                  <th class="sortable th-wr" onclick="sortTable('winRate')" style="text-align: center;" title="Win Rate">
+                    <span class="desktop-lbl">Win Rate <span class="sort-arrow">&#8597;</span></span>
+                    <span class="mobile-lbl">WR%</span>
+                  </th>
+                  <th class="sortable th-diff" onclick="sortTable('diff')" style="text-align: center;" title="Net Point Difference">
+                    <span class="desktop-lbl">+/- Net Pts <span class="sort-arrow">&#8597;</span></span>
+                    <span class="mobile-lbl">+/-</span>
+                  </th>
                 </tr>
               </thead>
               <tbody id="standingsTableBody">
@@ -4038,43 +4247,72 @@
           `<span class="form-dot ${f === 'W' ? 'win' : 'loss'}" title="${f === 'W' ? 'Win' : 'Loss'}"></span>`
         ).join('');
 
+        const honors = (typeof computeHonorsStandings === 'function') ? computeHonorsStandings() : [];
+        const hPlayer = honors.find(h => h.name === p.name);
+        let titlesBadgeHtmlDesktop = '';
+        let titlesBadgeHtmlMobile = '';
+        if (hPlayer && hPlayer.titles > 0) {
+          titlesBadgeHtmlDesktop = `<span class="desktop-titles-badge" style="font-size: 11px; font-weight: 700; color: #ffd700; background: rgba(255, 215, 0, 0.12); padding: 1px 6px; border-radius: 4px; border: 1px solid rgba(255, 215, 0, 0.3);" title="${hPlayer.titles} Championship Titles">\u{1F3C6} ${hPlayer.titles} Title${hPlayer.titles > 1 ? 's' : ''}</span>`;
+          titlesBadgeHtmlMobile = `<span class="mobile-titles-badge" title="${hPlayer.titles} Championship Titles">\u{1F3C6}${hPlayer.titles}</span>`;
+        } else if (rank === 1) {
+          titlesBadgeHtmlDesktop = '<span class="desktop-titles-badge" style="font-size: 11px; color: var(--gold-bright); font-weight: 800;">CHAMPION</span>';
+          titlesBadgeHtmlMobile = '<span class="mobile-titles-badge" style="color: var(--gold-bright); font-weight: 800;">\u{1F451}</span>';
+        }
+
         tr.innerHTML = `
           <td class="rank-cell">${rankBadgeHtml}</td>
-          <td>
+          <td class="player-col-cell">
             <div class="player-cell">
-                    <div class="player-name-wrapper">
+              <div class="player-name-wrapper">
                 <span class="player-name">
-                  ${escapeHtml(p.name)}
-                  <span style="font-size: 11px; font-weight: 700; margin-left: 2px; color: ${p.gender === 'Female' ? '#f472b6' : '#60a5fa'};" title="${escapeHtml(p.gender || 'Male')}">${p.gender === 'Female' ? '\u2640' : '\u2642'}</span>
-                  ${(() => {
-                    const honors = (typeof computeHonorsStandings === 'function') ? computeHonorsStandings() : [];
-                    const hPlayer = honors.find(h => h.name === p.name);
-                    if (hPlayer && hPlayer.titles > 0) {
-                      return `<span style="font-size: 11px; font-weight: 700; color: #ffd700; background: rgba(255, 215, 0, 0.12); padding: 1px 6px; border-radius: 4px; border: 1px solid rgba(255, 215, 0, 0.3);" title="${hPlayer.titles} Championship Titles">\u{1F3C6} ${hPlayer.titles} Title${hPlayer.titles > 1 ? 's' : ''}</span>`;
-                    }
-                    return (rank === 1) ? '<span style="font-size: 11px; color: var(--gold-bright); font-weight: 800;">CHAMPION</span>' : '';
-                  })()}
+                  <span class="player-display-name">${escapeHtml(p.name)}</span>
+                  <span class="player-gender-icon" style="font-size: 11px; font-weight: 700; margin-left: 2px; color: ${p.gender === 'Female' ? '#f472b6' : '#60a5fa'};" title="${escapeHtml(p.gender || 'Male')}">${p.gender === 'Female' ? '\u2640' : '\u2642'}</span>
+                  ${titlesBadgeHtmlDesktop}
                 </span>
-                <div class="player-form">${recentDots}</div>
+                <div class="player-subline">
+                  ${titlesBadgeHtmlMobile}
+                  <div class="player-form">${recentDots}</div>
+                </div>
               </div>
             </div>
           </td>
-          <td style="text-align: center;">
-            <span style="font-weight: 800; font-size: 13.5px; color: ${(p.elo >= 1300) ? '#ffd700' : ((p.elo >= 1200) ? 'var(--court-emerald-neon)' : '#94a3b8')}; background: rgba(0,0,0,0.3); padding: 3px 8px; border-radius: 6px; border: 1px solid rgba(255,255,255,0.08);" title="Peak: ${p.peakElo || 1200} | Low: ${p.lowestElo || 1200}">
+          <td class="elo-col-cell" style="text-align: center;">
+            <span class="elo-badge-cell" style="color: ${(p.elo >= 1300) ? '#ffd700' : ((p.elo >= 1200) ? 'var(--court-emerald-neon)' : '#94a3b8')};" title="Peak: ${p.peakElo || 1200} | Low: ${p.lowestElo || 1200}">
               ${p.elo || 1200}
             </span>
           </td>
-          <td><strong>${p.played}</strong></td>
-          <td style="color: var(--court-emerald-neon); font-weight: 700;">${p.won}</td>
-          <td style="color: var(--text-muted);">${p.lost}</td>
-          <td class="winrate-cell">
+          <td class="stat-col-cell stat-played" style="text-align: center;"><strong>${p.played}</strong></td>
+          <td class="stat-col-cell stat-won" style="text-align: center; color: var(--court-emerald-neon); font-weight: 700;">${p.won}</td>
+          <td class="stat-col-cell stat-lost" style="text-align: center; color: var(--text-muted);">${p.lost}</td>
+          <td class="winrate-col-cell" style="text-align: center;">
             <span class="winrate-pill">${p.winRate.toFixed(1)}%</span>
           </td>
-          <td>${diffHtml}</td>
+          <td class="diff-col-cell" style="text-align: center;">${diffHtml}</td>
         `;
 
         tbody.appendChild(tr);
       });
+
+      // Update active sort indicator on table headers
+      document.querySelectorAll('#standingsMatchesSection th.sortable').forEach(th => {
+        th.classList.remove('active-sort', 'sorted-asc', 'sorted-desc');
+      });
+      const sortColClassMap = {
+        'name': '.th-player',
+        'elo': '.th-elo',
+        'played': '.th-stat-played',
+        'won': '.th-stat-won',
+        'lost': '.th-stat-lost',
+        'winRate': '.th-wr',
+        'diff': '.th-diff'
+      };
+      const activeThSelector = sortColClassMap[appState.sortColumn];
+      if (activeThSelector) {
+        const activeTh = document.querySelector(`#standingsMatchesSection ${activeThSelector}`);
+        if (activeTh) {
+          activeTh.classList.add('active-sort', appState.sortAsc ? 'sorted-asc' : 'sorted-desc');
+        }
+      }
     }
 
     function renderStatsGrid(standings) {

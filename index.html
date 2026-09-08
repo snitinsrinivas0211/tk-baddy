@@ -1426,6 +1426,127 @@
       40%, 60% { transform: translate3d(6px, 0, 0); }
     }
 
+    /* Player Spotlight Modal / Player Profile Card */
+    .player-profile-card {
+      background: linear-gradient(145deg, rgba(13, 20, 36, 0.95), rgba(7, 11, 20, 0.98));
+      border: 1px solid rgba(0, 245, 155, 0.25);
+      border-radius: var(--radius-md);
+      padding: 20px 16px;
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5), 0 0 20px rgba(0, 245, 155, 0.08);
+      position: relative;
+      overflow: hidden;
+    }
+    .player-profile-card::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0; height: 3px;
+      background: linear-gradient(90deg, #00f59b, #ffd700, #38bdf8);
+    }
+    .player-profile-hero {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      padding-bottom: 16px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+    }
+    .player-profile-avatar-box {
+      width: 72px;
+      height: 72px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, #059669 0%, #00f59b 100%);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 0 20px var(--court-glow);
+      border: 2.5px solid #fff;
+      overflow: hidden;
+      flex-shrink: 0;
+      position: relative;
+    }
+    .player-profile-img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+    .player-profile-avatar-fallback {
+      font-family: var(--font-display);
+      font-size: 28px;
+      font-weight: 800;
+      color: #052e16;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 100%;
+      height: 100%;
+    }
+    .player-profile-name {
+      font-family: var(--font-display);
+      font-size: 24px;
+      font-weight: 900;
+      letter-spacing: -0.5px;
+      color: #fff;
+      line-height: 1.15;
+    }
+    .player-profile-sub {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-top: 5px;
+      flex-wrap: wrap;
+    }
+    .player-profile-rank {
+      font-size: 13px;
+      font-weight: 800;
+      color: #ffd700;
+      letter-spacing: 0.3px;
+    }
+    .player-profile-gender {
+      font-size: 12px;
+      font-weight: 700;
+      padding: 1px 7px;
+      border-radius: 4px;
+      background: rgba(255, 255, 255, 0.06);
+    }
+    .player-profile-elo {
+      margin-top: 8px;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: rgba(255, 215, 0, 0.12);
+      border: 1px solid rgba(255, 215, 0, 0.35);
+      border-radius: 6px;
+      padding: 3px 10px;
+      font-size: 13.5px;
+      font-weight: 800;
+      color: #ffd700;
+    }
+    .player-profile-elo .elo-val {
+      font-size: 16px;
+      font-weight: 900;
+      color: #fff;
+    }
+    .player-profile-elo .elo-range {
+      font-size: 11px;
+      font-weight: 600;
+      color: var(--text-dim);
+    }
+    .player-profile-summary {
+      font-size: 13.5px;
+      color: var(--text-muted);
+      font-weight: 600;
+      padding: 12px 4px 6px 4px;
+      text-align: center;
+    }
+    .player-avatar-img-sm {
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      object-fit: cover;
+      border: 1.5px solid var(--court-emerald-neon);
+      flex-shrink: 0;
+    }
+
     /* Player Spotlight Modal */
     .spotlight-header {
       display: flex;
@@ -2517,12 +2638,63 @@
     </div>
   </div>
 
+  <!-- 3b. Edit Player Modal -->
+  <div class="modal-backdrop" id="editPlayerModal">
+    <div class="modal-window" style="max-width: 420px;">
+      <div class="modal-header">
+        <div class="modal-title">
+          <span>&#9999;&#65039;</span> Edit Player Profile
+        </div>
+        <button class="modal-close-btn" onclick="closeEditPlayerModal()">&#215;</button>
+      </div>
+      <form onsubmit="handleEditPlayerSubmit(event)">
+        <div class="modal-body">
+          <input type="hidden" id="editPlayerId">
+          <input type="hidden" id="editPlayerOldName">
+
+          <div class="form-group">
+            <label class="form-label">Player Name</label>
+            <input type="text" id="editPlayerName" class="form-input" required placeholder="Enter player name">
+          </div>
+
+          <div class="form-group" style="margin-top: 12px;">
+            <label class="form-label">Gender</label>
+            <select id="editPlayerGender" class="form-select">
+              <option value="Male">&#9794;&#65039; Male</option>
+              <option value="Female">&#9792;&#65039; Female</option>
+            </select>
+          </div>
+
+          <div class="form-group" style="margin-top: 12px;">
+            <label class="form-label">Profile Picture URL (Optional)</label>
+            <input type="url" id="editPlayerPhoto" class="form-input" placeholder="https://example.com/photo.jpg" oninput="updateEditPlayerPhotoPreview(this.value)">
+            <div style="font-size: 11px; color: var(--text-dim); margin-top: 4px;">Paste any image link (Google Drive, public image URL, etc.)</div>
+          </div>
+
+          <!-- Photo Preview -->
+          <div style="margin-top: 12px; display: flex; align-items: center; gap: 12px; padding: 10px; background: rgba(0,0,0,0.3); border-radius: var(--radius-sm); border: 1px solid var(--border-subtle);">
+            <div id="editPlayerPhotoPreview" style="width: 50px; height: 50px; border-radius: 50%; background: var(--bg-card); display: flex; align-items: center; justify-content: center; font-size: 20px; font-weight: 700; color: var(--court-emerald-neon); border: 1.5px solid var(--court-emerald-neon); overflow: hidden; flex-shrink: 0;">
+              &#127992;
+            </div>
+            <div style="font-size: 12px; color: var(--text-muted);">
+              Live Photo Preview
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-outline" onclick="closeEditPlayerModal()">Cancel</button>
+          <button type="submit" class="btn btn-emerald">Save Changes</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
   <!-- 4. Player Spotlight Modal -->
   <div class="modal-backdrop" id="playerSpotlightModal">
     <div class="modal-window">
       <div class="modal-header">
         <div class="modal-title">
-          <span>&#128100;</span> Player Profile Spotlight
+          <span>&#128100;</span> Player Profile
         </div>
         <button class="modal-close-btn" onclick="closeSpotlightModal()">&#215;</button>
       </div>
@@ -4093,18 +4265,158 @@
           ? '<span style="font-size: 10px; font-weight: 600; background: rgba(236, 72, 153, 0.15); color: #f472b6; border: 1px solid rgba(236, 72, 153, 0.3); border-radius: 4px; padding: 1px 6px;">\u2640 Female</span>'
           : '<span style="font-size: 10px; font-weight: 600; background: rgba(59, 130, 246, 0.15); color: #60a5fa; border: 1px solid rgba(59, 130, 246, 0.3); border-radius: 4px; padding: 1px 6px;">\u2642 Male</span>';
 
+        let avatarThumb = '';
+        if (p.photoUrl) {
+          avatarThumb = `<img src="${escapeHtml(p.photoUrl)}" class="player-avatar-img-sm" onerror="this.style.display='none';">`;
+        }
+
         row.innerHTML = `
-          <div style="display: flex; align-items: center; gap: 8px;">
-            <span style="font-weight: 700; font-size: 14px;">${escapeHtml(p.name)}</span>
-            ${genderTag}
-            <span style="font-size: 11px; color: var(--text-dim);">(${count} matches)</span>
+          <div style="display: flex; align-items: center; gap: 10px;">
+            ${avatarThumb}
+            <div>
+              <div style="font-weight: 700; font-size: 14px;">${escapeHtml(p.name)}</div>
+              <div style="display: flex; align-items: center; gap: 6px; margin-top: 2px;">
+                ${genderTag}
+                <span style="font-size: 11px; color: var(--text-dim);">(${count} matches)</span>
+              </div>
+            </div>
           </div>
-          <button class="btn btn-danger-outline btn-icon" style="padding: 2px 6px; font-size: 11px;" onclick="handleDeletePlayer('${p.id}', '${p.name}')">
-            \u{1F5D1}\uFE0F
-          </button>
+          <div style="display: flex; gap: 6px; align-items: center;">
+            <button class="btn btn-outline" style="padding: 4px 8px; font-size: 11px;" onclick="openEditPlayerModal('${p.id}')" title="Edit Player Name & Photo">
+              \u270F\uFE0F Edit
+            </button>
+            <button class="btn btn-danger-outline btn-icon" style="padding: 4px 6px; font-size: 11px; color: #ef4444; border-color: rgba(239, 68, 68, 0.4);" onclick="handleDeletePlayer('${p.id}', '${p.name}')" title="Delete Player">
+              \u{1F5D1}\uFE0F
+            </button>
+          </div>
         `;
         container.appendChild(row);
       });
+    }
+
+    /* Edit Player Modal Functions */
+    function openEditPlayerModal(playerId) {
+      if (!appState.isAdmin) {
+        openPinModal();
+        return;
+      }
+      const p = appState.players.find(pl => pl.id === playerId);
+      if (!p) return;
+
+      document.getElementById('editPlayerId').value = p.id;
+      document.getElementById('editPlayerOldName').value = p.name;
+      document.getElementById('editPlayerName').value = p.name;
+      document.getElementById('editPlayerGender').value = p.gender || 'Male';
+      document.getElementById('editPlayerPhoto').value = p.photoUrl || '';
+      updateEditPlayerPhotoPreview(p.photoUrl || '', p.name);
+
+      document.getElementById('editPlayerModal').classList.add('show');
+    }
+
+    function closeEditPlayerModal() {
+      const modal = document.getElementById('editPlayerModal');
+      if (modal) modal.classList.remove('show');
+    }
+
+    function updateEditPlayerPhotoPreview(url, name = '') {
+      const preview = document.getElementById('editPlayerPhotoPreview');
+      if (!preview) return;
+      if (url && (url.startsWith('http://') || url.startsWith('https://') || url.startsWith('data:image'))) {
+        preview.innerHTML = `<img src="${escapeHtml(url)}" style="width: 100%; height: 100%; object-fit: cover;" onerror="this.parentElement.innerText='${(name || 'P').charAt(0).toUpperCase()}';">`;
+      } else {
+        const initial = (document.getElementById('editPlayerName')?.value || name || 'P').charAt(0).toUpperCase();
+        preview.innerText = initial;
+      }
+    }
+
+    async function handleEditPlayerSubmit(e) {
+      e.preventDefault();
+      if (!appState.isAdmin) {
+        alert("Admin permission required to edit players.");
+        return;
+      }
+
+      const id = document.getElementById('editPlayerId').value;
+      const oldName = document.getElementById('editPlayerOldName').value;
+      const newName = document.getElementById('editPlayerName').value.trim();
+      const newGender = document.getElementById('editPlayerGender').value;
+      const newPhoto = document.getElementById('editPlayerPhoto').value.trim();
+
+      if (!newName) {
+        alert("Please enter a valid player name.");
+        return;
+      }
+
+      // Check if new name conflicts with another player
+      if (newName.toLowerCase() !== oldName.toLowerCase()) {
+        if (appState.players.some(p => p.id !== id && p.name.toLowerCase() === newName.toLowerCase())) {
+          alert("Another player with the name '" + newName + "' already exists!");
+          return;
+        }
+      }
+
+      const playerIdx = appState.players.findIndex(p => p.id === id);
+      if (playerIdx === -1) return;
+
+      const playerObj = {
+        ...appState.players[playerIdx],
+        name: newName,
+        gender: newGender,
+        photoUrl: newPhoto,
+        updatedAt: new Date().toISOString()
+      };
+
+      appState.players[playerIdx] = playerObj;
+
+      // If name changed, rename player in historical matches and editions
+      if (oldName !== newName) {
+        appState.matches.forEach(m => {
+          let modified = false;
+          if (Array.isArray(m.team1) && m.team1.includes(oldName)) {
+            m.team1 = m.team1.map(n => n === oldName ? newName : n);
+            modified = true;
+          }
+          if (Array.isArray(m.team2) && m.team2.includes(oldName)) {
+            m.team2 = m.team2.map(n => n === oldName ? newName : n);
+            modified = true;
+          }
+          if (modified && isFirestoreActive && firestoreDb) {
+            firestoreDb.collection("badminton_matches").doc(m.id).set(m, { merge: true }).catch(() => {});
+          }
+        });
+
+        appState.editions.forEach(ed => {
+          let modified = false;
+          if (Array.isArray(ed.champions) && ed.champions.includes(oldName)) {
+            ed.champions = ed.champions.map(n => n === oldName ? newName : n);
+            modified = true;
+          }
+          if (Array.isArray(ed.runnersUp) && ed.runnersUp.includes(oldName)) {
+            ed.runnersUp = ed.runnersUp.map(n => n === oldName ? newName : n);
+            modified = true;
+          }
+          if (modified && isFirestoreActive && firestoreDb) {
+            firestoreDb.collection("badminton_editions").doc(ed.id).set(ed, { merge: true }).catch(() => {});
+            firestoreDb.collection("badminton_matches").doc("edition_" + ed.id).set(ed, { merge: true }).catch(() => {});
+          }
+        });
+      }
+
+      saveLocalData();
+      updateUI();
+      renderPlayersRosterList();
+
+      // Sync player to Firestore
+      if (isFirestoreActive && firestoreDb) {
+        try {
+          await firestoreDb.collection("badminton_players").doc(id).set(playerObj, { merge: true });
+        } catch (err) {
+          console.warn("Firestore player update failed:", err);
+        }
+      }
+
+      closeEditPlayerModal();
+      showToast("Player " + newName + " updated successfully! \u2728");
     }
 
     async function handleAddPlayerSubmit(e) {
@@ -4157,55 +4469,87 @@
       const rank = standings.findIndex(s => s.name === playerName) + 1;
       const body = document.getElementById('playerSpotlightBody');
 
-      // Head-to-head records list
-      const h2hItems = Object.entries(p.h2h || {}).map(([opp, rec]) => `
-        <div style="display: flex; justify-content: space-between; font-size: 12.5px; padding: 4px 0; border-bottom: 1px solid rgba(255,255,255,0.04);">
-          <span style="font-weight: 600;">vs ${escapeHtml(opp)}:</span>
-          <span style="color: var(--court-emerald-neon); font-weight: 700;">${rec.won}W - ${rec.lost}L (${rec.played} played)</span>
-        </div>
-      `).join('');
+      // Check for photoUrl
+      const regPlayer = (appState.players || []).find(pl => pl.name === playerName);
+      const photoUrl = (regPlayer && regPlayer.photoUrl) ? regPlayer.photoUrl : '';
+
+      let avatarHtml = '';
+      if (photoUrl) {
+        avatarHtml = `
+          <div class="player-profile-avatar-box">
+            <img src="${escapeHtml(photoUrl)}" class="player-profile-img" alt="${escapeHtml(p.name)}" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+            <div class="player-profile-avatar-fallback" style="display: none;">${p.name.charAt(0).toUpperCase()}</div>
+          </div>`;
+      } else {
+        avatarHtml = `
+          <div class="player-profile-avatar-box">
+            <div class="player-profile-avatar-fallback">${p.name.charAt(0).toUpperCase()}</div>
+          </div>`;
+      }
+
+      const rankBadge = rank === 1 ? '\u{1F451}' : (rank === 2 ? '\u{1F948}' : (rank === 3 ? '\u{1F949}' : ''));
+      const genderColor = p.gender === 'Female' ? '#f472b6' : '#60a5fa';
+      const genderSymbol = p.gender === 'Female' ? '\u2640 Female' : '\u2642 Male';
+      const diffDisplay = p.diff > 0 ? `+${p.diff}` : `${p.diff}`;
+      const diffColor = p.diff > 0 ? 'var(--court-emerald-neon)' : (p.diff < 0 ? '#ef4444' : 'var(--text-muted)');
+
+      // Titles if any
+      let titlesBadgeHtml = '';
+      if (typeof computeHonorsStandings === 'function') {
+        const honors = computeHonorsStandings();
+        const h = honors.find(item => item.name === p.name);
+        if (h && h.titles > 0) {
+          const edList = (h.editionsWon && h.editionsWon.length > 0) ? ` (${h.editionsWon.join(', ')})` : '';
+          titlesBadgeHtml = `
+            <div style="margin-top: 14px; background: rgba(255, 215, 0, 0.1); border: 1px solid rgba(255, 215, 0, 0.3); border-radius: 6px; padding: 8px 12px; text-align: center; font-size: 13px; font-weight: 700; color: #ffd700;">
+              \u{1F3C6} ${h.titles} Championship Title${h.titles > 1 ? 's' : ''}${edList}
+            </div>`;
+        }
+      }
 
       body.innerHTML = `
-        <div class="spotlight-header">
-          <div class="spotlight-avatar" style="font-size: 18px; font-weight: 800; color: var(--court-emerald-neon);">#${rank}</div>
-          <div class="spotlight-details">
-            <h3>${escapeHtml(p.name)}</h3>
-            <div style="font-size: 13px; color: var(--gold-bright); font-weight: 700;">
-              Championship Rank: #${rank} ${rank === 1 ? '\u{1F451}' : ''} \u2022 ${p.gender === 'Female' ? '\u2640 Female' : '\u2642 Male'}
-            </div>
-            <div style="font-size: 13px; color: #ffd700; font-weight: 800; margin-top: 3px;">
-              \u26A1 ELO Rating: ${p.elo || 1200} <span style="font-size: 11px; color: var(--text-dim); font-weight: 600;">(Peak: ${p.peakElo || 1200} | Low: ${p.lowestElo || 1200})</span>
-            </div>
-            <div style="font-size: 12px; color: var(--text-muted); margin-top: 2px;">
-              Win Rate: ${p.winRate.toFixed(1)}% \u2022 Max Streak: ${p.maxStreak} \u{1F525}
+        <div class="player-profile-card">
+          <div class="player-profile-hero">
+            ${avatarHtml}
+            <div style="flex: 1; min-width: 0;">
+              <div class="player-profile-name">${escapeHtml(p.name)}</div>
+              <div class="player-profile-sub">
+                <span class="player-profile-rank">Overall Rank: #${rank} ${rankBadge}</span>
+                <span style="color: var(--text-dim);">&bull;</span>
+                <span class="player-profile-gender" style="color: ${genderColor};">${genderSymbol}</span>
+              </div>
+              <div class="player-profile-elo">
+                <span>\u26A1 ELO Rating:</span>
+                <span class="elo-val">${p.elo || 1200}</span>
+                <span class="elo-range">(Peak: ${p.peakElo || 1200} | Low: ${p.lowestElo || 1200})</span>
+              </div>
             </div>
           </div>
-        </div>
 
-        <div class="spotlight-stats-row">
-          <div class="spotlight-stat-box">
-            <div class="num">${p.played}</div>
-            <div class="lbl">Played</div>
+          <div class="player-profile-summary">
+            Win Rate: <strong style="color: var(--court-emerald-neon);">${p.winRate.toFixed(1)}%</strong> &bull; Max Streak: <strong>${p.maxStreak} \u{1F525}</strong>
           </div>
-          <div class="spotlight-stat-box">
-            <div class="num" style="color: var(--court-emerald-neon);">${p.won}</div>
-            <div class="lbl">Won</div>
-          </div>
-          <div class="spotlight-stat-box">
-            <div class="num" style="color: #f87171;">${p.lost}</div>
-            <div class="lbl">Lost</div>
-          </div>
-          <div class="spotlight-stat-box">
-            <div class="num">${p.diff >= 0 ? '+' + p.diff : p.diff}</div>
-            <div class="lbl">Point Diff</div>
-          </div>
-        </div>
 
-        <div style="margin-top: 14px;">
-          <label class="form-label">Head-to-Head Records</label>
-          <div style="background: rgba(7, 11, 18, 0.7); border: 1px solid var(--border-subtle); border-radius: var(--radius-sm); padding: 8px 12px; margin-top: 4px;">
-            ${h2hItems || '<span style="font-size: 12px; color: var(--text-dim);">No head-to-head match records yet.</span>'}
+          <div class="spotlight-stats-row" style="margin-bottom: 0;">
+            <div class="spotlight-stat-box">
+              <div class="num">${p.played}</div>
+              <div class="lbl">Played</div>
+            </div>
+            <div class="spotlight-stat-box">
+              <div class="num" style="color: var(--court-emerald-neon);">${p.won}</div>
+              <div class="lbl">Won</div>
+            </div>
+            <div class="spotlight-stat-box">
+              <div class="num" style="color: var(--text-muted);">${p.lost}</div>
+              <div class="lbl">Lost</div>
+            </div>
+            <div class="spotlight-stat-box">
+              <div class="num" style="color: ${diffColor};">${diffDisplay}</div>
+              <div class="lbl">Point Diff</div>
+            </div>
           </div>
+
+          ${titlesBadgeHtml}
         </div>
       `;
 
@@ -5021,3 +5365,4 @@
   </script>
 </body>
 </html>
+

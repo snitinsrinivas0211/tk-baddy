@@ -8176,25 +8176,25 @@
         const spread = maxElo - minElo;
         const totalPlayers = sortedTeams.reduce((sum, t) => sum + t.length, 0);
 
-        // Responsive grid dimensions
-        const canvasW = 1200;
-        const padX = 50;
-        const headerH = 190;
-        const footerH = 65;
+        // 2. High-Impact Mobile Layout Dimensions (1080px Width)
+        const canvasW = 1080;
+        const padX = 36;
+        const gapX = 20;
+        const gapY = 16;
+        const headerH = 185;
+        const footerH = 60;
 
         const useTwoCols = T >= 4;
         const cols = useTwoCols ? 2 : 1;
         const rows = Math.ceil(T / cols);
 
-        const playerRowH = 38;
-        const cardHeaderH = 46;
-        const cardPadY = 14;
-        const cardH = cardHeaderH + S * playerRowH + cardPadY;
-        const gapY = 16;
-        const gapX = 20;
+        const cardW = useTwoCols ? Math.floor((canvasW - padX * 2 - gapX) / 2) : (canvasW - padX * 2);
+        const cardHeaderH = 54;
+        const playerRowH = 52;
+        const cardH = cardHeaderH + S * playerRowH + 16;
 
         const contentH = rows * cardH + (rows - 1) * gapY;
-        const canvasH = headerH + contentH + footerH + 30;
+        const canvasH = headerH + contentH + footerH + 25;
 
         const canvas = document.createElement('canvas');
         canvas.width = canvasW;
@@ -8204,7 +8204,7 @@
         ctx.imageSmoothingEnabled = true;
         ctx.imageSmoothingQuality = 'high';
 
-        // 1. Background
+        // 3. Dark Tournament Gradient Background
         const bgGrad = ctx.createLinearGradient(0, 0, canvasW, canvasH);
         bgGrad.addColorStop(0, '#0a101f');
         bgGrad.addColorStop(0.5, '#070c18');
@@ -8213,7 +8213,7 @@
         ctx.fillRect(0, 0, canvasW, canvasH);
 
         // Subtle geometric grid pattern
-        ctx.strokeStyle = 'rgba(30, 41, 59, 0.4)';
+        ctx.strokeStyle = 'rgba(30, 41, 59, 0.35)';
         ctx.lineWidth = 1;
         for (let x = 60; x < canvasW; x += 60) {
           ctx.beginPath();
@@ -8228,7 +8228,7 @@
           ctx.stroke();
         }
 
-        // 2. Outer Card Border
+        // Dual Outer Borders with Neon Emerald Glow
         ctx.strokeStyle = 'rgba(0, 245, 155, 0.35)';
         ctx.lineWidth = 4;
         ctx.strokeRect(10, 10, canvasW - 20, canvasH - 20);
@@ -8255,53 +8255,52 @@
           }
         }
 
-        // 3. Header Section
-        const pillW = 320;
+        // 4. Header Section
+        // Pill: TK BADDY CHAMPIONSHIPS
+        const pillW = 340;
         const pillH = 34;
         const pillX = (canvasW - pillW) / 2;
-        const pillY = 32;
+        const pillY = 28;
 
         ctx.fillStyle = 'rgba(0, 245, 155, 0.12)';
         ctx.beginPath();
         drawRRect(pillX, pillY, pillW, pillH, 17);
         ctx.fill();
-        ctx.strokeStyle = 'rgba(0, 245, 155, 0.4)';
+        ctx.strokeStyle = 'rgba(0, 245, 155, 0.45)';
         ctx.lineWidth = 1.5;
         ctx.stroke();
 
-        ctx.font = '800 13px system-ui, -apple-system, sans-serif';
+        ctx.font = '900 14px Outfit, -apple-system, sans-serif';
         ctx.fillStyle = '#00f59b';
         ctx.textAlign = 'center';
         ctx.textBaseline = 'middle';
         ctx.fillText('TK BADDY CHAMPIONSHIPS', canvasW / 2, pillY + pillH / 2);
 
         // Title: BALANCED TEAMS
-        ctx.font = '900 36px system-ui, -apple-system, sans-serif';
+        ctx.font = '900 38px Outfit, -apple-system, sans-serif';
         ctx.fillStyle = '#ffffff';
-        ctx.fillText('BALANCED TEAMS', canvasW / 2, 105);
+        ctx.fillText('BALANCED TEAMS', canvasW / 2, 98);
 
         // Stats Summary Box
         const summaryW = canvasW - padX * 2;
-        const summaryH = 40;
+        const summaryH = 42;
         const summaryX = padX;
-        const summaryY = 132;
+        const summaryY = 126;
 
-        ctx.fillStyle = 'rgba(30, 41, 59, 0.7)';
+        ctx.fillStyle = 'rgba(30, 41, 59, 0.75)';
         ctx.beginPath();
         drawRRect(summaryX, summaryY, summaryW, summaryH, 8);
         ctx.fill();
-        ctx.strokeStyle = 'rgba(71, 85, 105, 0.4)';
+        ctx.strokeStyle = 'rgba(71, 85, 105, 0.5)';
         ctx.lineWidth = 1;
         ctx.stroke();
 
-        ctx.font = '700 14px system-ui, -apple-system, sans-serif';
+        ctx.font = '700 15px Outfit, -apple-system, sans-serif';
         ctx.fillStyle = '#cbd5e1';
         const summaryText = `${totalPlayers} Players  \u2022  ${T} Teams (${S} per team)  \u2022  Avg ELO: ${overallAvg}  \u2022  Max Spread: ${spread} pts`;
         ctx.fillText(summaryText, canvasW / 2, summaryY + summaryH / 2);
 
-        // 4. Team Cards
-        const cardW = useTwoCols ? (summaryW - gapX) / 2 : summaryW;
-
+        // 5. Team Cards Grid
         for (let i = 0; i < T; i++) {
           const col = useTwoCols ? (i % 2) : 0;
           const row = useTwoCols ? Math.floor(i / 2) : i;
@@ -8315,47 +8314,49 @@
           const tier = stats.tier;
 
           // Card Background
-          ctx.fillStyle = 'rgba(17, 28, 48, 0.85)';
+          ctx.fillStyle = 'rgba(17, 28, 48, 0.92)';
           ctx.beginPath();
           drawRRect(cardX, cardY, cardW, cardH, 12);
           ctx.fill();
 
-          ctx.strokeStyle = 'rgba(51, 65, 85, 0.6)';
+          ctx.strokeStyle = 'rgba(51, 65, 85, 0.7)';
           ctx.lineWidth = 1.5;
           ctx.stroke();
 
           // Card Header: Team Name & Gender
           ctx.textAlign = 'left';
-          ctx.font = '800 18px system-ui, -apple-system, sans-serif';
+          ctx.textBaseline = 'middle';
+          ctx.font = '900 24px Outfit, -apple-system, sans-serif';
           ctx.fillStyle = '#ffffff';
-          ctx.fillText(`Team ${i + 1}`, cardX + 16, cardY + 25);
+          ctx.fillText(`Team ${i + 1}`, cardX + 16, cardY + 27);
 
-          ctx.font = '600 12px system-ui, -apple-system, sans-serif';
+          const teamTitleW = ctx.measureText(`Team ${i + 1}`).width;
+          ctx.font = '700 15px Outfit, -apple-system, sans-serif';
           ctx.fillStyle = '#94a3b8';
           const genderStr = `(${stats.males}M \u00B7 ${stats.females}F)`;
-          ctx.fillText(genderStr, cardX + 90, cardY + 25);
+          ctx.fillText(genderStr, cardX + 16 + teamTitleW + 10, cardY + 27);
 
-          // Blended ELO Pill on Right
-          const eloBadgeW = 125;
-          const eloBadgeH = 28;
+          // Blended ELO Pill on Right (Big & Bold)
+          const eloBadgeW = 145;
+          const eloBadgeH = 34;
           const eloBadgeX = cardX + cardW - eloBadgeW - 14;
-          const eloBadgeY = cardY + 11;
+          const eloBadgeY = cardY + 10;
 
           ctx.fillStyle = tier.bg;
           ctx.beginPath();
-          drawRRect(eloBadgeX, eloBadgeY, eloBadgeW, eloBadgeH, 14);
+          drawRRect(eloBadgeX, eloBadgeY, eloBadgeW, eloBadgeH, 17);
           ctx.fill();
 
           ctx.strokeStyle = tier.border;
-          ctx.lineWidth = 1.5;
+          ctx.lineWidth = 2;
           ctx.stroke();
 
           ctx.textAlign = 'center';
-          ctx.font = '800 13px system-ui, -apple-system, sans-serif';
+          ctx.font = '900 17px Outfit, -apple-system, sans-serif';
           ctx.fillStyle = tier.color;
-          ctx.fillText(`${blendedElo} ELO`, eloBadgeX + eloBadgeW / 2, eloBadgeY + eloBadgeH / 2);
+          ctx.fillText(`${tier.icon} ${blendedElo} ELO`, eloBadgeX + eloBadgeW / 2, eloBadgeY + eloBadgeH / 2);
 
-          // Divider
+          // Divider Line
           ctx.strokeStyle = 'rgba(51, 65, 85, 0.5)';
           ctx.lineWidth = 1;
           ctx.beginPath();
@@ -8369,40 +8370,97 @@
             const pTier = getPlayerSkillTier(player.elo);
             const isF = (player.gender || '').toLowerCase() === 'female';
             const rowY = cardY + cardHeaderH + 8 + pIdx * playerRowH;
+            const rowH = playerRowH - 8;
+            const rowW = cardW - 24;
+            const rowX = cardX + 12;
 
-            ctx.fillStyle = 'rgba(15, 23, 42, 0.55)';
+            // Row Container
+            ctx.fillStyle = 'rgba(15, 23, 42, 0.7)';
             ctx.beginPath();
-            drawRRect(cardX + 12, rowY, cardW - 24, playerRowH - 6, 6);
+            drawRRect(rowX, rowY, rowW, rowH, 8);
             ctx.fill();
 
-            ctx.strokeStyle = 'rgba(51, 65, 85, 0.35)';
+            ctx.strokeStyle = 'rgba(51, 65, 85, 0.4)';
             ctx.lineWidth = 1;
             ctx.stroke();
 
-            // Player Name
+            // Player Avatar / Shuttlecock
+            const avatarX = rowX + 14;
             ctx.textAlign = 'left';
-            ctx.font = '700 14px system-ui, -apple-system, sans-serif';
+            ctx.textBaseline = 'middle';
+            ctx.font = '18px Outfit, -apple-system, sans-serif';
+            ctx.fillStyle = '#ffffff';
+            ctx.fillText(player.avatar || '\u{1F3F8}', avatarX, rowY + rowH / 2);
+
+            // Player Name (Large, Bold 21px for mobile clarity)
+            const nameX = avatarX + 26;
+            ctx.font = '800 21px Outfit, -apple-system, sans-serif';
             ctx.fillStyle = '#f8fafc';
-            ctx.fillText(player.name, cardX + 24, rowY + (playerRowH - 6) / 2);
+            ctx.fillText(player.name, nameX, rowY + rowH / 2);
 
-            // Gender mark
-            const nameWidth = ctx.measureText(player.name).width;
-            ctx.font = '700 11px system-ui, -apple-system, sans-serif';
+            // Gender Mark Pill right after Name
+            const nameW = ctx.measureText(player.name).width;
+            const genderPillX = nameX + nameW + 8;
+            const genderPillW = 32;
+            const genderPillH = 22;
+            const genderPillY = rowY + (rowH - genderPillH) / 2;
+
+            ctx.fillStyle = isF ? 'rgba(244, 114, 182, 0.18)' : 'rgba(56, 189, 248, 0.18)';
+            ctx.beginPath();
+            drawRRect(genderPillX, genderPillY, genderPillW, genderPillH, 11);
+            ctx.fill();
+            ctx.strokeStyle = isF ? 'rgba(244, 114, 182, 0.45)' : 'rgba(56, 189, 248, 0.45)';
+            ctx.lineWidth = 1;
+            ctx.stroke();
+
+            ctx.textAlign = 'center';
+            ctx.font = '800 12px Outfit, -apple-system, sans-serif';
             ctx.fillStyle = isF ? '#f472b6' : '#38bdf8';
-            ctx.fillText(isF ? 'F' : 'M', cardX + 24 + nameWidth + 6, rowY + (playerRowH - 6) / 2);
+            ctx.fillText(isF ? 'F' : 'M', genderPillX + genderPillW / 2, genderPillY + genderPillH / 2);
 
-            // Player ELO
-            ctx.textAlign = 'right';
-            ctx.font = '800 13px system-ui, -apple-system, sans-serif';
+            // Individual Player ELO Badge on Right
+            const pEloBadgeW = 110;
+            const pEloBadgeH = 28;
+            const pEloBadgeX = rowX + rowW - pEloBadgeW - 8;
+            const pEloBadgeY = rowY + (rowH - pEloBadgeH) / 2;
+
+            ctx.fillStyle = pTier.bg;
+            ctx.beginPath();
+            drawRRect(pEloBadgeX, pEloBadgeY, pEloBadgeW, pEloBadgeH, 14);
+            ctx.fill();
+
+            ctx.strokeStyle = pTier.border;
+            ctx.lineWidth = 1.5;
+            ctx.stroke();
+
+            ctx.textAlign = 'center';
+            ctx.font = '800 15px Outfit, -apple-system, sans-serif';
             ctx.fillStyle = pTier.color;
-            ctx.fillText(`${player.elo} ELO`, cardX + cardW - 24, rowY + (playerRowH - 6) / 2);
+            ctx.fillText(`${player.elo} ELO`, pEloBadgeX + pEloBadgeW / 2, pEloBadgeY + pEloBadgeH / 2);
+
+            // Subtle Dotted Leader Line between Gender Pill and ELO Badge
+            // Eliminates awkward blank space and creates an elegant connection
+            const lineStartX = genderPillX + genderPillW + 10;
+            const lineEndX = pEloBadgeX - 10;
+            if (lineEndX > lineStartX + 15) {
+              ctx.save();
+              ctx.strokeStyle = 'rgba(100, 116, 139, 0.35)';
+              ctx.lineWidth = 1.5;
+              ctx.setLineDash([3, 5]);
+              ctx.beginPath();
+              ctx.moveTo(lineStartX, rowY + rowH / 2);
+              ctx.lineTo(lineEndX, rowY + rowH / 2);
+              ctx.stroke();
+              ctx.restore();
+            }
           }
         }
 
-        // 5. Footer Section
-        const footerY = canvasH - 35;
+        // 6. Footer Section
+        const footerY = canvasH - 32;
         ctx.textAlign = 'left';
-        ctx.font = '600 12px system-ui, -apple-system, sans-serif';
+        ctx.textBaseline = 'middle';
+        ctx.font = '600 13px Outfit, -apple-system, sans-serif';
         ctx.fillStyle = '#64748b';
         ctx.fillText('Balanced by ELO & Gender \u2022 TK Baddy Championships', padX, footerY);
 

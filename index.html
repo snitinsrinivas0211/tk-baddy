@@ -232,6 +232,23 @@
       color: #fff;
     }
 
+    .organizer-lock-badge {
+      font-size: 10px;
+      font-weight: 700;
+      padding: 2px 7px;
+      border-radius: 4px;
+      background: rgba(239, 68, 68, 0.15);
+      border: 1px solid rgba(239, 68, 68, 0.35);
+      color: #fca5a5;
+      letter-spacing: 0.3px;
+      transition: all 0.2s;
+    }
+    body.is-admin .organizer-lock-badge {
+      background: rgba(0, 245, 155, 0.15);
+      border-color: rgba(0, 245, 155, 0.35);
+      color: #86efac;
+    }
+
     .burger-menu-item:hover {
       background: rgba(0, 245, 155, 0.15);
     }
@@ -3334,8 +3351,11 @@
             <div class="burger-menu-item" onclick="openGenerateTeamsTab()">
               <span class="burger-item-icon">&#9878;&#65039;</span>
               <div class="burger-item-content">
-                <div class="burger-item-title">Generate Teams</div>
-                <div class="burger-item-subtitle">Balanced teams by ELO &amp; Gender</div>
+                <div class="burger-item-title" style="display: flex; align-items: center; justify-content: space-between; gap: 8px;">
+                  <span>Generate Teams</span>
+                  <span class="organizer-lock-badge" id="teamGenLockBadge">&#128274; Organizer</span>
+                </div>
+                <div class="burger-item-subtitle">Organizer only &bull; Balanced by ELO &amp; Gender</div>
               </div>
             </div>
           </div>
@@ -6212,6 +6232,7 @@
     function closePinModal() {
       document.getElementById('pinModal').classList.remove('show');
       appState.enteredPin = '';
+      pendingAdminAction = null;
     }
 
     function pressPinKey(digit) {
@@ -6281,8 +6302,18 @@
       renderMatchesFeed();
       renderHonorsUI();
 
+      const teamGenLockBadge = document.getElementById('teamGenLockBadge');
+      if (teamGenLockBadge) {
+        teamGenLockBadge.innerHTML = '&#9989; Unlocked';
+      }
+
       if (showCelebration) {
         triggerGoldConfetti();
+      }
+
+      if (pendingAdminAction === 'teams') {
+        pendingAdminAction = null;
+        switchMainTab('teams');
       }
     }
 
@@ -6302,6 +6333,16 @@
 
       renderMatchesFeed();
       renderHonorsUI();
+
+      const teamGenLockBadge = document.getElementById('teamGenLockBadge');
+      if (teamGenLockBadge) {
+        teamGenLockBadge.innerHTML = '&#128274; Organizer';
+      }
+
+      if (appState.activeMainTab === 'teams') {
+        switchMainTab('leaderboard');
+      }
+
       showToast("Organizer Mode Locked \u{1F512}");
     }
 
@@ -7634,6 +7675,8 @@
     /* ==========================================================================
        TEAM GENERATOR LOGIC & BALANCING ALGORITHM
        ========================================================================== */
+    let pendingAdminAction = null;
+
     const teamGenState = {
       selectedPlayers: new Set(),
       teamSize: 2,
@@ -7642,6 +7685,11 @@
 
     function openGenerateTeamsTab() {
       closeBurgerMenu();
+      if (!appState.isAdmin) {
+        pendingAdminAction = 'teams';
+        openPinModal();
+        return;
+      }
       switchMainTab('teams');
     }
 
@@ -7761,7 +7809,7 @@
         const isFemale = (p.gender || '').toLowerCase() === 'female';
         const genderClass = isFemale ? 'female' : 'male';
         const genderSymbol = isFemale ? '&#9792; F' : '&#9794; M';
-        const tier = getBadmintonSkillTier(p.elo);
+        const tier = getPlayerSkillTier(p.elo);
         const encodedName = encodeURIComponent(p.name);
 
         return `
@@ -7781,6 +7829,11 @@
     }
 
     function generateBalancedTeams() {
+      if (!appState.isAdmin) {
+        pendingAdminAction = 'teams';
+        openPinModal();
+        return;
+      }
       const K = teamGenState.selectedPlayers.size;
       const S = teamGenState.teamSize;
       if (K === 0 || K < S || K % S !== 0) {
@@ -7989,7 +8042,7 @@
 
       teamsGrid.innerHTML = teams.map((team, idx) => {
         const blendedElo = teamAvgs[idx];
-        const tier = getBadmintonSkillTier(blendedElo);
+        const tier = getPlayerSkillTier(blendedElo);
 
         const females = team.filter(p => (p.gender || '').toLowerCase() === 'female').length;
         const males = team.length - females;
@@ -7997,7 +8050,7 @@
 
         const rosterHtml = team.map(p => {
           const isF = (p.gender || '').toLowerCase() === 'female';
-          const pTier = getBadmintonSkillTier(p.elo);
+          const pTier = getPlayerSkillTier(p.elo);
           return `
             <div class="team-gen-roster-item">
               <div class="team-gen-roster-player-info">
@@ -8059,7 +8112,7 @@
 
       teams.forEach((team, idx) => {
         const avg = teamAvgs[idx];
-        const tier = getBadmintonSkillTier(avg);
+        const tier = getPlayerSkillTier(avg);
         text += `*Team ${idx + 1}* (Blended ELO: ${avg} - ${tier.tier})\n`;
         team.forEach(p => {
           const isF = (p.gender || '').toLowerCase() === 'female';
@@ -8140,6 +8193,11 @@
         if (eloTrendsContent) eloTrendsContent.style.display = 'block';
         initEloTrendsView();
       } else if (tabName === 'teams') {
+        if (!appState.isAdmin) {
+          pendingAdminAction = 'teams';
+          openPinModal();
+          return;
+        }
         if (generateTeamsContent) generateTeamsContent.style.display = 'block';
         initGenerateTeamsView();
       } else if (tabName === 'badges') {

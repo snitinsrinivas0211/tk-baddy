@@ -3306,6 +3306,32 @@
 
   
     /* Doubles Leaderboard Table */
+    table.standings-table.doubles-standings-table {
+      width: 100%;
+      border-collapse: collapse;
+      table-layout: fixed;
+    }
+    table.standings-table.doubles-standings-table th.rank-cell,
+    table.standings-table.doubles-standings-table td.rank-cell {
+      width: 54px;
+      text-align: center;
+    }
+    table.standings-table.doubles-standings-table th.th-player,
+    table.standings-table.doubles-standings-table td.player-col-cell {
+      width: auto;
+      text-align: left;
+    }
+    table.standings-table.doubles-standings-table th.th-doubles-stat,
+    table.standings-table.doubles-standings-table td.doubles-stat-cell {
+      width: 75px;
+      text-align: center;
+    }
+    table.standings-table.doubles-standings-table th.th-doubles-wr,
+    table.standings-table.doubles-standings-table td.doubles-winrate-col-cell {
+      width: 120px;
+      text-align: center;
+    }
+
     .doubles-winrate-pill {
       display: inline-flex;
       align-items: center;
@@ -3334,41 +3360,83 @@
     }
 
     @media (max-width: 640px) {
+      /* Doubles Leaderboard Mobile Zero-Scroll & No-Overflow */
       table.standings-table.doubles-standings-table {
-        width: 100%;
-        table-layout: fixed;
+        width: 100% !important;
+        max-width: 100% !important;
+        table-layout: fixed !important;
         font-size: 11.5px;
+        border-collapse: collapse;
+      }
+      table.standings-table.doubles-standings-table th,
+      table.standings-table.doubles-standings-table td {
+        box-sizing: border-box !important;
       }
       table.standings-table.doubles-standings-table th {
-        padding: 8px 2px !important;
-        font-size: 10.5px !important;
+        padding: 8px 1px !important;
+        font-size: 9.5px !important;
         letter-spacing: 0 !important;
         text-transform: none !important;
         text-align: center;
         overflow: hidden;
         white-space: nowrap;
-        box-sizing: border-box;
+        text-overflow: clip;
+      }
+      table.standings-table.doubles-standings-table th.rank-cell,
+      table.standings-table.doubles-standings-table td.rank-cell {
+        width: 24px !important;
+        max-width: 24px !important;
+        min-width: 24px !important;
+        padding: 7px 1px !important;
+        text-align: center;
+      }
+      table.standings-table.doubles-standings-table th.th-doubles-stat,
+      table.standings-table.doubles-standings-table td.doubles-stat-cell {
+        width: 22px !important;
+        max-width: 22px !important;
+        min-width: 22px !important;
+        padding: 7px 1px !important;
+        text-align: center;
+        font-size: 11.5px;
+      }
+      table.standings-table.doubles-standings-table th.th-doubles-wr,
+      table.standings-table.doubles-standings-table td.doubles-winrate-col-cell {
+        width: 54px !important;
+        max-width: 54px !important;
+        min-width: 54px !important;
+        padding: 7px 1px !important;
+        text-align: center;
       }
       table.standings-table.doubles-standings-table th.th-player {
+        width: auto !important;
         text-align: left;
         padding-left: 4px !important;
       }
-      table.standings-table.doubles-standings-table td {
-        padding: 8px 2px !important;
+      table.standings-table.doubles-standings-table td.player-col-cell {
+        width: auto !important;
+        padding: 6px 2px 6px 4px !important;
+        text-align: left;
         overflow: hidden;
         text-overflow: ellipsis;
         white-space: nowrap;
-        box-sizing: border-box;
       }
-      table.standings-table.doubles-standings-table .rank-cell {
-        width: 32px !important;
-      }
-      table.standings-table.doubles-standings-table .th-player {
-        width: 44% !important;
+      table.standings-table.doubles-standings-table td {
+        padding: 7px 1px !important;
+        font-size: 11.5px;
+        overflow: hidden;
+        white-space: nowrap;
       }
       table.standings-table.doubles-standings-table .doubles-winrate-pill {
-        font-size: 10.5px;
-        padding: 2px 5px;
+        font-size: 10px !important;
+        font-weight: 800;
+        padding: 2px 3px !important;
+        max-width: 48px;
+        box-sizing: border-box;
+        letter-spacing: -0.3px !important;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        line-height: 1.1;
       }
     }
   </style>
@@ -3564,37 +3632,39 @@
             </div>
           </div>
 
-          <div class="table-container">
-            <table class="standings-table doubles-standings-table">
-              <thead>
-                <tr>
-                  <th class="rank-cell">#</th>
-                  <th class="sortable th-player" onclick="sortDoublesTable('players')">
-                    <span class="desktop-lbl">Players <span class="sort-arrow" id="doublesSort_players">&#8597;</span></span>
-                    <span class="mobile-lbl">Players</span>
-                  </th>
-                  <th class="sortable" onclick="sortDoublesTable('played')" style="text-align: center;">
-                    <span class="desktop-lbl">Played <span class="sort-arrow" id="doublesSort_played">&#8597;</span></span>
-                    <span class="mobile-lbl">P</span>
-                  </th>
-                  <th class="sortable" onclick="sortDoublesTable('won')" style="text-align: center;">
-                    <span class="desktop-lbl">Won <span class="sort-arrow" id="doublesSort_won">&#8597;</span></span>
-                    <span class="mobile-lbl">W</span>
-                  </th>
-                  <th class="sortable" onclick="sortDoublesTable('lost')" style="text-align: center;">
-                    <span class="desktop-lbl">Lost <span class="sort-arrow" id="doublesSort_lost">&#8597;</span></span>
-                    <span class="mobile-lbl">L</span>
-                  </th>
-                  <th class="sortable" onclick="sortDoublesTable('winRate')" style="text-align: center;">
-                    <span class="desktop-lbl">Win Rate <span class="sort-arrow" id="doublesSort_winRate">&#8595;</span></span>
-                    <span class="mobile-lbl">Win %</span>
-                  </th>
-                </tr>
-              </thead>
-              <tbody id="doublesTableBody">
-                <!-- Populated dynamically -->
-              </tbody>
-            </table>
+          <div class="leaderboard-card">
+            <div class="table-container">
+              <table class="standings-table doubles-standings-table">
+                <thead>
+                  <tr>
+                    <th class="rank-cell">#</th>
+                    <th class="sortable th-player" onclick="sortDoublesTable('players')">
+                      <span class="desktop-lbl">Players <span class="sort-arrow" id="doublesSort_players">&#8597;</span></span>
+                      <span class="mobile-lbl">Players</span>
+                    </th>
+                    <th class="sortable th-doubles-stat" onclick="sortDoublesTable('played')" style="text-align: center;">
+                      <span class="desktop-lbl">Played <span class="sort-arrow" id="doublesSort_played">&#8597;</span></span>
+                      <span class="mobile-lbl">P</span>
+                    </th>
+                    <th class="sortable th-doubles-stat" onclick="sortDoublesTable('won')" style="text-align: center;">
+                      <span class="desktop-lbl">Won <span class="sort-arrow" id="doublesSort_won">&#8597;</span></span>
+                      <span class="mobile-lbl">W</span>
+                    </th>
+                    <th class="sortable th-doubles-stat" onclick="sortDoublesTable('lost')" style="text-align: center;">
+                      <span class="desktop-lbl">Lost <span class="sort-arrow" id="doublesSort_lost">&#8597;</span></span>
+                      <span class="mobile-lbl">L</span>
+                    </th>
+                    <th class="sortable th-doubles-wr" onclick="sortDoublesTable('winRate')" style="text-align: center;">
+                      <span class="desktop-lbl">Win Rate <span class="sort-arrow" id="doublesSort_winRate">&#8595;</span></span>
+                      <span class="mobile-lbl">Win %</span>
+                    </th>
+                  </tr>
+                </thead>
+                <tbody id="doublesTableBody">
+                  <!-- Populated dynamically -->
+                </tbody>
+              </table>
+            </div>
           </div>
         </section>
       </div>
@@ -9597,7 +9667,7 @@
       tbody.innerHTML = pairs.map((pair, idx) => {
         const rank = idx + 1;
         let rankBadge = `<span class="rank-badge ${rank === 1 ? 'crown' : (rank === 2 ? 'silver' : (rank === 3 ? 'bronze' : ''))}">#${rank}</span>`;
-        if (rank === 1) rankBadge = `<span class="rank-badge crown">#1 \u{1F451}</span>`;
+        if (rank === 1) rankBadge = `<span class="rank-badge crown" title="Leader #1">\u{1F451}</span>`;
 
         const winRateClass = pair.winRate >= 60 ? 'high' : (pair.winRate >= 40 ? 'mid' : 'low');
 
@@ -9613,10 +9683,10 @@
                 </div>
               </div>
             </td>
-            <td style="text-align: center; font-weight: 600; color: var(--text-main);">${pair.played}</td>
-            <td style="text-align: center; font-weight: 700; color: #00f59b;">${pair.won}</td>
-            <td style="text-align: center; font-weight: 600; color: #94a3b8;">${pair.lost}</td>
-            <td style="text-align: center;">
+            <td class="stat-col-cell doubles-stat-cell" style="text-align: center; font-weight: 600; color: var(--text-main);">${pair.played}</td>
+            <td class="stat-col-cell doubles-stat-cell" style="text-align: center; font-weight: 700; color: #00f59b;">${pair.won}</td>
+            <td class="stat-col-cell doubles-stat-cell" style="text-align: center; font-weight: 600; color: #94a3b8;">${pair.lost}</td>
+            <td class="winrate-col-cell doubles-winrate-col-cell" style="text-align: center;">
               <span class="doubles-winrate-pill ${winRateClass}">
                 ${pair.winRate.toFixed(1)}%
               </span>

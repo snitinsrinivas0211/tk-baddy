@@ -4554,7 +4554,7 @@
     /* ==========================================================================
        BADGE CARD IMAGE GENERATION & SOCIAL SHARING (WHATSAPP)
        ========================================================================== */
-    function generateBadgeImageBlob(badgeKey) {
+        function generateBadgeImageBlob(badgeKey) {
       return new Promise(async (resolve) => {
         if (document.fonts && document.fonts.ready) {
           try {
@@ -4574,7 +4574,7 @@
         const holders = (appState.cachedBadgeHolders && appState.cachedBadgeHolders[badgeKey]) || [];
         const isUnlocked = holders.length > 0;
 
-        // 1200x1200 Ultra-HD Canvas
+        // 1200x1200 Ultra-HD 1:1 Square Canvas (Mobile Optimized)
         const canvas = document.createElement('canvas');
         canvas.width = 1200;
         canvas.height = 1200;
@@ -4592,20 +4592,20 @@
         ctx.fillRect(0, 0, 1200, 1200);
 
         // Radial ambient glow
-        const radialGlow = ctx.createRadialGradient(600, 360, 40, 600, 360, 480);
+        const radialGlow = ctx.createRadialGradient(600, 310, 40, 600, 310, 520);
         if (isUnlocked) {
-          radialGlow.addColorStop(0, 'rgba(245, 158, 11, 0.18)');
-          radialGlow.addColorStop(0.6, 'rgba(245, 158, 11, 0.04)');
+          radialGlow.addColorStop(0, 'rgba(245, 158, 11, 0.22)');
+          radialGlow.addColorStop(0.6, 'rgba(245, 158, 11, 0.05)');
         } else {
-          radialGlow.addColorStop(0, 'rgba(56, 189, 248, 0.12)');
-          radialGlow.addColorStop(0.6, 'rgba(56, 189, 248, 0.02)');
+          radialGlow.addColorStop(0, 'rgba(56, 189, 248, 0.14)');
+          radialGlow.addColorStop(0.6, 'rgba(56, 189, 248, 0.03)');
         }
         radialGlow.addColorStop(1, 'rgba(0, 0, 0, 0)');
         ctx.fillStyle = radialGlow;
         ctx.fillRect(0, 0, 1200, 1200);
 
-        // 2. Outer Border
-        ctx.strokeStyle = isUnlocked ? 'rgba(245, 158, 11, 0.5)' : 'rgba(148, 163, 184, 0.3)';
+        // 2. Outer Border & Frame
+        ctx.strokeStyle = isUnlocked ? 'rgba(245, 158, 11, 0.55)' : 'rgba(148, 163, 184, 0.35)';
         ctx.lineWidth = 6;
         ctx.strokeRect(3, 3, 1194, 1194);
 
@@ -4617,36 +4617,36 @@
         ctx.fillStyle = topGrad;
         ctx.fillRect(0, 0, 1200, 12);
 
-        // 4. Header: Tournament Title & Category
+        // 4. Header: Tournament Title & Category (Large & Clear)
         ctx.textAlign = 'center';
         ctx.textBaseline = 'alphabetic';
         ctx.fillStyle = '#00f59b';
-        ctx.font = '800 24px Outfit, sans-serif';
-        ctx.fillText('\u{1F3F8} TK BADDY CHAMPIONSHIPS', 600, 80);
+        ctx.font = '800 28px Outfit, sans-serif';
+        ctx.fillText('\u{1F3F8} TK BADDY CHAMPIONSHIPS', 600, 75);
 
         ctx.fillStyle = isUnlocked ? '#ffd700' : '#94a3b8';
-        ctx.font = '800 18px Outfit, sans-serif';
-        ctx.fillText(badge.category.toUpperCase(), 600, 115);
+        ctx.font = '800 22px Outfit, sans-serif';
+        ctx.fillText(`${badge.category.toUpperCase()} \u2022 OFFICIAL BADGE`, 600, 112);
 
-        // 5. Emblem Circle
-        const ex = 600, ey = 270, er = 105;
+        // 5. Emblem Circle (Larger & More Radiant)
+        const ex = 600, ey = 245, er = 115;
         ctx.save();
         ctx.beginPath();
         ctx.arc(ex, ey, er, 0, Math.PI * 2);
         if (isUnlocked) {
           const emblemGrad = ctx.createLinearGradient(ex - er, ey - er, ex + er, ey + er);
-          emblemGrad.addColorStop(0, 'rgba(245, 158, 11, 0.3)');
-          emblemGrad.addColorStop(1, 'rgba(251, 191, 36, 0.1)');
+          emblemGrad.addColorStop(0, 'rgba(245, 158, 11, 0.35)');
+          emblemGrad.addColorStop(1, 'rgba(251, 191, 36, 0.12)');
           ctx.fillStyle = emblemGrad;
           ctx.fill();
 
           ctx.lineWidth = 8;
           ctx.strokeStyle = '#ffd700';
-          ctx.shadowColor = 'rgba(245, 158, 11, 0.8)';
-          ctx.shadowBlur = 40;
+          ctx.shadowColor = 'rgba(245, 158, 11, 0.85)';
+          ctx.shadowBlur = 45;
           ctx.stroke();
         } else {
-          ctx.fillStyle = 'rgba(30, 41, 59, 0.7)';
+          ctx.fillStyle = 'rgba(30, 41, 59, 0.75)';
           ctx.fill();
           ctx.lineWidth = 6;
           ctx.strokeStyle = '#64748b';
@@ -4654,127 +4654,164 @@
         }
         ctx.restore();
 
-        // 6. Draw Emblem Emoji
+        // 6. Draw Emblem Emoji (Crisp 104px Icon)
         ctx.textAlign = 'center';
         ctx.textBaseline = 'middle';
-        ctx.font = '92px "Apple Color Emoji", "Segoe UI Emoji", "Noto Color Emoji", sans-serif';
+        ctx.font = '104px "Apple Color Emoji", "Segoe UI Emoji", "Noto Color Emoji", sans-serif';
         ctx.fillText(badge.emblem, ex, ey + 4);
 
-        // 7. Badge Title
+        // 7. Badge Title (Bold 66px Font)
         ctx.textBaseline = 'alphabetic';
         ctx.fillStyle = isUnlocked ? '#ffffff' : '#e2e8f0';
-        ctx.font = '900 58px Outfit, sans-serif';
-        ctx.fillText(badge.title, 600, 455);
+        ctx.font = '900 66px Outfit, sans-serif';
+        ctx.fillText(badge.title, 600, 425);
 
-        // 8. Status Pill
+        // 8. Status Pill (Enlarged 26px typography)
         const statusText = isUnlocked ? '\u2728 UNLOCKED ACHIEVEMENT' : '\u{1F512} LOCKED MILESTONE';
-        const pillW = 390, pillH = 46, pillX = 600 - pillW / 2, pillY = 485;
-        ctx.fillStyle = isUnlocked ? 'rgba(16, 185, 129, 0.15)' : 'rgba(148, 163, 184, 0.1)';
-        ctx.strokeStyle = isUnlocked ? 'rgba(16, 185, 129, 0.5)' : 'rgba(148, 163, 184, 0.3)';
-        ctx.lineWidth = 2;
+        const pillW = 440, pillH = 50, pillX = 600 - pillW / 2, pillY = 455;
+        ctx.save();
+        ctx.fillStyle = isUnlocked ? 'rgba(16, 185, 129, 0.18)' : 'rgba(148, 163, 184, 0.12)';
+        ctx.strokeStyle = isUnlocked ? 'rgba(16, 185, 129, 0.55)' : 'rgba(148, 163, 184, 0.35)';
+        ctx.lineWidth = 2.5;
+        ctx.shadowColor = isUnlocked ? 'rgba(16, 185, 129, 0.3)' : 'rgba(0, 0, 0, 0)';
+        ctx.shadowBlur = 12;
         ctx.beginPath();
-        if (ctx.roundRect) ctx.roundRect(pillX, pillY, pillW, pillH, 23);
+        if (ctx.roundRect) ctx.roundRect(pillX, pillY, pillW, pillH, 25);
         else ctx.rect(pillX, pillY, pillW, pillH);
         ctx.fill();
         ctx.stroke();
+        ctx.restore();
 
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'middle';
         ctx.fillStyle = isUnlocked ? '#34d399' : '#94a3b8';
-        ctx.font = '800 20px Outfit, sans-serif';
-        ctx.fillText(statusText, 600, pillY + 31);
+        ctx.font = '800 23px Outfit, sans-serif';
+        ctx.fillText(statusText, 600, pillY + pillH / 2 + 1);
 
-        // 9. Trigger Criteria Box
-        const critW = 920, critH = 145, critX = 140, critY = 560;
-        ctx.fillStyle = 'rgba(15, 23, 42, 0.85)';
+        // 9. Trigger Criteria Box (960px Width Grid Alignment)
+        const critW = 960, critH = 155, critX = 120, critY = 535;
+        ctx.save();
+        ctx.fillStyle = 'rgba(15, 23, 42, 0.92)';
         ctx.strokeStyle = 'rgba(255, 255, 255, 0.12)';
-        ctx.lineWidth = 2;
+        ctx.lineWidth = 2.5;
         ctx.beginPath();
         if (ctx.roundRect) ctx.roundRect(critX, critY, critW, critH, 16);
         else ctx.rect(critX, critY, critW, critH);
         ctx.fill();
         ctx.stroke();
+        ctx.restore();
 
         ctx.textAlign = 'left';
+        ctx.textBaseline = 'alphabetic';
         ctx.fillStyle = '#ffd700';
-        ctx.font = '800 17px Outfit, sans-serif';
-        ctx.fillText('TRIGGER CRITERIA', critX + 30, critY + 40);
+        ctx.font = '800 22px Outfit, sans-serif';
+        ctx.fillText('TRIGGER CRITERIA', critX + 35, critY + 45);
 
         ctx.fillStyle = '#f8fafc';
-        ctx.font = '600 27px Outfit, sans-serif';
+        ctx.font = '700 31px Outfit, sans-serif';
         const descWords = badge.desc.split(' ');
-        let dLine = '', dY = critY + 84;
+        let dLine = '', dY = critY + 92;
         for (let w = 0; w < descWords.length; w++) {
           const testL = dLine + descWords[w] + ' ';
-          if (ctx.measureText(testL).width > critW - 60 && w > 0) {
-            ctx.fillText(dLine.trim(), critX + 30, dY);
+          if (ctx.measureText(testL).width > critW - 70 && w > 0) {
+            ctx.fillText(dLine.trim(), critX + 35, dY);
             dLine = descWords[w] + ' ';
-            dY += 36;
+            dY += 40;
           } else {
             dLine = testL;
           }
         }
-        ctx.fillText(dLine.trim(), critX + 30, dY);
+        ctx.fillText(dLine.trim(), critX + 35, dY);
 
-        // 10. Achieved By / Holders Box
-        const holdW = 920, holdH = 370, holdX = 140, holdY = 730;
-        ctx.fillStyle = 'rgba(15, 23, 42, 0.85)';
-        ctx.strokeStyle = isUnlocked ? 'rgba(245, 158, 11, 0.3)' : 'rgba(255, 255, 255, 0.1)';
-        ctx.lineWidth = 2;
+        // 10. Achieved By / Holders Box (960px Width Grid Alignment, No Dead Whitespace)
+        const holdW = 960, holdH = 385, holdX = 120, holdY = 715;
+        ctx.save();
+        ctx.fillStyle = 'rgba(15, 23, 42, 0.92)';
+        ctx.strokeStyle = isUnlocked ? 'rgba(245, 158, 11, 0.35)' : 'rgba(255, 255, 255, 0.12)';
+        ctx.lineWidth = 2.5;
         ctx.beginPath();
         if (ctx.roundRect) ctx.roundRect(holdX, holdY, holdW, holdH, 16);
         else ctx.rect(holdX, holdY, holdW, holdH);
         ctx.fill();
         ctx.stroke();
+        ctx.restore();
 
+        ctx.textAlign = 'left';
+        ctx.textBaseline = 'alphabetic';
         ctx.fillStyle = isUnlocked ? '#ffd700' : '#94a3b8';
-        ctx.font = '800 19px Outfit, sans-serif';
+        ctx.font = '800 24px Outfit, sans-serif';
         const holdTitle = isUnlocked ? `\u{1F465} ACHIEVED BY (${holders.length} PLAYERS / PAIRS)` : '\u{1F465} ACHIEVED BY';
-        ctx.fillText(holdTitle, holdX + 30, holdY + 45);
+        ctx.fillText(holdTitle, holdX + 35, holdY + 50);
 
         if (isUnlocked) {
-          ctx.font = '700 25px Outfit, sans-serif';
-          let tagX = holdX + 30;
-          let tagY = holdY + 72;
-          const tagH = 50;
-          const tagPad = 22;
-          const tagGapX = 16;
-          const tagGapY = 16;
+          ctx.font = '800 28px Outfit, sans-serif';
+          let tagX = holdX + 35;
+          let tagY = holdY + 80;
+          const tagH = 58;
+          const tagPad = 26;
+          const tagGapX = 18;
+          const tagGapY = 18;
 
           holders.forEach(h => {
             const tagW = ctx.measureText(h.name).width + tagPad * 2;
-            if (tagX + tagW > holdX + holdW - 30) {
-              tagX = holdX + 30;
+            if (tagX + tagW > holdX + holdW - 35) {
+              tagX = holdX + 35;
               tagY += tagH + tagGapY;
             }
 
-            ctx.fillStyle = 'rgba(245, 158, 11, 0.16)';
-            ctx.strokeStyle = 'rgba(245, 158, 11, 0.45)';
-            ctx.lineWidth = 1.5;
+            ctx.save();
+            ctx.fillStyle = 'rgba(245, 158, 11, 0.18)';
+            ctx.strokeStyle = 'rgba(245, 158, 11, 0.55)';
+            ctx.lineWidth = 2;
+            ctx.shadowColor = 'rgba(245, 158, 11, 0.25)';
+            ctx.shadowBlur = 12;
             ctx.beginPath();
-            if (ctx.roundRect) ctx.roundRect(tagX, tagY, tagW, tagH, 14);
+            if (ctx.roundRect) ctx.roundRect(tagX, tagY, tagW, tagH, 16);
             else ctx.rect(tagX, tagY, tagW, tagH);
             ctx.fill();
             ctx.stroke();
+            ctx.restore();
 
+            ctx.textAlign = 'left';
+            ctx.textBaseline = 'middle';
             ctx.fillStyle = '#ffd700';
-            ctx.fillText(h.name, tagX + tagPad, tagY + 34);
+            ctx.fillText(h.name, tagX + tagPad, tagY + tagH / 2);
 
             tagX += tagW + tagGapX;
           });
+
+          // Bottom Motivational Callout inside Holders Box (Fills any remaining space)
+          ctx.textAlign = 'center';
+          ctx.textBaseline = 'middle';
+          ctx.fillStyle = '#00f59b';
+          ctx.font = '800 23px Outfit, sans-serif';
+          ctx.fillText('\u{1F3F8} CLAIM YOUR SPOT IN UPCOMING MATCHES!', 600, holdY + holdH - 36);
         } else {
           ctx.textAlign = 'center';
+          ctx.textBaseline = 'middle';
+          ctx.fillStyle = '#cbd5e1';
+          ctx.font = '800 32px Outfit, sans-serif';
+          ctx.fillText('\u{1F512} MILESTONE UNCLAIMED', 600, holdY + 125);
+
           ctx.fillStyle = '#94a3b8';
           ctx.font = '600 26px Outfit, sans-serif';
-          ctx.fillText('No players have unlocked this badge yet.', 600, holdY + 160);
-          ctx.font = '500 22px Outfit, sans-serif';
-          ctx.fillStyle = 'rgba(148, 163, 184, 0.65)';
-          ctx.fillText('Be the first player to conquer this milestone in upcoming matches!', 600, holdY + 205);
+          ctx.fillText('No players have unlocked this badge yet.', 600, holdY + 185);
+
+          ctx.fillStyle = '#00f59b';
+          ctx.font = '800 24px Outfit, sans-serif';
+          ctx.fillText('\u{1F525} Be the first champion to conquer this milestone!', 600, holdY + 250);
+
+          ctx.fillStyle = 'rgba(255, 255, 255, 0.4)';
+          ctx.font = '700 20px Outfit, sans-serif';
+          ctx.fillText('TK BADDY CHAMPIONSHIPS \u2022 SEASON 2026', 600, holdY + 310);
         }
 
         // 11. Official Footer Watermark
         ctx.textAlign = 'center';
-        ctx.fillStyle = 'rgba(255, 255, 255, 0.4)';
-        ctx.font = '800 22px Outfit, sans-serif';
-        ctx.fillText('\u{1F3F8} TK BADDY CHAMPIONSHIPS \u2022 BADGES & MILESTONES', 600, 1150);
+        ctx.textBaseline = 'alphabetic';
+        ctx.fillStyle = 'rgba(255, 255, 255, 0.45)';
+        ctx.font = '800 24px Outfit, sans-serif';
+        ctx.fillText('\u{1F3F8} TK BADDY CHAMPIONSHIPS \u2022 BADGES & MILESTONES', 600, 1140);
 
         canvas.toBlob((b) => resolve(b), 'image/png');
       });

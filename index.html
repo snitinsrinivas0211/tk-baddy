@@ -2667,8 +2667,8 @@
 
           <div class="form-group" style="margin-top: 12px;">
             <label class="form-label">Profile Picture URL (Optional)</label>
-            <input type="url" id="editPlayerPhoto" class="form-input" placeholder="https://example.com/photo.jpg" oninput="updateEditPlayerPhotoPreview(this.value)">
-            <div style="font-size: 11px; color: var(--text-dim); margin-top: 4px;">Paste any image link (Google Drive, public image URL, etc.)</div>
+            <input type="url" id="editPlayerPhoto" class="form-input" placeholder="https://drive.google.com/file/d/... or image URL" oninput="updateEditPlayerPhotoPreview(this.value)">
+            <div style="font-size: 11px; color: var(--text-dim); margin-top: 4px;">Paste any Google Drive link (set to "Anyone with the link") or web image URL. Auto-converted!</div>
           </div>
 
           <!-- Photo Preview -->
@@ -4267,7 +4267,7 @@
 
         let avatarThumb = '';
         if (p.photoUrl) {
-          avatarThumb = `<img src="${escapeHtml(p.photoUrl)}" class="player-avatar-img-sm" onerror="this.style.display='none';">`;
+          avatarThumb = `<img src="${escapeHtml(formatDirectPhotoUrl(p.photoUrl))}" referrerpolicy="no-referrer" class="player-avatar-img-sm" onerror="this.style.display='none';">`;
         }
 
         row.innerHTML = `
@@ -4318,11 +4318,27 @@
       if (modal) modal.classList.remove('show');
     }
 
-    function updateEditPlayerPhotoPreview(url, name = '') {
+    function formatDirectPhotoUrl(url) {
+      if (!url) return '';
+      url = url.trim();
+      // Auto-convert Google Drive sharing/view links to direct CDN links
+      const driveFileMatch = url.match(/\/file\/d\/([a-zA-Z0-9_-]+)/);
+      if (driveFileMatch && driveFileMatch[1]) {
+        return `https://lh3.googleusercontent.com/d/${driveFileMatch[1]}`;
+      }
+      const driveIdMatch = url.match(/[?&]id=([a-zA-Z0-9_-]+)/);
+      if (url.includes('drive.google.com') && driveIdMatch && driveIdMatch[1]) {
+        return `https://lh3.googleusercontent.com/d/${driveIdMatch[1]}`;
+      }
+      return url;
+    }
+
+    function updateEditPlayerPhotoPreview(rawUrl, name = '') {
       const preview = document.getElementById('editPlayerPhotoPreview');
       if (!preview) return;
+      const url = formatDirectPhotoUrl(rawUrl);
       if (url && (url.startsWith('http://') || url.startsWith('https://') || url.startsWith('data:image'))) {
-        preview.innerHTML = `<img src="${escapeHtml(url)}" style="width: 100%; height: 100%; object-fit: cover;" onerror="this.parentElement.innerText='${(name || 'P').charAt(0).toUpperCase()}';">`;
+        preview.innerHTML = `<img src="${escapeHtml(url)}" referrerpolicy="no-referrer" style="width: 100%; height: 100%; object-fit: cover;" onerror="this.parentElement.innerText='${(name || 'P').charAt(0).toUpperCase()}';">`;
       } else {
         const initial = (document.getElementById('editPlayerName')?.value || name || 'P').charAt(0).toUpperCase();
         preview.innerText = initial;
@@ -4340,7 +4356,8 @@
       const oldName = document.getElementById('editPlayerOldName').value;
       const newName = document.getElementById('editPlayerName').value.trim();
       const newGender = document.getElementById('editPlayerGender').value;
-      const newPhoto = document.getElementById('editPlayerPhoto').value.trim();
+      const rawPhoto = document.getElementById('editPlayerPhoto').value.trim();
+      const newPhoto = formatDirectPhotoUrl(rawPhoto);
 
       if (!newName) {
         alert("Please enter a valid player name.");
@@ -4471,13 +4488,13 @@
 
       // Check for photoUrl
       const regPlayer = (appState.players || []).find(pl => pl.name === playerName);
-      const photoUrl = (regPlayer && regPlayer.photoUrl) ? regPlayer.photoUrl : '';
+      const photoUrl = (regPlayer && regPlayer.photoUrl) ? formatDirectPhotoUrl(regPlayer.photoUrl) : '';
 
       let avatarHtml = '';
       if (photoUrl) {
         avatarHtml = `
           <div class="player-profile-avatar-box">
-            <img src="${escapeHtml(photoUrl)}" class="player-profile-img" alt="${escapeHtml(p.name)}" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+            <img src="${escapeHtml(photoUrl)}" referrerpolicy="no-referrer" class="player-profile-img" alt="${escapeHtml(p.name)}" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
             <div class="player-profile-avatar-fallback" style="display: none;">${p.name.charAt(0).toUpperCase()}</div>
           </div>`;
       } else {

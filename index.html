@@ -984,6 +984,207 @@
       position: relative;
       overflow: hidden;
       transition: all 0.2s ease;
+      cursor: pointer;
+    }
+
+    .badge-card:hover {
+      border-color: rgba(255, 255, 255, 0.25);
+      transform: translateY(-2px);
+      box-shadow: 0 4px 18px rgba(0, 0, 0, 0.45);
+    }
+
+    .badge-click-hint {
+      position: absolute;
+      top: 12px;
+      right: 12px;
+      font-size: 11px;
+      font-weight: 700;
+      color: var(--text-dim);
+      background: rgba(255, 255, 255, 0.05);
+      padding: 2px 8px;
+      border-radius: 10px;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      transition: all 0.2s ease;
+      pointer-events: none;
+    }
+
+    .badge-card:hover .badge-click-hint {
+      color: var(--gold-bright);
+      background: rgba(245, 158, 11, 0.15);
+      border-color: rgba(245, 158, 11, 0.35);
+    }
+
+    /* Badge Spotlight Modal & Showcase */
+    #badgeSpotlightModal .modal-window {
+      max-width: 460px;
+      width: calc(100% - 24px);
+      margin: 0 auto;
+    }
+    #badgeSpotlightModal .modal-body {
+      padding: 16px 14px;
+    }
+
+    .badge-spotlight-card {
+      background: linear-gradient(145deg, rgba(13, 20, 36, 0.96), rgba(7, 11, 20, 0.98));
+      border: 1px solid rgba(245, 158, 11, 0.35);
+      border-radius: var(--radius-md);
+      padding: 24px 16px;
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.65), 0 0 24px rgba(245, 158, 11, 0.12);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .badge-spotlight-card.locked {
+      border-color: rgba(148, 163, 184, 0.25);
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.65);
+    }
+
+    .badge-spotlight-emblem-wrap {
+      position: relative;
+      margin-bottom: 14px;
+    }
+
+    .badge-spotlight-emblem {
+      width: 96px;
+      height: 96px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 52px;
+      background: linear-gradient(135deg, rgba(245, 158, 11, 0.22) 0%, rgba(251, 191, 36, 0.08) 100%);
+      border: 3px solid var(--gold-bright);
+      box-shadow: 0 0 35px rgba(245, 158, 11, 0.45);
+      transition: all 0.3s ease;
+    }
+
+    .badge-spotlight-emblem.locked {
+      background: rgba(30, 41, 59, 0.6);
+      border-color: rgba(148, 163, 184, 0.3);
+      box-shadow: none;
+      filter: grayscale(0.5);
+    }
+
+    .badge-spotlight-title {
+      font-size: 26px;
+      font-weight: 900;
+      color: var(--gold-bright);
+      font-family: 'Outfit', sans-serif;
+      letter-spacing: -0.02em;
+      line-height: 1.2;
+    }
+
+    .badge-spotlight-title.locked {
+      color: #f1f5f9;
+    }
+
+    .badge-spotlight-category {
+      font-size: 11px;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      color: var(--court-emerald-neon);
+      margin-top: 4px;
+    }
+
+    .badge-spotlight-status {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 4px 14px;
+      border-radius: 20px;
+      font-size: 12px;
+      font-weight: 800;
+      margin-top: 10px;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    .badge-spotlight-status.unlocked {
+      background: rgba(16, 185, 129, 0.15);
+      border: 1px solid rgba(16, 185, 129, 0.45);
+      color: #34d399;
+      box-shadow: 0 0 12px rgba(16, 185, 129, 0.2);
+    }
+
+    .badge-spotlight-status.locked {
+      background: rgba(148, 163, 184, 0.1);
+      border: 1px solid rgba(148, 163, 184, 0.25);
+      color: #94a3b8;
+    }
+
+    .badge-spotlight-box {
+      width: 100%;
+      background: rgba(15, 23, 42, 0.7);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: 10px;
+      padding: 12px 14px;
+      margin-top: 16px;
+      text-align: left;
+    }
+
+    .badge-spotlight-box-title {
+      font-size: 10px;
+      font-weight: 800;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      margin-bottom: 4px;
+    }
+
+    .badge-spotlight-desc {
+      font-size: 13px;
+      color: #f1f5f9;
+      line-height: 1.45;
+      font-weight: 500;
+    }
+
+    .badge-spotlight-holders-section {
+      width: 100%;
+      margin-top: 16px;
+      text-align: left;
+    }
+
+    .badge-spotlight-holders-header {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 11px;
+      font-weight: 800;
+      color: var(--gold-bright);
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      margin-bottom: 8px;
+    }
+
+    .badge-spotlight-holders-list {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    .badge-holder-tag.large {
+      padding: 5px 12px;
+      font-size: 12px;
+      border-radius: 16px;
+    }
+
+    .badge-locked-sub {
+      font-size: 12px;
+      color: var(--text-muted);
+      font-style: italic;
+      line-height: 1.4;
+      background: rgba(15, 23, 42, 0.4);
+      padding: 8px 12px;
+      border-radius: 8px;
+      border: 1px dashed rgba(148, 163, 184, 0.2);
     }
 
     .badge-card.unlocked {
@@ -2327,7 +2528,8 @@
 
       <div class="badges-grid" id="badgesGrid">
         <!-- Badge 1: Minnal Murali -->
-        <div class="badge-card" id="badgeCard-minnalMurali">
+        <div class="badge-card" id="badgeCard-minnalMurali" onclick="openBadgeModal('minnalMurali')" title="Click to view and share badge">
+          <div class="badge-click-hint">&#128269; View &amp; Share</div>
           <div class="badge-top">
             <div class="badge-emblem">&#9889;</div>
             <div class="badge-info">
@@ -2341,7 +2543,8 @@
         </div>
 
         <!-- Badge 2: Beauty Da -->
-        <div class="badge-card" id="badgeCard-beautyDa">
+        <div class="badge-card" id="badgeCard-beautyDa" onclick="openBadgeModal('beautyDa')" title="Click to view and share badge">
+          <div class="badge-click-hint">&#128269; View &amp; Share</div>
           <div class="badge-top">
             <div class="badge-emblem">&#127942;</div>
             <div class="badge-info">
@@ -2355,7 +2558,8 @@
         </div>
 
         <!-- Badge 3: Flawless Champion -->
-        <div class="badge-card" id="badgeCard-flawlessChampion">
+        <div class="badge-card" id="badgeCard-flawlessChampion" onclick="openBadgeModal('flawlessChampion')" title="Click to view and share badge">
+          <div class="badge-click-hint">&#128269; View &amp; Share</div>
           <div class="badge-top">
             <div class="badge-emblem">&#128081;</div>
             <div class="badge-info">
@@ -2369,7 +2573,8 @@
         </div>
 
         <!-- Badge 4: Deuce Master -->
-        <div class="badge-card" id="badgeCard-deuceMaster">
+        <div class="badge-card" id="badgeCard-deuceMaster" onclick="openBadgeModal('deuceMaster')" title="Click to view and share badge">
+          <div class="badge-click-hint">&#128269; View &amp; Share</div>
           <div class="badge-top">
             <div class="badge-emblem">&#9878;&#65039;</div>
             <div class="badge-info">
@@ -2383,7 +2588,8 @@
         </div>
 
         <!-- Badge 5: Giant Slayer -->
-        <div class="badge-card" id="badgeCard-giantSlayer">
+        <div class="badge-card" id="badgeCard-giantSlayer" onclick="openBadgeModal('giantSlayer')" title="Click to view and share badge">
+          <div class="badge-click-hint">&#128269; View &amp; Share</div>
           <div class="badge-top">
             <div class="badge-emblem">&#127993;</div>
             <div class="badge-info">
@@ -2397,7 +2603,8 @@
         </div>
 
         <!-- Badge 6: Iron Pair -->
-        <div class="badge-card" id="badgeCard-ironPair">
+        <div class="badge-card" id="badgeCard-ironPair" onclick="openBadgeModal('ironPair')" title="Click to view and share badge">
+          <div class="badge-click-hint">&#128269; View &amp; Share</div>
           <div class="badge-top">
             <div class="badge-emblem">&#129309;</div>
             <div class="badge-info">
@@ -2411,7 +2618,8 @@
         </div>
 
         <!-- Badge 7: Comeback King -->
-        <div class="badge-card" id="badgeCard-comebackKing">
+        <div class="badge-card" id="badgeCard-comebackKing" onclick="openBadgeModal('comebackKing')" title="Click to view and share badge">
+          <div class="badge-click-hint">&#128269; View &amp; Share</div>
           <div class="badge-top">
             <div class="badge-emblem">&#128259;</div>
             <div class="badge-info">
@@ -3067,7 +3275,7 @@
   </div>
 
   <!-- 4. Player Spotlight Modal -->
-  <div class="modal-backdrop" id="playerSpotlightModal">
+  <div class="modal-backdrop" id="playerSpotlightModal" onclick="if (event.target === this) closeSpotlightModal()">
     <div class="modal-window">
       <div class="modal-header">
         <div class="modal-title">
@@ -3088,6 +3296,32 @@
           <span>&#128228;</span> Share Card as Image
         </button>
         <button type="button" class="btn btn-outline" onclick="closeSpotlightModal()">Close</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Badge Spotlight Modal / Badge Details & Share Card -->
+  <div class="modal-backdrop" id="badgeSpotlightModal" onclick="if (event.target === this) closeBadgeModal()">
+    <div class="modal-window" style="max-width: 460px;">
+      <div class="modal-header">
+        <div class="modal-title">
+          <span>&#127894;&#65039;</span> Badge Showcase
+        </div>
+        <div style="display: flex; align-items: center; gap: 8px;">
+          <button type="button" class="btn btn-emerald btn-icon" id="shareBadgeHeaderBtn" onclick="shareBadgeAsImage()" title="Share Badge as Image on WhatsApp" style="padding: 4px 10px; font-size: 13px; font-weight: 700;">
+            <span>&#128228;</span> Share
+          </button>
+          <button class="modal-close-btn" onclick="closeBadgeModal()">&#215;</button>
+        </div>
+      </div>
+      <div class="modal-body" id="badgeSpotlightBody" style="padding: 16px;">
+        <!-- Injected badge showcase content -->
+      </div>
+      <div class="modal-footer" style="display: flex; justify-content: space-between; align-items: center;">
+        <button type="button" class="btn btn-emerald" id="shareBadgeModalBtn" onclick="shareBadgeAsImage()" style="display: flex; align-items: center; gap: 8px; font-weight: 700; padding: 7px 16px;">
+          <span>&#128228;</span> Share Badge as Image
+        </button>
+        <button type="button" class="btn btn-outline" onclick="closeBadgeModal()">Close</button>
       </div>
     </div>
   </div>
@@ -4172,9 +4406,79 @@
       renderBadgeStatus('comebackKing', comebackKingHolders, 'Win 3 in a row after losing 3 in a row');
     }
 
+    const BADGES_METADATA = {
+      minnalMurali: {
+        key: 'minnalMurali',
+        title: 'Minnal Murali',
+        emblem: '\u26A1',
+        emblemHtml: '&#9889;',
+        desc: 'Conceded less than 4 points to opponent in a game.',
+        criteria: 'Conceded <4 pts in a game',
+        category: 'Dominance Milestone'
+      },
+      beautyDa: {
+        key: 'beautyDa',
+        title: 'Beauty Da',
+        emblem: '\u{1F3C6}',
+        emblemHtml: '&#127942;',
+        desc: 'Won 2 or more Championships.',
+        criteria: 'Requires 2+ Championships',
+        category: 'Championship Legend'
+      },
+      flawlessChampion: {
+        key: 'flawlessChampion',
+        title: 'Flawless Champion',
+        emblem: '\u{1F451}',
+        emblemHtml: '&#128081;',
+        desc: 'Won a Championship season without losing a game.',
+        criteria: 'Undefeated in a Championship season',
+        category: 'Immortal Feat'
+      },
+      deuceMaster: {
+        key: 'deuceMaster',
+        title: 'Deuce Master',
+        emblem: '\u2696\uFE0F',
+        emblemHtml: '&#9878;&#65039;',
+        desc: 'Won 3+ matches that extended beyond 15-15 to 17+ points.',
+        criteria: 'Win 3+ matches extended to 17+ pts',
+        category: 'Clutch Mastery'
+      },
+      giantSlayer: {
+        key: 'giantSlayer',
+        title: 'Giant Slayer',
+        emblem: '\u{1F3F9}',
+        emblemHtml: '&#127993;',
+        desc: 'Defeated an opponent ranked 150+ ELO above you.',
+        criteria: 'Defeat an opponent 150+ ELO above you',
+        category: 'Underdog Upset'
+      },
+      ironPair: {
+        key: 'ironPair',
+        title: 'Iron Pair',
+        emblem: '\u{1F91D}',
+        emblemHtml: '&#129309;',
+        desc: 'Won 5 consecutive doubles matches with the same partner.',
+        criteria: 'Win 5 consecutive doubles matches together',
+        category: 'Doubles Synergy'
+      },
+      comebackKing: {
+        key: 'comebackKing',
+        title: 'Comeback King',
+        emblem: '\u{1F504}',
+        emblemHtml: '&#128259;',
+        desc: 'Won 3 consecutive matches after losing 3 consecutive matches.',
+        criteria: 'Win 3 in a row after losing 3 in a row',
+        category: 'Resilience Milestone'
+      }
+    };
+
     function renderBadgeStatus(badgeKey, holders, requirementText) {
+      if (!appState.cachedBadgeHolders) appState.cachedBadgeHolders = {};
+      appState.cachedBadgeHolders[badgeKey] = holders || [];
+
       const card = document.getElementById(`badgeCard-${badgeKey}`);
       const container = document.getElementById(`badgeHolders-${badgeKey}`);
+      if (!card || !container) return;
 
       if (holders.length > 0) {
         card.classList.add('unlocked');
@@ -4184,6 +4488,371 @@
       } else {
         card.classList.remove('unlocked');
         container.innerHTML = `<span class="badge-locked-tag">Locked \u2022 ${requirementText}</span>`;
+      }
+    }
+
+    function openBadgeModal(badgeKey) {
+      const badge = BADGES_METADATA[badgeKey];
+      if (!badge) return;
+
+      appState.activeBadgeSpotlight = badgeKey;
+
+      if (!appState.cachedBadgeHolders) {
+        renderBadges(computeStandings());
+      }
+      const holders = (appState.cachedBadgeHolders && appState.cachedBadgeHolders[badgeKey]) || [];
+      const isUnlocked = holders.length > 0;
+
+      const body = document.getElementById('badgeSpotlightBody');
+      if (!body) return;
+
+      const holdersHtml = isUnlocked
+        ? holders.map(h => `<span class="badge-holder-tag large">${escapeHtml(h.name)}</span>`).join('')
+        : `<div class="badge-locked-sub">No players have unlocked this badge yet. Be the first to claim this milestone!</div>`;
+
+      body.innerHTML = `
+        <div class="badge-spotlight-card ${isUnlocked ? '' : 'locked'}">
+          <div class="badge-spotlight-emblem-wrap">
+            <div class="badge-spotlight-emblem ${isUnlocked ? '' : 'locked'}">
+              ${badge.emblemHtml}
+            </div>
+          </div>
+
+          <div class="badge-spotlight-title ${isUnlocked ? '' : 'locked'}">${escapeHtml(badge.title)}</div>
+          <div class="badge-spotlight-category">${escapeHtml(badge.category)}</div>
+
+          <div class="badge-spotlight-status ${isUnlocked ? 'unlocked' : 'locked'}">
+            ${isUnlocked ? '&#10024; UNLOCKED ACHIEVEMENT' : '&#128274; LOCKED MILESTONE'}
+          </div>
+
+          <div class="badge-spotlight-box">
+            <div class="badge-spotlight-box-title">TRIGGER CRITERIA</div>
+            <div class="badge-spotlight-desc">${escapeHtml(badge.desc)}</div>
+          </div>
+
+          <div class="badge-spotlight-holders-section">
+            <div class="badge-spotlight-holders-header">
+              <span>&#128101;</span>
+              <span>${isUnlocked ? `ACHIEVED BY (${holders.length})` : 'ACHIEVED BY'}</span>
+            </div>
+            <div class="badge-spotlight-holders-list">
+              ${holdersHtml}
+            </div>
+          </div>
+        </div>
+      `;
+
+      document.getElementById('badgeSpotlightModal').classList.add('show');
+    }
+
+    function closeBadgeModal() {
+      appState.activeBadgeSpotlight = null;
+      const modal = document.getElementById('badgeSpotlightModal');
+      if (modal) modal.classList.remove('show');
+    }
+
+    /* ==========================================================================
+       BADGE CARD IMAGE GENERATION & SOCIAL SHARING (WHATSAPP)
+       ========================================================================== */
+    function generateBadgeImageBlob(badgeKey) {
+      return new Promise(async (resolve) => {
+        if (document.fonts && document.fonts.ready) {
+          try {
+            await document.fonts.ready;
+          } catch (e) {}
+        }
+
+        const badge = BADGES_METADATA[badgeKey];
+        if (!badge) {
+          resolve(null);
+          return;
+        }
+
+        if (!appState.cachedBadgeHolders) {
+          renderBadges(computeStandings());
+        }
+        const holders = (appState.cachedBadgeHolders && appState.cachedBadgeHolders[badgeKey]) || [];
+        const isUnlocked = holders.length > 0;
+
+        // 1200x1200 Ultra-HD Canvas
+        const canvas = document.createElement('canvas');
+        canvas.width = 1200;
+        canvas.height = 1200;
+        const ctx = canvas.getContext('2d');
+
+        ctx.imageSmoothingEnabled = true;
+        ctx.imageSmoothingQuality = 'high';
+
+        // 1. Deep Tournament Background
+        const bgGrad = ctx.createLinearGradient(0, 0, 1200, 1200);
+        bgGrad.addColorStop(0, '#0d172a');
+        bgGrad.addColorStop(0.5, '#0a1122');
+        bgGrad.addColorStop(1, '#060b14');
+        ctx.fillStyle = bgGrad;
+        ctx.fillRect(0, 0, 1200, 1200);
+
+        // Radial ambient glow
+        const radialGlow = ctx.createRadialGradient(600, 360, 40, 600, 360, 480);
+        if (isUnlocked) {
+          radialGlow.addColorStop(0, 'rgba(245, 158, 11, 0.18)');
+          radialGlow.addColorStop(0.6, 'rgba(245, 158, 11, 0.04)');
+        } else {
+          radialGlow.addColorStop(0, 'rgba(56, 189, 248, 0.12)');
+          radialGlow.addColorStop(0.6, 'rgba(56, 189, 248, 0.02)');
+        }
+        radialGlow.addColorStop(1, 'rgba(0, 0, 0, 0)');
+        ctx.fillStyle = radialGlow;
+        ctx.fillRect(0, 0, 1200, 1200);
+
+        // 2. Outer Border
+        ctx.strokeStyle = isUnlocked ? 'rgba(245, 158, 11, 0.5)' : 'rgba(148, 163, 184, 0.3)';
+        ctx.lineWidth = 6;
+        ctx.strokeRect(3, 3, 1194, 1194);
+
+        // 3. Top Accent Gradient Stripe
+        const topGrad = ctx.createLinearGradient(0, 0, 1200, 0);
+        topGrad.addColorStop(0, '#00f59b');
+        topGrad.addColorStop(0.5, '#ffd700');
+        topGrad.addColorStop(1, '#38bdf8');
+        ctx.fillStyle = topGrad;
+        ctx.fillRect(0, 0, 1200, 12);
+
+        // 4. Header: Tournament Title & Category
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'alphabetic';
+        ctx.fillStyle = '#00f59b';
+        ctx.font = '800 24px Outfit, sans-serif';
+        ctx.fillText('\u{1F3F8} TK BADDY CHAMPIONSHIPS', 600, 80);
+
+        ctx.fillStyle = isUnlocked ? '#ffd700' : '#94a3b8';
+        ctx.font = '800 18px Outfit, sans-serif';
+        ctx.fillText(badge.category.toUpperCase(), 600, 115);
+
+        // 5. Emblem Circle
+        const ex = 600, ey = 270, er = 105;
+        ctx.save();
+        ctx.beginPath();
+        ctx.arc(ex, ey, er, 0, Math.PI * 2);
+        if (isUnlocked) {
+          const emblemGrad = ctx.createLinearGradient(ex - er, ey - er, ex + er, ey + er);
+          emblemGrad.addColorStop(0, 'rgba(245, 158, 11, 0.3)');
+          emblemGrad.addColorStop(1, 'rgba(251, 191, 36, 0.1)');
+          ctx.fillStyle = emblemGrad;
+          ctx.fill();
+
+          ctx.lineWidth = 8;
+          ctx.strokeStyle = '#ffd700';
+          ctx.shadowColor = 'rgba(245, 158, 11, 0.8)';
+          ctx.shadowBlur = 40;
+          ctx.stroke();
+        } else {
+          ctx.fillStyle = 'rgba(30, 41, 59, 0.7)';
+          ctx.fill();
+          ctx.lineWidth = 6;
+          ctx.strokeStyle = '#64748b';
+          ctx.stroke();
+        }
+        ctx.restore();
+
+        // 6. Draw Emblem Emoji
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'middle';
+        ctx.font = '92px "Apple Color Emoji", "Segoe UI Emoji", "Noto Color Emoji", sans-serif';
+        ctx.fillText(badge.emblem, ex, ey + 4);
+
+        // 7. Badge Title
+        ctx.textBaseline = 'alphabetic';
+        ctx.fillStyle = isUnlocked ? '#ffffff' : '#e2e8f0';
+        ctx.font = '900 58px Outfit, sans-serif';
+        ctx.fillText(badge.title, 600, 455);
+
+        // 8. Status Pill
+        const statusText = isUnlocked ? '\u2728 UNLOCKED ACHIEVEMENT' : '\u{1F512} LOCKED MILESTONE';
+        const pillW = 390, pillH = 46, pillX = 600 - pillW / 2, pillY = 485;
+        ctx.fillStyle = isUnlocked ? 'rgba(16, 185, 129, 0.15)' : 'rgba(148, 163, 184, 0.1)';
+        ctx.strokeStyle = isUnlocked ? 'rgba(16, 185, 129, 0.5)' : 'rgba(148, 163, 184, 0.3)';
+        ctx.lineWidth = 2;
+        ctx.beginPath();
+        if (ctx.roundRect) ctx.roundRect(pillX, pillY, pillW, pillH, 23);
+        else ctx.rect(pillX, pillY, pillW, pillH);
+        ctx.fill();
+        ctx.stroke();
+
+        ctx.fillStyle = isUnlocked ? '#34d399' : '#94a3b8';
+        ctx.font = '800 20px Outfit, sans-serif';
+        ctx.fillText(statusText, 600, pillY + 31);
+
+        // 9. Trigger Criteria Box
+        const critW = 920, critH = 145, critX = 140, critY = 560;
+        ctx.fillStyle = 'rgba(15, 23, 42, 0.85)';
+        ctx.strokeStyle = 'rgba(255, 255, 255, 0.12)';
+        ctx.lineWidth = 2;
+        ctx.beginPath();
+        if (ctx.roundRect) ctx.roundRect(critX, critY, critW, critH, 16);
+        else ctx.rect(critX, critY, critW, critH);
+        ctx.fill();
+        ctx.stroke();
+
+        ctx.textAlign = 'left';
+        ctx.fillStyle = '#ffd700';
+        ctx.font = '800 17px Outfit, sans-serif';
+        ctx.fillText('TRIGGER CRITERIA', critX + 30, critY + 40);
+
+        ctx.fillStyle = '#f8fafc';
+        ctx.font = '600 27px Outfit, sans-serif';
+        const descWords = badge.desc.split(' ');
+        let dLine = '', dY = critY + 84;
+        for (let w = 0; w < descWords.length; w++) {
+          const testL = dLine + descWords[w] + ' ';
+          if (ctx.measureText(testL).width > critW - 60 && w > 0) {
+            ctx.fillText(dLine.trim(), critX + 30, dY);
+            dLine = descWords[w] + ' ';
+            dY += 36;
+          } else {
+            dLine = testL;
+          }
+        }
+        ctx.fillText(dLine.trim(), critX + 30, dY);
+
+        // 10. Achieved By / Holders Box
+        const holdW = 920, holdH = 370, holdX = 140, holdY = 730;
+        ctx.fillStyle = 'rgba(15, 23, 42, 0.85)';
+        ctx.strokeStyle = isUnlocked ? 'rgba(245, 158, 11, 0.3)' : 'rgba(255, 255, 255, 0.1)';
+        ctx.lineWidth = 2;
+        ctx.beginPath();
+        if (ctx.roundRect) ctx.roundRect(holdX, holdY, holdW, holdH, 16);
+        else ctx.rect(holdX, holdY, holdW, holdH);
+        ctx.fill();
+        ctx.stroke();
+
+        ctx.fillStyle = isUnlocked ? '#ffd700' : '#94a3b8';
+        ctx.font = '800 19px Outfit, sans-serif';
+        const holdTitle = isUnlocked ? `\u{1F465} ACHIEVED BY (${holders.length} PLAYERS / PAIRS)` : '\u{1F465} ACHIEVED BY';
+        ctx.fillText(holdTitle, holdX + 30, holdY + 45);
+
+        if (isUnlocked) {
+          ctx.font = '700 25px Outfit, sans-serif';
+          let tagX = holdX + 30;
+          let tagY = holdY + 72;
+          const tagH = 50;
+          const tagPad = 22;
+          const tagGapX = 16;
+          const tagGapY = 16;
+
+          holders.forEach(h => {
+            const tagW = ctx.measureText(h.name).width + tagPad * 2;
+            if (tagX + tagW > holdX + holdW - 30) {
+              tagX = holdX + 30;
+              tagY += tagH + tagGapY;
+            }
+
+            ctx.fillStyle = 'rgba(245, 158, 11, 0.16)';
+            ctx.strokeStyle = 'rgba(245, 158, 11, 0.45)';
+            ctx.lineWidth = 1.5;
+            ctx.beginPath();
+            if (ctx.roundRect) ctx.roundRect(tagX, tagY, tagW, tagH, 14);
+            else ctx.rect(tagX, tagY, tagW, tagH);
+            ctx.fill();
+            ctx.stroke();
+
+            ctx.fillStyle = '#ffd700';
+            ctx.fillText(h.name, tagX + tagPad, tagY + 34);
+
+            tagX += tagW + tagGapX;
+          });
+        } else {
+          ctx.textAlign = 'center';
+          ctx.fillStyle = '#94a3b8';
+          ctx.font = '600 26px Outfit, sans-serif';
+          ctx.fillText('No players have unlocked this badge yet.', 600, holdY + 160);
+          ctx.font = '500 22px Outfit, sans-serif';
+          ctx.fillStyle = 'rgba(148, 163, 184, 0.65)';
+          ctx.fillText('Be the first player to conquer this milestone in upcoming matches!', 600, holdY + 205);
+        }
+
+        // 11. Official Footer Watermark
+        ctx.textAlign = 'center';
+        ctx.fillStyle = 'rgba(255, 255, 255, 0.4)';
+        ctx.font = '800 22px Outfit, sans-serif';
+        ctx.fillText('\u{1F3F8} TK BADDY CHAMPIONSHIPS \u2022 BADGES & MILESTONES', 600, 1150);
+
+        canvas.toBlob((b) => resolve(b), 'image/png');
+      });
+    }
+
+    async function shareBadgeAsImage() {
+      const badgeKey = appState.activeBadgeSpotlight;
+      if (!badgeKey) return;
+      const badge = BADGES_METADATA[badgeKey];
+      if (!badge) return;
+
+      const btns = [
+        document.getElementById('shareBadgeHeaderBtn'),
+        document.getElementById('shareBadgeModalBtn')
+      ].filter(Boolean);
+
+      btns.forEach(b => {
+        b.disabled = true;
+        b.innerHTML = '<span>&#9203;</span> Generating Image...';
+      });
+
+      try {
+        const blob = await generateBadgeImageBlob(badgeKey);
+        if (!blob) {
+          alert("Could not generate badge image. Please try again.");
+          return;
+        }
+
+        const cleanTitle = badge.title.replace(/\s+/g, '_');
+        const fileName = `${cleanTitle}_TK_Baddy_Badge.png`;
+        const file = new File([blob], fileName, { type: 'image/png' });
+
+        // If Web Share API supports file sharing (Mobile WhatsApp, etc.)
+        if (navigator.canShare && navigator.canShare({ files: [file] })) {
+          await navigator.share({
+            files: [file],
+            title: `${badge.title} Badge - TK Baddy Championships`,
+            text: `Check out the ${badge.title} Badge from TK Baddy Championships! \u{1F3F8}`
+          });
+          showToast("Badge shared successfully! \u2728");
+        } else {
+          // Direct download fallback for desktop browsers
+          const url = URL.createObjectURL(blob);
+          const a = document.createElement('a');
+          a.href = url;
+          a.download = fileName;
+          document.body.appendChild(a);
+          a.click();
+          document.body.removeChild(a);
+          setTimeout(() => URL.revokeObjectURL(url), 1000);
+
+          if (navigator.clipboard && window.ClipboardItem) {
+            try {
+              await navigator.clipboard.write([new ClipboardItem({ 'image/png': blob })]);
+              showToast("Badge downloaded & copied! Paste directly into WhatsApp (Ctrl+V) \u{1F3F8}");
+            } catch {
+              showToast("Badge downloaded! Share directly in WhatsApp \u{1F3F8}");
+            }
+          } else {
+            showToast("Badge downloaded! Share directly in WhatsApp \u{1F3F8}");
+          }
+        }
+      } catch (err) {
+        if (err.name !== 'AbortError') {
+          console.error("Badge share error:", err);
+          showToast("Could not share badge image. Please try again.");
+        }
+      } finally {
+        const headerBtn = document.getElementById('shareBadgeHeaderBtn');
+        if (headerBtn) {
+          headerBtn.disabled = false;
+          headerBtn.innerHTML = '<span>&#128228;</span> Share';
+        }
+        const modalBtn = document.getElementById('shareBadgeModalBtn');
+        if (modalBtn) {
+          modalBtn.disabled = false;
+          modalBtn.innerHTML = '<span>&#128228;</span> Share Badge as Image';
+        }
       }
     }
 

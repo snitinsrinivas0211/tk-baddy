@@ -2741,6 +2741,554 @@
         transform: rotate(-10deg) scale(1);
       }
     }
+  
+    /* ==========================================================================
+       TEAM GENERATOR STYLES
+       ========================================================================== */
+    .team-gen-container {
+      width: 100%;
+      max-width: 100%;
+      margin-bottom: 30px;
+      box-sizing: border-box;
+      overflow-x: hidden;
+    }
+
+    .team-gen-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 16px;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+
+    .team-gen-note-card {
+      background: linear-gradient(135deg, rgba(30, 41, 59, 0.95) 0%, rgba(15, 23, 42, 0.98) 100%);
+      border: 1px solid rgba(0, 245, 155, 0.35);
+      border-left: 4px solid #00f59b;
+      border-radius: var(--radius-md);
+      padding: 14px 18px;
+      margin-bottom: 18px;
+      box-shadow: 0 4px 16px rgba(0, 245, 155, 0.08);
+      box-sizing: border-box;
+    }
+
+    .team-gen-note-badge {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 15px;
+      font-weight: 700;
+      color: #00f59b;
+      margin-bottom: 4px;
+    }
+
+    .team-gen-note-icon {
+      font-size: 18px;
+      line-height: 1;
+    }
+
+    .team-gen-note-desc {
+      font-size: 13px;
+      color: #94a3b8;
+      line-height: 1.45;
+    }
+
+    .team-gen-config-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-md);
+      padding: 16px;
+      margin-bottom: 20px;
+      box-sizing: border-box;
+    }
+
+    .team-gen-config-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+
+    .team-gen-field {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    .team-gen-label {
+      font-size: 13px;
+      font-weight: 600;
+      color: #e2e8f0;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .team-gen-select {
+      background: #0f172a;
+      border: 1.5px solid #334155;
+      color: #f8fafc;
+      border-radius: var(--radius-sm);
+      padding: 8px 14px;
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+      outline: none;
+      transition: border-color 0.2s, box-shadow 0.2s;
+    }
+
+    .team-gen-select:focus {
+      border-color: #00f59b;
+      box-shadow: 0 0 0 2px rgba(0, 245, 155, 0.2);
+    }
+
+    .team-gen-selection-actions {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    .team-gen-quick-btn {
+      font-size: 12px;
+      padding: 6px 12px;
+      border-radius: var(--radius-sm);
+      border: 1px solid #334155;
+      background: rgba(51, 65, 85, 0.35);
+      color: #cbd5e1;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .team-gen-quick-btn:hover {
+      background: rgba(51, 65, 85, 0.7);
+      border-color: #64748b;
+      color: #f8fafc;
+    }
+
+    .team-gen-validation-box {
+      border-radius: var(--radius-sm);
+      padding: 12px 16px;
+      margin: 14px 0;
+      font-size: 13px;
+      line-height: 1.45;
+      font-weight: 500;
+      transition: all 0.25s ease;
+      box-sizing: border-box;
+    }
+
+    .team-gen-validation-box.info {
+      background: rgba(51, 65, 85, 0.4);
+      border: 1px solid #334155;
+      color: #94a3b8;
+    }
+
+    .team-gen-validation-box.error {
+      background: rgba(239, 68, 68, 0.12);
+      border: 1px solid rgba(239, 68, 68, 0.45);
+      color: #fca5a5;
+    }
+
+    .team-gen-validation-box.success {
+      background: rgba(0, 245, 155, 0.1);
+      border: 1px solid rgba(0, 245, 155, 0.35);
+      color: #86efac;
+    }
+
+    .team-gen-action-bar {
+      margin-top: 10px;
+    }
+
+    .team-gen-submit-btn {
+      width: 100%;
+      padding: 12px 20px;
+      font-size: 14px;
+      font-weight: 700;
+      letter-spacing: 0.5px;
+      border-radius: var(--radius-md);
+      border: none;
+      cursor: pointer;
+      transition: all 0.25s ease;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+    }
+
+    .team-gen-submit-btn:disabled,
+    .team-gen-submit-btn.disabled {
+      opacity: 0.45;
+      background: #334155 !important;
+      color: #94a3b8 !important;
+      cursor: not-allowed !important;
+      pointer-events: none !important;
+      box-shadow: none !important;
+    }
+
+    .team-gen-submit-btn:not(:disabled) {
+      background: linear-gradient(135deg, #00f59b 0%, #06b6d4 100%);
+      color: #020617;
+      box-shadow: 0 4px 16px rgba(0, 245, 155, 0.3);
+    }
+
+    .team-gen-submit-btn:not(:disabled):hover {
+      box-shadow: 0 6px 22px rgba(0, 245, 155, 0.45);
+      transform: translateY(-1px);
+    }
+
+    .team-gen-section-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 12px;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+
+    .team-gen-section-title {
+      font-size: 14px;
+      font-weight: 700;
+      color: #e2e8f0;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .team-gen-count-pill {
+      font-size: 11px;
+      font-weight: 700;
+      padding: 2px 8px;
+      border-radius: 9999px;
+      background: rgba(0, 245, 155, 0.15);
+      border: 1px solid rgba(0, 245, 155, 0.35);
+      color: #00f59b;
+    }
+
+    .team-gen-search-wrap {
+      flex: 1;
+      max-width: 240px;
+      min-width: 160px;
+    }
+
+    .team-gen-search-input {
+      width: 100%;
+      background: #0f172a;
+      border: 1px solid #334155;
+      color: #f8fafc;
+      border-radius: var(--radius-sm);
+      padding: 6px 12px;
+      font-size: 12px;
+      outline: none;
+      box-sizing: border-box;
+      transition: border-color 0.2s;
+    }
+
+    .team-gen-search-input:focus {
+      border-color: #00f59b;
+    }
+
+    .team-gen-tiles-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(135px, 1fr));
+      gap: 10px;
+      margin-bottom: 24px;
+      box-sizing: border-box;
+    }
+
+    .team-gen-player-tile {
+      position: relative;
+      background: #1e293b;
+      border: 1.5px solid #334155;
+      border-radius: var(--radius-md);
+      padding: 10px 12px;
+      cursor: pointer;
+      user-select: none;
+      transition: all 0.18s ease-in-out;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      box-sizing: border-box;
+    }
+
+    .team-gen-player-tile:hover {
+      border-color: #64748b;
+      transform: translateY(-2px);
+    }
+
+    .team-gen-player-tile.selected {
+      border-color: #00f59b;
+      background: linear-gradient(145deg, rgba(0, 245, 155, 0.14) 0%, rgba(15, 23, 42, 0.85) 100%);
+      box-shadow: 0 0 14px rgba(0, 245, 155, 0.22);
+      transform: translateY(-2px);
+    }
+
+    .team-gen-tile-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .team-gen-gender-pill {
+      font-size: 10px;
+      font-weight: 700;
+      padding: 2px 6px;
+      border-radius: 9999px;
+    }
+
+    .team-gen-gender-pill.male {
+      color: #38bdf8;
+      background: rgba(56, 189, 248, 0.15);
+      border: 1px solid rgba(56, 189, 248, 0.35);
+    }
+
+    .team-gen-gender-pill.female {
+      color: #f472b6;
+      background: rgba(244, 114, 182, 0.15);
+      border: 1px solid rgba(244, 114, 182, 0.35);
+    }
+
+    .team-gen-tile-check {
+      width: 18px;
+      height: 18px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 10px;
+      font-weight: 900;
+      transition: all 0.18s ease;
+    }
+
+    .team-gen-player-tile .team-gen-tile-check {
+      border: 1.5px solid #475569;
+      color: transparent;
+      background: rgba(15, 23, 42, 0.6);
+    }
+
+    .team-gen-player-tile.selected .team-gen-tile-check {
+      border: 1.5px solid #00f59b;
+      background: #00f59b;
+      color: #020617;
+    }
+
+    .team-gen-tile-name {
+      font-size: 13px;
+      font-weight: 700;
+      color: #f8fafc;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .team-gen-tile-elo {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      font-size: 11px;
+      font-weight: 600;
+    }
+
+    .team-gen-results-section {
+      margin-top: 30px;
+      padding-top: 24px;
+      border-top: 1px dashed rgba(148, 163, 184, 0.2);
+    }
+
+    .team-gen-results-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 12px;
+      margin-bottom: 16px;
+    }
+
+    .team-gen-results-title {
+      font-size: 18px;
+      font-weight: 800;
+      color: #f8fafc;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin: 0 0 4px 0;
+    }
+
+    .team-gen-results-subtitle {
+      font-size: 12px;
+      color: #94a3b8;
+    }
+
+    .team-gen-results-actions {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    .team-gen-share-btn {
+      font-size: 12px;
+      padding: 7px 14px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      background: #22c55e;
+      color: #020617;
+      border: none;
+      font-weight: 700;
+      border-radius: var(--radius-sm);
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .team-gen-share-btn:hover {
+      background: #16a34a;
+      transform: translateY(-1px);
+    }
+
+    .team-gen-reshuffle-btn {
+      font-size: 12px;
+      padding: 7px 14px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      cursor: pointer;
+    }
+
+    .team-gen-summary-strip {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-bottom: 20px;
+    }
+
+    .team-gen-stat-chip {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      background: #1e293b;
+      border: 1px solid #334155;
+      border-radius: var(--radius-sm);
+      padding: 8px 14px;
+      font-size: 12px;
+      color: #cbd5e1;
+    }
+
+    .team-gen-stat-chip strong {
+      color: #f8fafc;
+      font-weight: 700;
+    }
+
+    .team-gen-teams-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 16px;
+      box-sizing: border-box;
+    }
+
+    .team-gen-team-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-md);
+      padding: 16px;
+      box-sizing: border-box;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      transition: border-color 0.2s, transform 0.2s;
+    }
+
+    .team-gen-team-card:hover {
+      border-color: rgba(0, 245, 155, 0.4);
+      transform: translateY(-2px);
+    }
+
+    .team-gen-team-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 1px solid rgba(51, 65, 85, 0.6);
+      padding-bottom: 10px;
+    }
+
+    .team-gen-team-title {
+      font-size: 15px;
+      font-weight: 800;
+      color: #f8fafc;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .team-gen-blended-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      padding: 4px 10px;
+      border-radius: 9999px;
+      font-size: 12px;
+      font-weight: 800;
+      border: 1px solid;
+    }
+
+    .team-gen-roster-list {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .team-gen-roster-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: rgba(15, 23, 42, 0.6);
+      border: 1px solid rgba(51, 65, 85, 0.5);
+      border-radius: var(--radius-sm);
+      padding: 8px 10px;
+      gap: 8px;
+    }
+
+    .team-gen-roster-player-info {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 13px;
+      font-weight: 600;
+      color: #f1f5f9;
+      min-width: 0;
+      overflow: hidden;
+    }
+
+    .team-gen-roster-name {
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .team-gen-roster-elo {
+      font-size: 12px;
+      font-weight: 700;
+      flex-shrink: 0;
+    }
+
+    @media (max-width: 640px) {
+      .team-gen-tiles-grid {
+        grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
+        gap: 8px;
+      }
+      .team-gen-teams-grid {
+        grid-template-columns: 1fr;
+      }
+      .team-gen-config-row {
+        flex-direction: column;
+        align-items: stretch;
+      }
+      .team-gen-search-wrap {
+        max-width: 100%;
+        width: 100%;
+      }
+    }
+
   </style>
 </head>
 <body>
@@ -2781,6 +3329,13 @@
               <div class="burger-item-content">
                 <div class="burger-item-title">ELO Trends</div>
                 <div class="burger-item-subtitle">Compare rating progression</div>
+              </div>
+            </div>
+            <div class="burger-menu-item" onclick="openGenerateTeamsTab()">
+              <span class="burger-item-icon">&#9878;&#65039;</span>
+              <div class="burger-item-content">
+                <div class="burger-item-title">Generate Teams</div>
+                <div class="burger-item-subtitle">Balanced teams by ELO &amp; Gender</div>
               </div>
             </div>
           </div>
@@ -3158,6 +3713,121 @@
         </div>
       </div>
     </div>
+
+    <!-- SECTION: GENERATE TEAMS TAB -->
+    <div id="generateTeamsTabContent" style="display: none;">
+      <div class="team-gen-container">
+        <!-- Header -->
+        <div class="team-gen-header">
+          <div>
+            <h2 class="section-title"><span>&#9878;&#65039;</span> Generate Balanced Teams</h2>
+            <div class="section-subtitle">Auto-balanced by ELO ratings with optimal, even gender distribution</div>
+          </div>
+          <button class="btn btn-outline" style="font-size: 12px; padding: 6px 12px;" onclick="switchMainTab('leaderboard')">
+            <span>&#8592;</span> Back to Leaderboard
+          </button>
+        </div>
+
+        <!-- Note at Top: Tap players available today -->
+        <div class="team-gen-note-card">
+          <div class="team-gen-note-badge">
+            <span class="team-gen-note-icon">&#128073;</span>
+            <span class="team-gen-note-title">Tap players available today</span>
+          </div>
+          <div class="team-gen-note-desc">
+            Select attending players below to form fair matches. Teams are mathematically balanced by blended ELO rating while preserving an even split of players across genders.
+          </div>
+        </div>
+
+        <!-- Config & Controls Bar -->
+        <div class="team-gen-config-card">
+          <div class="team-gen-config-row">
+            <div class="team-gen-field">
+              <label for="teamGenSizeSelect" class="team-gen-label">
+                <span>&#128101;</span> # Players per team:
+              </label>
+              <select id="teamGenSizeSelect" class="team-gen-select" onchange="handleTeamGenConfigChange()">
+                <option value="2" selected>2 Players (Doubles)</option>
+                <option value="3">3 Players (Triples)</option>
+                <option value="4">4 Players (Quads)</option>
+              </select>
+            </div>
+
+            <div class="team-gen-selection-actions">
+              <button type="button" class="btn btn-ghost team-gen-quick-btn" onclick="selectAllPlayersForTeams()">
+                &#9745; Select All
+              </button>
+              <button type="button" class="btn btn-ghost team-gen-quick-btn" onclick="clearAllPlayersForTeams()">
+                &#9746; Clear All
+              </button>
+            </div>
+          </div>
+
+          <!-- Live Status & Validation Feedback Box -->
+          <div id="teamGenValidationBox" class="team-gen-validation-box info">
+            <div class="team-gen-val-text" id="teamGenValidationText">
+              Please tap the players available today below.
+            </div>
+          </div>
+
+          <!-- Generate Teams Action Button -->
+          <div class="team-gen-action-bar">
+            <button id="generateTeamsBtn" class="btn btn-primary team-gen-submit-btn" onclick="generateBalancedTeams()" disabled>
+              <span>&#9889;</span> Generate Teams
+            </button>
+          </div>
+        </div>
+
+        <!-- Player Tiles Section -->
+        <div class="team-gen-section-header">
+          <div class="team-gen-section-title">
+            <span>&#127992;</span> Available Players
+            <span class="team-gen-count-pill" id="teamGenSelectedCountPill">0 selected</span>
+          </div>
+          <div class="team-gen-search-wrap">
+            <input type="text" id="teamGenSearchInput" class="team-gen-search-input" placeholder="Filter players..." oninput="renderTeamGenPlayerTiles()">
+          </div>
+        </div>
+
+        <!-- Tiles Grid -->
+        <div class="team-gen-tiles-grid" id="teamGenPlayerTilesGrid">
+          <!-- Populated dynamically -->
+        </div>
+
+        <!-- Generated Teams Output Section (hidden until generated) -->
+        <div id="generatedTeamsResultsSection" class="team-gen-results-section" style="display: none;">
+          <!-- Results Header & Metrics -->
+          <div class="team-gen-results-header">
+            <div>
+              <h3 class="team-gen-results-title"><span>&#127942;</span> Generated Balanced Teams</h3>
+              <div class="team-gen-results-subtitle" id="teamGenResultsSubtitle">
+                Evenly balanced by ELO rating &amp; gender distribution
+              </div>
+            </div>
+            <div class="team-gen-results-actions">
+              <button class="btn btn-primary team-gen-share-btn" id="teamGenCopyBtn" onclick="copyGeneratedTeamsToClipboard()">
+                <span>&#128203;</span> Copy for WhatsApp
+              </button>
+              <button class="btn btn-outline team-gen-reshuffle-btn" onclick="generateBalancedTeams()">
+                <span>&#127922;</span> Re-shuffle
+              </button>
+            </div>
+          </div>
+
+          <!-- Summary Stats Strip -->
+          <div class="team-gen-summary-strip" id="teamGenSummaryStrip">
+            <!-- Dynamic stats pills -->
+          </div>
+
+          <!-- Generated Teams Grid -->
+          <div class="team-gen-teams-grid" id="teamGenTeamsGrid">
+            <!-- Team cards populated dynamically -->
+          </div>
+        </div>
+
+      </div>
+    </div>
+
 
     <div id="historyTabContent" style="display: none;">
       <!-- SECTION 4: MATCH HISTORY FEED -->
@@ -4401,6 +5071,10 @@
       populatePlayerDropdowns();
       populateChampionsDropdowns();
       renderHonorsUI();
+      if (appState.activeMainTab === 'teams') {
+        renderTeamGenPlayerTiles();
+        updateTeamGenValidation();
+      }
     }
 
     function renderStandingsTable(standings) {
@@ -6957,12 +7631,496 @@
       switchMainTab('elotrends');
     }
 
+    /* ==========================================================================
+       TEAM GENERATOR LOGIC & BALANCING ALGORITHM
+       ========================================================================== */
+    const teamGenState = {
+      selectedPlayers: new Set(),
+      teamSize: 2,
+      generatedTeams: null
+    };
+
+    function openGenerateTeamsTab() {
+      closeBurgerMenu();
+      switchMainTab('teams');
+    }
+
+    function initGenerateTeamsView() {
+      const sizeSelect = document.getElementById('teamGenSizeSelect');
+      if (sizeSelect) {
+        teamGenState.teamSize = parseInt(sizeSelect.value, 10) || 2;
+      }
+      renderTeamGenPlayerTiles();
+      updateTeamGenValidation();
+    }
+
+    function handleTeamGenConfigChange() {
+      const sizeSelect = document.getElementById('teamGenSizeSelect');
+      if (sizeSelect) {
+        teamGenState.teamSize = parseInt(sizeSelect.value, 10) || 2;
+      }
+      updateTeamGenValidation();
+    }
+
+    function togglePlayerTile(playerName) {
+      if (teamGenState.selectedPlayers.has(playerName)) {
+        teamGenState.selectedPlayers.delete(playerName);
+      } else {
+        teamGenState.selectedPlayers.add(playerName);
+      }
+      renderTeamGenPlayerTiles();
+      updateTeamGenValidation();
+    }
+
+    function selectAllPlayersForTeams() {
+      const standings = computeStandings();
+      standings.forEach(p => teamGenState.selectedPlayers.add(p.name));
+      renderTeamGenPlayerTiles();
+      updateTeamGenValidation();
+    }
+
+    function clearAllPlayersForTeams() {
+      teamGenState.selectedPlayers.clear();
+      renderTeamGenPlayerTiles();
+      updateTeamGenValidation();
+    }
+
+    function updateTeamGenValidation() {
+      const K = teamGenState.selectedPlayers.size;
+      const S = teamGenState.teamSize;
+      const btn = document.getElementById('generateTeamsBtn');
+      const box = document.getElementById('teamGenValidationBox');
+      const text = document.getElementById('teamGenValidationText');
+      const countPill = document.getElementById('teamGenSelectedCountPill');
+
+      if (countPill) {
+        countPill.textContent = `${K} selected`;
+      }
+
+      if (!btn || !box || !text) return;
+
+      if (K === 0) {
+        box.className = 'team-gen-validation-box info';
+        text.innerHTML = 'Please tap the players available today below to begin.';
+        btn.disabled = true;
+        btn.classList.add('disabled');
+        return;
+      }
+
+      if (K < S) {
+        box.className = 'team-gen-validation-box error';
+        text.innerHTML = `&#9888;&#65039; Need at least <strong>${S} players</strong> to form a team (${K} selected). Tap ${S - K} more player${(S - K) > 1 ? 's' : ''}.`;
+        btn.disabled = true;
+        btn.classList.add('disabled');
+        return;
+      }
+
+      const remainder = K % S;
+      if (remainder !== 0) {
+        const needed = S - remainder;
+        box.className = 'team-gen-validation-box error';
+        text.innerHTML = `&#9888;&#65039; <strong>${K} players selected</strong>. Cannot form teams of ${S} (${remainder} player${remainder > 1 ? 's' : ''} left over). Tap <strong>${needed} more player${needed > 1 ? 's' : ''}</strong> or deselect ${remainder} to balance.`;
+        btn.disabled = true;
+        btn.classList.add('disabled');
+        return;
+      }
+
+      // Valid count!
+      const T = K / S;
+      const standings = computeStandings();
+      const selectedList = standings.filter(p => teamGenState.selectedPlayers.has(p.name));
+      const femaleCount = selectedList.filter(p => (p.gender || '').toLowerCase() === 'female').length;
+      const maleCount = selectedList.length - femaleCount;
+
+      box.className = 'team-gen-validation-box success';
+      text.innerHTML = `&#9989; <strong>${K} players selected</strong> (${maleCount} &#9794;, ${femaleCount} &#9792;). Ready to generate <strong>${T} balanced teams of ${S}</strong>!`;
+      btn.disabled = false;
+      btn.classList.remove('disabled');
+    }
+
+    function renderTeamGenPlayerTiles() {
+      const grid = document.getElementById('teamGenPlayerTilesGrid');
+      if (!grid) return;
+
+      const standings = computeStandings();
+      const searchInput = document.getElementById('teamGenSearchInput');
+      const query = searchInput ? searchInput.value.trim().toLowerCase() : '';
+
+      let playersToRender = standings;
+      if (query) {
+        playersToRender = standings.filter(p => p.name.toLowerCase().includes(query));
+      }
+
+      if (playersToRender.length === 0) {
+        grid.innerHTML = '<div style="grid-column: 1 / -1; padding: 20px; text-align: center; color: #94a3b8; font-size: 13px;">No players match your search filter.</div>';
+        return;
+      }
+
+      grid.innerHTML = playersToRender.map(p => {
+        const isSelected = teamGenState.selectedPlayers.has(p.name);
+        const isFemale = (p.gender || '').toLowerCase() === 'female';
+        const genderClass = isFemale ? 'female' : 'male';
+        const genderSymbol = isFemale ? '&#9792; F' : '&#9794; M';
+        const tier = getBadmintonSkillTier(p.elo);
+        const encodedName = encodeURIComponent(p.name);
+
+        return `
+          <div class="team-gen-player-tile ${isSelected ? 'selected' : ''}" onclick="togglePlayerTile(decodeURIComponent('${encodedName}'))" data-player-name="${encodedName}">
+            <div class="team-gen-tile-top">
+              <span class="team-gen-gender-pill ${genderClass}">${genderSymbol}</span>
+              <div class="team-gen-tile-check">${isSelected ? '&#10003;' : ''}</div>
+            </div>
+            <div class="team-gen-tile-name" title="${p.name}">${p.name}</div>
+            <div class="team-gen-tile-elo" style="color: ${tier.color};">
+              <span>${tier.icon}</span>
+              <span>${p.elo} ELO</span>
+            </div>
+          </div>
+        `;
+      }).join('');
+    }
+
+    function generateBalancedTeams() {
+      const K = teamGenState.selectedPlayers.size;
+      const S = teamGenState.teamSize;
+      if (K === 0 || K < S || K % S !== 0) {
+        updateTeamGenValidation();
+        return;
+      }
+
+      const T = K / S;
+      const standings = computeStandings();
+      const selectedList = standings.filter(p => teamGenState.selectedPlayers.has(p.name));
+
+      const females = selectedList.filter(p => (p.gender || '').toLowerCase() === 'female');
+      const males = selectedList.filter(p => (p.gender || '').toLowerCase() !== 'female');
+      const F = females.length;
+      const M = males.length;
+
+      const kMin = Math.floor(F / T);
+      const kMax = Math.ceil(F / T);
+
+      // Sort descending by ELO
+      females.sort((a, b) => (b.elo || 1200) - (a.elo || 1200));
+      males.sort((a, b) => (b.elo || 1200) - (a.elo || 1200));
+
+      const teams = Array.from({ length: T }, () => []);
+      const teamsWithKMax = F - kMin * T;
+
+      // Distribute females
+      let fIdx = 0;
+      for (let t = 0; t < T; t++) {
+        const quota = t < teamsWithKMax ? kMax : kMin;
+        for (let q = 0; q < quota; q++) {
+          if (fIdx < females.length) {
+            teams[t].push(females[fIdx++]);
+          }
+        }
+      }
+
+      // Fill remaining slots with males in serpentine order
+      let mIdx = 0;
+      for (let slot = 0; slot < S; slot++) {
+        const order = (slot % 2 === 0) ? [...Array(T).keys()] : [...Array(T).keys()].reverse();
+        for (const t of order) {
+          if (teams[t].length < S && mIdx < males.length) {
+            teams[t].push(males[mIdx++]);
+          }
+        }
+      }
+
+      function getTeamAvg(team) {
+        const sum = team.reduce((acc, p) => acc + (p.elo || 1200), 0);
+        return sum / team.length;
+      }
+
+      function getCost(currentTeams) {
+        const avgs = currentTeams.map(getTeamAvg);
+        let minE = avgs[0], maxE = avgs[0], sumE = 0;
+        for (let i = 0; i < avgs.length; i++) {
+          if (avgs[i] < minE) minE = avgs[i];
+          if (avgs[i] > maxE) maxE = avgs[i];
+          sumE += avgs[i];
+        }
+        const mean = sumE / avgs.length;
+        let variance = 0;
+        for (let i = 0; i < avgs.length; i++) {
+          variance += (avgs[i] - mean) * (avgs[i] - mean);
+        }
+        variance /= avgs.length;
+        return variance * 10 + (maxE - minE) * 60;
+      }
+
+      let bestTeams = teams.map(t => [...t]);
+      let bestCost = getCost(bestTeams);
+
+      // Multi-start Simulated Annealing local search
+      const restarts = 20;
+      const iters = 1200;
+
+      for (let r = 0; r < restarts; r++) {
+        let curTeams = bestTeams.map(t => [...t]);
+        let curCost = getCost(curTeams);
+        let temp = 35.0;
+        const cool = 0.985;
+
+        for (let it = 0; it < iters; it++) {
+          const t1 = Math.floor(Math.random() * T);
+          let t2 = Math.floor(Math.random() * T);
+          while (t2 === t1 && T > 1) t2 = Math.floor(Math.random() * T);
+
+          const team1 = curTeams[t1];
+          const team2 = curTeams[t2];
+
+          const p1Idx = Math.floor(Math.random() * team1.length);
+          const p2Idx = Math.floor(Math.random() * team2.length);
+
+          const p1 = team1[p1Idx];
+          const p2 = team2[p2Idx];
+
+          const p1IsF = (p1.gender || '').toLowerCase() === 'female' ? 1 : 0;
+          const p2IsF = (p2.gender || '').toLowerCase() === 'female' ? 1 : 0;
+
+          let valid = false;
+          if (p1IsF === p2IsF) {
+            valid = true;
+          } else {
+            const t1F = team1.reduce((acc, p) => acc + ((p.gender || '').toLowerCase() === 'female' ? 1 : 0), 0);
+            const t2F = team2.reduce((acc, p) => acc + ((p.gender || '').toLowerCase() === 'female' ? 1 : 0), 0);
+
+            const newT1F = t1F - p1IsF + p2IsF;
+            const newT2F = t2F - p2IsF + p1IsF;
+
+            if (newT1F >= kMin && newT1F <= kMax && newT2F >= kMin && newT2F <= kMax) {
+              valid = true;
+            }
+          }
+
+          if (valid) {
+            team1[p1Idx] = p2;
+            team2[p2Idx] = p1;
+
+            const newCost = getCost(curTeams);
+            const delta = newCost - curCost;
+            if (delta < 0 || Math.exp(-delta / Math.max(temp, 0.01)) > Math.random()) {
+              curCost = newCost;
+              if (curCost < bestCost) {
+                bestCost = curCost;
+                bestTeams = curTeams.map(t => [...t]);
+              }
+            } else {
+              team1[p1Idx] = p1;
+              team2[p2Idx] = p2;
+            }
+          }
+          temp *= cool;
+        }
+      }
+
+      // Sort players inside each team descending by ELO
+      bestTeams.forEach(t => t.sort((a, b) => (b.elo || 1200) - (a.elo || 1200)));
+
+      // Sort teams descending by blended ELO
+      bestTeams.sort((a, b) => getTeamAvg(b) - getTeamAvg(a));
+
+      teamGenState.generatedTeams = bestTeams;
+      renderGeneratedTeamsResults(bestTeams, S);
+    }
+
+    function renderGeneratedTeamsResults(teams, teamSize) {
+      const resultsSection = document.getElementById('generatedTeamsResultsSection');
+      const teamsGrid = document.getElementById('teamGenTeamsGrid');
+      const summaryStrip = document.getElementById('teamGenSummaryStrip');
+      const subtitle = document.getElementById('teamGenResultsSubtitle');
+
+      if (!resultsSection || !teamsGrid || !summaryStrip) return;
+
+      const teamAvgs = teams.map(t => {
+        const sum = t.reduce((acc, p) => acc + (p.elo || 1200), 0);
+        return Math.round(sum / t.length);
+      });
+
+      const overallAvg = Math.round(teamAvgs.reduce((a, b) => a + b, 0) / teamAvgs.length);
+      const minElo = Math.min(...teamAvgs);
+      const maxElo = Math.max(...teamAvgs);
+      const spread = maxElo - minElo;
+
+      const totalPlayers = teams.reduce((acc, t) => acc + t.length, 0);
+      let mixedCount = 0, allMaleCount = 0, allFemaleCount = 0;
+
+      teams.forEach(t => {
+        const f = t.filter(p => (p.gender || '').toLowerCase() === 'female').length;
+        if (f === 0) allMaleCount++;
+        else if (f === t.length) allFemaleCount++;
+        else mixedCount++;
+      });
+
+      let genderBreakdownText = '';
+      if (mixedCount > 0 && allMaleCount > 0) {
+        genderBreakdownText = `${mixedCount} Mixed, ${allMaleCount} Men's`;
+      } else if (mixedCount > 0) {
+        genderBreakdownText = `${mixedCount} Mixed`;
+      } else {
+        genderBreakdownText = `${allMaleCount} Men's, ${allFemaleCount} Women's`;
+      }
+
+      if (subtitle) {
+        subtitle.innerHTML = `Generated ${teams.length} teams (${totalPlayers} players) &bull; Max ELO spread: <strong>${spread} pts</strong>`;
+      }
+
+      summaryStrip.innerHTML = `
+        <div class="team-gen-stat-chip">
+          <span>&#127942;</span>
+          <span>Teams: <strong>${teams.length}</strong></span>
+        </div>
+        <div class="team-gen-stat-chip">
+          <span>&#9878;&#65039;</span>
+          <span>Average Blended ELO: <strong>${overallAvg}</strong></span>
+        </div>
+        <div class="team-gen-stat-chip">
+          <span>&#128202;</span>
+          <span>Max Spread: <strong>${spread} pts</strong></span>
+        </div>
+        <div class="team-gen-stat-chip">
+          <span>&#128107;</span>
+          <span>Gender Split: <strong>${genderBreakdownText}</strong></span>
+        </div>
+      `;
+
+      teamsGrid.innerHTML = teams.map((team, idx) => {
+        const blendedElo = teamAvgs[idx];
+        const tier = getBadmintonSkillTier(blendedElo);
+
+        const females = team.filter(p => (p.gender || '').toLowerCase() === 'female').length;
+        const males = team.length - females;
+        const genderLabel = `${males}&#9794; &middot; ${females}&#9792;`;
+
+        const rosterHtml = team.map(p => {
+          const isF = (p.gender || '').toLowerCase() === 'female';
+          const pTier = getBadmintonSkillTier(p.elo);
+          return `
+            <div class="team-gen-roster-item">
+              <div class="team-gen-roster-player-info">
+                <span>${p.avatar || '\u{1F3F8}'}</span>
+                <span class="team-gen-roster-name" title="${p.name}">${p.name}</span>
+                <span class="team-gen-gender-pill ${isF ? 'female' : 'male'}">${isF ? '&#9792;' : '&#9794;'}</span>
+              </div>
+              <div class="team-gen-roster-elo" style="color: ${pTier.color};">
+                ${p.elo} ELO
+              </div>
+            </div>
+          `;
+        }).join('');
+
+        return `
+          <div class="team-gen-team-card">
+            <div class="team-gen-team-header">
+              <div class="team-gen-team-title">
+                <span>Team ${idx + 1}</span>
+                <span style="font-size: 11px; font-weight: 600; color: #94a3b8;">(${genderLabel})</span>
+              </div>
+              <div class="team-gen-blended-pill" style="color: ${tier.color}; background: ${tier.bg}; border-color: ${tier.border};">
+                <span>${tier.icon}</span>
+                <span>${blendedElo} ELO</span>
+              </div>
+            </div>
+            <div class="team-gen-roster-list">
+              ${rosterHtml}
+            </div>
+          </div>
+        `;
+      }).join('');
+
+      resultsSection.style.display = 'block';
+      resultsSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+
+    function copyGeneratedTeamsToClipboard() {
+      if (!teamGenState.generatedTeams || teamGenState.generatedTeams.length === 0) return;
+
+      const teams = teamGenState.generatedTeams;
+      const teamAvgs = teams.map(t => {
+        const sum = t.reduce((acc, p) => acc + (p.elo || 1200), 0);
+        return Math.round(sum / t.length);
+      });
+      const overallAvg = Math.round(teamAvgs.reduce((a, b) => a + b, 0) / teamAvgs.length);
+      const minElo = Math.min(...teamAvgs);
+      const maxElo = Math.max(...teamAvgs);
+      const spread = maxElo - minElo;
+      const totalPlayers = teams.reduce((acc, t) => acc + t.length, 0);
+
+      const dateStr = new Date().toLocaleDateString(undefined, { weekday: 'short', month: 'short', day: 'numeric' });
+
+      let text = `*BALANCED BADMINTON TEAMS*\n`;
+      text += `Date: ${dateStr}\n`;
+      text += `Players: ${totalPlayers} | Teams: ${teams.length} (${teams[0].length} per team)\n`;
+      text += `Avg ELO: ${overallAvg} | Max Spread: ${spread} pts\n`;
+      text += `------------------------------------\n\n`;
+
+      teams.forEach((team, idx) => {
+        const avg = teamAvgs[idx];
+        const tier = getBadmintonSkillTier(avg);
+        text += `*Team ${idx + 1}* (Blended ELO: ${avg} - ${tier.tier})\n`;
+        team.forEach(p => {
+          const isF = (p.gender || '').toLowerCase() === 'female';
+          text += `  * ${p.name} (${p.elo} ELO, ${isF ? 'F' : 'M'})\n`;
+        });
+        text += `\n`;
+      });
+
+      text += `Generated with TK Baddy\n`;
+
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(text).then(() => {
+          showCopyFeedback();
+        }).catch(() => {
+          fallbackCopy(text);
+        });
+      } else {
+        fallbackCopy(text);
+      }
+    }
+
+    function fallbackCopy(text) {
+      const ta = document.createElement('textarea');
+      ta.value = text;
+      ta.style.position = 'fixed';
+      ta.style.opacity = '0';
+      document.body.appendChild(ta);
+      ta.focus();
+      ta.select();
+      try {
+        document.execCommand('copy');
+        showCopyFeedback();
+      } catch (err) {
+        alert('Could not copy automatically. Please copy manually.');
+      }
+      document.body.removeChild(ta);
+    }
+
+    function showCopyFeedback() {
+      const btn = document.getElementById('teamGenCopyBtn');
+      if (btn) {
+        const orig = btn.innerHTML;
+        btn.innerHTML = '<span>&#10003;</span> Copied for WhatsApp!';
+        btn.style.background = '#10b981';
+        setTimeout(() => {
+          btn.innerHTML = orig;
+          btn.style.background = '';
+        }, 2200);
+      }
+      if (typeof showToast === 'function') {
+        showToast('Teams copied to clipboard!');
+      }
+    }
+
     function switchMainTab(tabName) {
       appState.activeMainTab = tabName;
       const leaderboardContent = document.getElementById('leaderboardTabContent');
       const badgesContent = document.getElementById('badgesTabContent');
       const historyContent = document.getElementById('historyTabContent');
       const eloTrendsContent = document.getElementById('eloTrendsTabContent');
+      const generateTeamsContent = document.getElementById('generateTeamsTabContent');
 
       const tabBtnLeaderboard = document.getElementById('tabBtnLeaderboard');
       const tabBtnBadges = document.getElementById('tabBtnBadges');
@@ -6972,6 +8130,7 @@
       if (badgesContent) badgesContent.style.display = 'none';
       if (historyContent) historyContent.style.display = 'none';
       if (eloTrendsContent) eloTrendsContent.style.display = 'none';
+      if (generateTeamsContent) generateTeamsContent.style.display = 'none';
 
       if (tabBtnLeaderboard) tabBtnLeaderboard.classList.remove('active');
       if (tabBtnBadges) tabBtnBadges.classList.remove('active');
@@ -6980,6 +8139,9 @@
       if (tabName === 'elotrends') {
         if (eloTrendsContent) eloTrendsContent.style.display = 'block';
         initEloTrendsView();
+      } else if (tabName === 'teams') {
+        if (generateTeamsContent) generateTeamsContent.style.display = 'block';
+        initGenerateTeamsView();
       } else if (tabName === 'badges') {
         if (badgesContent) badgesContent.style.display = 'block';
         if (tabBtnBadges) tabBtnBadges.classList.add('active');

@@ -10033,9 +10033,18 @@
         const isTeamMatch = m.format === 'doubles' || (t1.length >= 2 && t2.length >= 2) || myTeam.length > 1;
         if (!isTeamMatch) return; // Singles match without partners
 
-        const s1 = parseInt(m.team1Score, 10) || 0;
-        const s2 = parseInt(m.team2Score, 10) || 0;
-        const isWinner = inT1 ? (m.winner === 1 || s1 > s2) : (m.winner === 2 || s2 > s1);
+        // Parse sets and points
+        let setScores = [];
+        if (Array.isArray(m.sets) && m.sets.length > 0) {
+          setScores = m.sets.map(s => ({
+            my: parseInt(inT1 ? s.t1 : s.t2, 10) || 0,
+            opp: parseInt(inT1 ? s.t2 : s.t1, 10) || 0
+          }));
+        }
+
+        const mySetsWon = setScores.filter(s => s.my > s.opp).length;
+        const oppSetsWon = setScores.filter(s => s.opp > s.my).length;
+        const isWinner = (m.winner === (inT1 ? 1 : 2)) || (mySetsWon > oppSetsWon);
 
         if (myTeam.includes(playerY)) {
           withY.played++;
@@ -10044,8 +10053,7 @@
           matchesTogether.push({
             match: m,
             isWinner,
-            myScore: inT1 ? s1 : s2,
-            oppScore: inT1 ? s2 : s1,
+            setScores,
             oppTeam
           });
         } else {
@@ -10188,15 +10196,25 @@
                 const badge = item.isWinner 
                   ? '<span style="background: rgba(0, 245, 155, 0.15); color: #00f59b; border: 1px solid rgba(0, 245, 155, 0.3); font-size: 10px; font-weight: 800; padding: 2px 6px; border-radius: 4px;">WON</span>'
                   : '<span style="background: rgba(244, 63, 94, 0.15); color: #f43f5e; border: 1px solid rgba(244, 63, 94, 0.3); font-size: 10px; font-weight: 800; padding: 2px 6px; border-radius: 4px;">LOST</span>';
+
+                const oppNames = (item.oppTeam || []).map(escapeHtml).join(' &amp; ');
+
+                const hasValidScores = item.setScores && item.setScores.length > 0 && item.setScores.some(s => s.my > 0 || s.opp > 0);
+                let scoreHtml = '';
+                if (hasValidScores) {
+                  const formattedSets = item.setScores.map(s => `<span style="color: ${s.my > s.opp ? '#00f59b' : '#f43f5e'}; font-weight: 700;">${s.my}</span>-<span style="color: #94a3b8; font-weight: 600;">${s.opp}</span>`).join(', ');
+                  scoreHtml = `<span style="margin-right: 6px;">Score: ${formattedSets}</span>`;
+                }
+
                 return `
                   <div style="background: var(--bg-card); border: 1px solid var(--border-subtle); border-radius: var(--radius-sm); padding: 10px 12px; display: flex; justify-content: space-between; align-items: center; gap: 10px; flex-wrap: wrap;">
                     <div style="display: flex; align-items: center; gap: 8px;">
                       ${badge}
                       <span style="font-size: 12px; color: var(--text-dim);">${escapeHtml(item.match.date || 'Recent match')}</span>
                     </div>
-                    <div style="font-size: 13px; font-weight: 700; color: var(--text-main);">
-                      Score: <span style="color: ${item.isWinner ? '#00f59b' : '#f43f5e'}">${item.myScore}</span> - <span>${item.oppScore}</span>
-                      <span style="font-size: 11px; font-weight: 400; color: var(--text-dim); margin-left: 6px;">vs ${escapeHtml(item.oppTeam.join(' &amp; '))}</span>
+                    <div style="font-size: 13px; font-weight: 700; color: var(--text-main); display: flex; align-items: center; gap: 4px; flex-wrap: wrap;">
+                      ${scoreHtml}
+                      <span style="font-size: 11.5px; font-weight: 500; color: var(--text-dim);">vs ${oppNames}</span>
                     </div>
                   </div>
                 `;

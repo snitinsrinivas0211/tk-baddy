@@ -3144,32 +3144,25 @@
     }
 
     .team-gen-share-btn {
-      font-size: 12px;
-      padding: 7px 14px;
+      font-size: 13px;
+      padding: 8px 18px;
       display: flex;
       align-items: center;
-      gap: 6px;
-      background: #22c55e;
-      color: #020617;
+      gap: 8px;
+      background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+      color: #ffffff;
       border: none;
       font-weight: 700;
       border-radius: var(--radius-sm);
       cursor: pointer;
-      transition: all 0.2s;
+      box-shadow: 0 4px 14px rgba(16, 185, 129, 0.3);
+      transition: all 0.2s ease;
     }
 
     .team-gen-share-btn:hover {
-      background: #16a34a;
+      background: linear-gradient(135deg, #059669 0%, #047857 100%);
       transform: translateY(-1px);
-    }
-
-    .team-gen-reshuffle-btn {
-      font-size: 12px;
-      padding: 7px 14px;
-      display: flex;
-      align-items: center;
-      gap: 6px;
-      cursor: pointer;
+      box-shadow: 0 6px 18px rgba(16, 185, 129, 0.45);
     }
 
     .team-gen-summary-strip {
@@ -3825,11 +3818,8 @@
               </div>
             </div>
             <div class="team-gen-results-actions">
-              <button class="btn btn-primary team-gen-share-btn" id="teamGenCopyBtn" onclick="copyGeneratedTeamsToClipboard()">
-                <span>&#128203;</span> Copy for WhatsApp
-              </button>
-              <button class="btn btn-outline team-gen-reshuffle-btn" onclick="generateBalancedTeams()">
-                <span>&#127922;</span> Re-shuffle
+              <button class="btn btn-primary team-gen-share-btn" id="teamGenShareBtn" onclick="shareTeamsAsImage()" title="Share Teams Image on WhatsApp">
+                <span>&#128228;</span> Share
               </button>
             </div>
           </div>
@@ -7981,6 +7971,13 @@
     }
 
     function renderGeneratedTeamsResults(teams, teamSize) {
+      // Ensure strictly sorted descending (high to low) by blended ELO
+      teams.sort((a, b) => {
+        const avgA = a.reduce((sum, p) => sum + (p.elo || 1200), 0) / a.length;
+        const avgB = b.reduce((sum, p) => sum + (p.elo || 1200), 0) / b.length;
+        return avgB - avgA;
+      });
+
       const resultsSection = document.getElementById('generatedTeamsResultsSection');
       const teamsGrid = document.getElementById('teamGenTeamsGrid');
       const summaryStrip = document.getElementById('teamGenSummaryStrip');
@@ -8088,83 +8085,335 @@
       resultsSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
     }
 
-    function copyGeneratedTeamsToClipboard() {
-      if (!teamGenState.generatedTeams || teamGenState.generatedTeams.length === 0) return;
-
-      const teams = teamGenState.generatedTeams;
-      const teamAvgs = teams.map(t => {
-        const sum = t.reduce((acc, p) => acc + (p.elo || 1200), 0);
-        return Math.round(sum / t.length);
-      });
-      const overallAvg = Math.round(teamAvgs.reduce((a, b) => a + b, 0) / teamAvgs.length);
-      const minElo = Math.min(...teamAvgs);
-      const maxElo = Math.max(...teamAvgs);
-      const spread = maxElo - minElo;
-      const totalPlayers = teams.reduce((acc, t) => acc + t.length, 0);
-
-      const dateStr = new Date().toLocaleDateString(undefined, { weekday: 'short', month: 'short', day: 'numeric' });
-
-      let text = `*BALANCED BADMINTON TEAMS*\n`;
-      text += `Date: ${dateStr}\n`;
-      text += `Players: ${totalPlayers} | Teams: ${teams.length} (${teams[0].length} per team)\n`;
-      text += `Avg ELO: ${overallAvg} | Max Spread: ${spread} pts\n`;
-      text += `------------------------------------\n\n`;
-
-      teams.forEach((team, idx) => {
-        const avg = teamAvgs[idx];
-        const tier = getPlayerSkillTier(avg);
-        text += `*Team ${idx + 1}* (Blended ELO: ${avg} - ${tier.tier})\n`;
-        team.forEach(p => {
-          const isF = (p.gender || '').toLowerCase() === 'female';
-          text += `  * ${p.name} (${p.elo} ELO, ${isF ? 'F' : 'M'})\n`;
-        });
-        text += `\n`;
-      });
-
-      text += `Generated with TK Baddy\n`;
-
-      if (navigator.clipboard && navigator.clipboard.writeText) {
-        navigator.clipboard.writeText(text).then(() => {
-          showCopyFeedback();
-        }).catch(() => {
-          fallbackCopy(text);
-        });
-      } else {
-        fallbackCopy(text);
+    async function shareTeamsAsImage() {
+      if (!teamGenState.generatedTeams || teamGenState.generatedTeams.length === 0) {
+        showToast("Please generate teams first!");
+        return;
       }
-    }
 
-    function fallbackCopy(text) {
-      const ta = document.createElement('textarea');
-      ta.value = text;
-      ta.style.position = 'fixed';
-      ta.style.opacity = '0';
-      document.body.appendChild(ta);
-      ta.focus();
-      ta.select();
-      try {
-        document.execCommand('copy');
-        showCopyFeedback();
-      } catch (err) {
-        alert('Could not copy automatically. Please copy manually.');
-      }
-      document.body.removeChild(ta);
-    }
-
-    function showCopyFeedback() {
-      const btn = document.getElementById('teamGenCopyBtn');
+      const btn = document.getElementById('teamGenShareBtn');
+      const origHtml = btn ? btn.innerHTML : '';
       if (btn) {
-        const orig = btn.innerHTML;
-        btn.innerHTML = '<span>&#10003;</span> Copied for WhatsApp!';
-        btn.style.background = '#10b981';
-        setTimeout(() => {
-          btn.innerHTML = orig;
-          btn.style.background = '';
-        }, 2200);
+        btn.disabled = true;
+        btn.innerHTML = '<span>&#9203;</span> Generating Image...';
       }
-      if (typeof showToast === 'function') {
-        showToast('Teams copied to clipboard!');
+
+      try {
+        const blob = await generateTeamsImageBlob(teamGenState.generatedTeams, teamGenState.teamSize);
+        if (!blob) {
+          alert("Could not generate teams image. Please try again.");
+          return;
+        }
+
+        const dateStr = new Date().toISOString().slice(0, 10);
+        const fileName = `TK_Baddy_Teams_${dateStr}.png`;
+        const file = new File([blob], fileName, { type: 'image/png' });
+
+        // If Web Share API supports file sharing (Mobile WhatsApp, Telegram, etc.)
+        if (navigator.canShare && navigator.canShare({ files: [file] })) {
+          await navigator.share({
+            files: [file],
+            title: 'Balanced Teams - TK Baddy Championships',
+            text: 'Official balanced teams from TK Baddy Championships! \u{1F3F8}'
+          });
+          showToast("Teams shared successfully! \u2728");
+        } else {
+          // Direct download fallback for desktop browsers
+          const url = URL.createObjectURL(blob);
+          const a = document.createElement('a');
+          a.href = url;
+          a.download = fileName;
+          document.body.appendChild(a);
+          a.click();
+          document.body.removeChild(a);
+          setTimeout(() => URL.revokeObjectURL(url), 4000);
+          showToast("Teams image downloaded! \u2728");
+        }
+      } catch (err) {
+        if (err.name !== 'AbortError') {
+          console.error("Error sharing teams:", err);
+          alert("Could not share image: " + err.message);
+        }
+      } finally {
+        if (btn) {
+          btn.disabled = false;
+          btn.innerHTML = origHtml;
+        }
       }
+    }
+
+    function generateTeamsImageBlob(teams, teamSize) {
+      return new Promise(async (resolve) => {
+        if (document.fonts && document.fonts.ready) {
+          try {
+            await document.fonts.ready;
+          } catch (e) {}
+        }
+
+        // 1. Sort teams strictly high to low by blended ELO rating
+        const sortedTeams = [...teams].sort((a, b) => {
+          const avgA = a.reduce((sum, p) => sum + (p.elo || 1200), 0) / a.length;
+          const avgB = b.reduce((sum, p) => sum + (p.elo || 1200), 0) / b.length;
+          return avgB - avgA;
+        });
+
+        const T = sortedTeams.length;
+        const S = teamSize;
+
+        // Calculate blended stats for each team
+        const teamStats = sortedTeams.map(t => {
+          const sum = t.reduce((acc, p) => acc + (p.elo || 1200), 0);
+          const avg = Math.round(sum / t.length);
+          const females = t.filter(p => (p.gender || '').toLowerCase() === 'female').length;
+          const males = t.length - females;
+          return { avg, females, males, tier: getPlayerSkillTier(avg) };
+        });
+
+        const allAvgs = teamStats.map(s => s.avg);
+        const overallAvg = Math.round(allAvgs.reduce((a, b) => a + b, 0) / allAvgs.length);
+        const minElo = Math.min(...allAvgs);
+        const maxElo = Math.max(...allAvgs);
+        const spread = maxElo - minElo;
+        const totalPlayers = sortedTeams.reduce((sum, t) => sum + t.length, 0);
+
+        // Responsive grid dimensions
+        const canvasW = 1200;
+        const padX = 50;
+        const headerH = 190;
+        const footerH = 65;
+
+        const useTwoCols = T >= 4;
+        const cols = useTwoCols ? 2 : 1;
+        const rows = Math.ceil(T / cols);
+
+        const playerRowH = 38;
+        const cardHeaderH = 46;
+        const cardPadY = 14;
+        const cardH = cardHeaderH + S * playerRowH + cardPadY;
+        const gapY = 16;
+        const gapX = 20;
+
+        const contentH = rows * cardH + (rows - 1) * gapY;
+        const canvasH = headerH + contentH + footerH + 30;
+
+        const canvas = document.createElement('canvas');
+        canvas.width = canvasW;
+        canvas.height = canvasH;
+        const ctx = canvas.getContext('2d');
+
+        ctx.imageSmoothingEnabled = true;
+        ctx.imageSmoothingQuality = 'high';
+
+        // 1. Background
+        const bgGrad = ctx.createLinearGradient(0, 0, canvasW, canvasH);
+        bgGrad.addColorStop(0, '#0a101f');
+        bgGrad.addColorStop(0.5, '#070c18');
+        bgGrad.addColorStop(1, '#04070d');
+        ctx.fillStyle = bgGrad;
+        ctx.fillRect(0, 0, canvasW, canvasH);
+
+        // Subtle geometric grid pattern
+        ctx.strokeStyle = 'rgba(30, 41, 59, 0.4)';
+        ctx.lineWidth = 1;
+        for (let x = 60; x < canvasW; x += 60) {
+          ctx.beginPath();
+          ctx.moveTo(x, 0);
+          ctx.lineTo(x, canvasH);
+          ctx.stroke();
+        }
+        for (let y = 60; y < canvasH; y += 60) {
+          ctx.beginPath();
+          ctx.moveTo(0, y);
+          ctx.lineTo(canvasW, y);
+          ctx.stroke();
+        }
+
+        // 2. Outer Card Border
+        ctx.strokeStyle = 'rgba(0, 245, 155, 0.35)';
+        ctx.lineWidth = 4;
+        ctx.strokeRect(10, 10, canvasW - 20, canvasH - 20);
+
+        ctx.strokeStyle = 'rgba(56, 189, 248, 0.2)';
+        ctx.lineWidth = 1;
+        ctx.strokeRect(16, 16, canvasW - 32, canvasH - 32);
+
+        function drawRRect(x, y, w, h, r) {
+          if (ctx.roundRect) {
+            ctx.roundRect(x, y, w, h, r);
+          } else {
+            ctx.beginPath();
+            ctx.moveTo(x + r, y);
+            ctx.lineTo(x + w - r, y);
+            ctx.quadraticCurveTo(x + w, y, x + w, y + r);
+            ctx.lineTo(x + w, y + h - r);
+            ctx.quadraticCurveTo(x + w, y + h, x + w - r, y + h);
+            ctx.lineTo(x + r, y + h);
+            ctx.quadraticCurveTo(x, y + h, x, y + h - r);
+            ctx.lineTo(x, y + r);
+            ctx.quadraticCurveTo(x, y, x + r, y);
+            ctx.closePath();
+          }
+        }
+
+        // 3. Header Section
+        const pillW = 320;
+        const pillH = 34;
+        const pillX = (canvasW - pillW) / 2;
+        const pillY = 32;
+
+        ctx.fillStyle = 'rgba(0, 245, 155, 0.12)';
+        ctx.beginPath();
+        drawRRect(pillX, pillY, pillW, pillH, 17);
+        ctx.fill();
+        ctx.strokeStyle = 'rgba(0, 245, 155, 0.4)';
+        ctx.lineWidth = 1.5;
+        ctx.stroke();
+
+        ctx.font = '800 13px system-ui, -apple-system, sans-serif';
+        ctx.fillStyle = '#00f59b';
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'middle';
+        ctx.fillText('TK BADDY CHAMPIONSHIPS', canvasW / 2, pillY + pillH / 2);
+
+        // Title: BALANCED TEAMS
+        ctx.font = '900 36px system-ui, -apple-system, sans-serif';
+        ctx.fillStyle = '#ffffff';
+        ctx.fillText('BALANCED TEAMS', canvasW / 2, 105);
+
+        // Stats Summary Box
+        const summaryW = canvasW - padX * 2;
+        const summaryH = 40;
+        const summaryX = padX;
+        const summaryY = 132;
+
+        ctx.fillStyle = 'rgba(30, 41, 59, 0.7)';
+        ctx.beginPath();
+        drawRRect(summaryX, summaryY, summaryW, summaryH, 8);
+        ctx.fill();
+        ctx.strokeStyle = 'rgba(71, 85, 105, 0.4)';
+        ctx.lineWidth = 1;
+        ctx.stroke();
+
+        ctx.font = '700 14px system-ui, -apple-system, sans-serif';
+        ctx.fillStyle = '#cbd5e1';
+        const summaryText = `${totalPlayers} Players  \u2022  ${T} Teams (${S} per team)  \u2022  Avg ELO: ${overallAvg}  \u2022  Max Spread: ${spread} pts`;
+        ctx.fillText(summaryText, canvasW / 2, summaryY + summaryH / 2);
+
+        // 4. Team Cards
+        const cardW = useTwoCols ? (summaryW - gapX) / 2 : summaryW;
+
+        for (let i = 0; i < T; i++) {
+          const col = useTwoCols ? (i % 2) : 0;
+          const row = useTwoCols ? Math.floor(i / 2) : i;
+
+          const cardX = padX + col * (cardW + gapX);
+          const cardY = headerH + row * (cardH + gapY);
+
+          const team = sortedTeams[i];
+          const stats = teamStats[i];
+          const blendedElo = stats.avg;
+          const tier = stats.tier;
+
+          // Card Background
+          ctx.fillStyle = 'rgba(17, 28, 48, 0.85)';
+          ctx.beginPath();
+          drawRRect(cardX, cardY, cardW, cardH, 12);
+          ctx.fill();
+
+          ctx.strokeStyle = 'rgba(51, 65, 85, 0.6)';
+          ctx.lineWidth = 1.5;
+          ctx.stroke();
+
+          // Card Header: Team Name & Gender
+          ctx.textAlign = 'left';
+          ctx.font = '800 18px system-ui, -apple-system, sans-serif';
+          ctx.fillStyle = '#ffffff';
+          ctx.fillText(`Team ${i + 1}`, cardX + 16, cardY + 25);
+
+          ctx.font = '600 12px system-ui, -apple-system, sans-serif';
+          ctx.fillStyle = '#94a3b8';
+          const genderStr = `(${stats.males}M \u00B7 ${stats.females}F)`;
+          ctx.fillText(genderStr, cardX + 90, cardY + 25);
+
+          // Blended ELO Pill on Right
+          const eloBadgeW = 125;
+          const eloBadgeH = 28;
+          const eloBadgeX = cardX + cardW - eloBadgeW - 14;
+          const eloBadgeY = cardY + 11;
+
+          ctx.fillStyle = tier.bg;
+          ctx.beginPath();
+          drawRRect(eloBadgeX, eloBadgeY, eloBadgeW, eloBadgeH, 14);
+          ctx.fill();
+
+          ctx.strokeStyle = tier.border;
+          ctx.lineWidth = 1.5;
+          ctx.stroke();
+
+          ctx.textAlign = 'center';
+          ctx.font = '800 13px system-ui, -apple-system, sans-serif';
+          ctx.fillStyle = tier.color;
+          ctx.fillText(`${blendedElo} ELO`, eloBadgeX + eloBadgeW / 2, eloBadgeY + eloBadgeH / 2);
+
+          // Divider
+          ctx.strokeStyle = 'rgba(51, 65, 85, 0.5)';
+          ctx.lineWidth = 1;
+          ctx.beginPath();
+          ctx.moveTo(cardX + 14, cardY + cardHeaderH);
+          ctx.lineTo(cardX + cardW - 14, cardY + cardHeaderH);
+          ctx.stroke();
+
+          // Player Rows
+          for (let pIdx = 0; pIdx < team.length; pIdx++) {
+            const player = team[pIdx];
+            const pTier = getPlayerSkillTier(player.elo);
+            const isF = (player.gender || '').toLowerCase() === 'female';
+            const rowY = cardY + cardHeaderH + 8 + pIdx * playerRowH;
+
+            ctx.fillStyle = 'rgba(15, 23, 42, 0.55)';
+            ctx.beginPath();
+            drawRRect(cardX + 12, rowY, cardW - 24, playerRowH - 6, 6);
+            ctx.fill();
+
+            ctx.strokeStyle = 'rgba(51, 65, 85, 0.35)';
+            ctx.lineWidth = 1;
+            ctx.stroke();
+
+            // Player Name
+            ctx.textAlign = 'left';
+            ctx.font = '700 14px system-ui, -apple-system, sans-serif';
+            ctx.fillStyle = '#f8fafc';
+            ctx.fillText(player.name, cardX + 24, rowY + (playerRowH - 6) / 2);
+
+            // Gender mark
+            const nameWidth = ctx.measureText(player.name).width;
+            ctx.font = '700 11px system-ui, -apple-system, sans-serif';
+            ctx.fillStyle = isF ? '#f472b6' : '#38bdf8';
+            ctx.fillText(isF ? 'F' : 'M', cardX + 24 + nameWidth + 6, rowY + (playerRowH - 6) / 2);
+
+            // Player ELO
+            ctx.textAlign = 'right';
+            ctx.font = '800 13px system-ui, -apple-system, sans-serif';
+            ctx.fillStyle = pTier.color;
+            ctx.fillText(`${player.elo} ELO`, cardX + cardW - 24, rowY + (playerRowH - 6) / 2);
+          }
+        }
+
+        // 5. Footer Section
+        const footerY = canvasH - 35;
+        ctx.textAlign = 'left';
+        ctx.font = '600 12px system-ui, -apple-system, sans-serif';
+        ctx.fillStyle = '#64748b';
+        ctx.fillText('Balanced by ELO & Gender \u2022 TK Baddy Championships', padX, footerY);
+
+        ctx.textAlign = 'right';
+        const todayStr = new Date().toLocaleDateString(undefined, { weekday: 'short', month: 'short', day: 'numeric', year: 'numeric' });
+        ctx.fillText(todayStr, canvasW - padX, footerY);
+
+        canvas.toBlob((blob) => {
+          resolve(blob);
+        }, 'image/png');
+      });
     }
 
     function switchMainTab(tabName) {

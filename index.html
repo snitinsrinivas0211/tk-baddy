@@ -3017,12 +3017,20 @@
         <div class="modal-title">
           <span>&#128100;</span> Player Profile
         </div>
-        <button class="modal-close-btn" onclick="closeSpotlightModal()">&#215;</button>
+        <div style="display: flex; align-items: center; gap: 8px;">
+          <button type="button" class="btn btn-emerald btn-icon" onclick="sharePlayerProfileAsImage()" title="Share Card as Image on WhatsApp" style="padding: 4px 10px; font-size: 13px; font-weight: 700;">
+            <span>&#128228;</span> Share
+          </button>
+          <button class="modal-close-btn" onclick="closeSpotlightModal()">&#215;</button>
+        </div>
       </div>
       <div class="modal-body" id="playerSpotlightBody">
         <!-- Injected player profile data -->
       </div>
-      <div class="modal-footer">
+      <div class="modal-footer" style="display: flex; justify-content: space-between; align-items: center;">
+        <button type="button" class="btn btn-emerald" id="shareProfileCardBtn" onclick="sharePlayerProfileAsImage()" style="display: flex; align-items: center; gap: 8px; font-weight: 700; padding: 7px 16px;">
+          <span>&#128228;</span> Share Card as Image
+        </button>
         <button type="button" class="btn btn-outline" onclick="closeSpotlightModal()">Close</button>
       </div>
     </div>
@@ -4800,6 +4808,7 @@
        11. PLAYER SPOTLIGHT MODAL
        ========================================================================== */
     function openPlayerSpotlight(playerName) {
+      appState.activeSpotlightPlayer = playerName;
       const standings = computeStandings();
       const p = standings.find(s => s.name === playerName);
       if (!p) return;
@@ -4895,8 +4904,295 @@
     }
 
     function closeSpotlightModal() {
+      appState.activeSpotlightPlayer = null;
       document.getElementById('playerSpotlightModal').classList.remove('show');
     }
+    /* ==========================================================================
+       PLAYER PROFILE CARD IMAGE GENERATION & SOCIAL SHARING (WHATSAPP)
+       ========================================================================== */
+    function generatePlayerCardImageBlob(playerName) {
+      return new Promise((resolve) => {
+        const standings = computeStandings();
+        const p = standings.find(s => s.name === playerName);
+        if (!p) {
+          resolve(null);
+          return;
+        }
+
+        const rank = standings.findIndex(s => s.name === playerName) + 1;
+        const regPlayer = (appState.players || []).find(pl => pl.name === playerName);
+        const rawPhoto = (regPlayer && regPlayer.photoUrl) ? regPlayer.photoUrl : '';
+        const photoUrl = formatDirectPhotoUrl(rawPhoto);
+
+        const canvas = document.createElement('canvas');
+        canvas.width = 800;
+        canvas.height = 800;
+        const ctx = canvas.getContext('2d');
+
+        // Draw Background
+        const bgGrad = ctx.createLinearGradient(0, 0, 800, 800);
+        bgGrad.addColorStop(0, '#0d172a');
+        bgGrad.addColorStop(1, '#060b14');
+        ctx.fillStyle = bgGrad;
+        ctx.fillRect(0, 0, 800, 800);
+
+        // Outer Border
+        ctx.strokeStyle = 'rgba(0, 245, 155, 0.35)';
+        ctx.lineWidth = 4;
+        ctx.strokeRect(2, 2, 796, 796);
+
+        // Top Accent Gradient Stripe
+        const topGrad = ctx.createLinearGradient(0, 0, 800, 0);
+        topGrad.addColorStop(0, '#00f59b');
+        topGrad.addColorStop(0.5, '#ffd700');
+        topGrad.addColorStop(1, '#38bdf8');
+        ctx.fillStyle = topGrad;
+        ctx.fillRect(0, 0, 800, 8);
+
+        // Helper to complete drawing text & stats after photo resolves
+        function finishDrawing(imgOrNull) {
+          const ax = 400, ay = 175, ar = 85;
+
+          // Draw avatar circle
+          ctx.save();
+          ctx.beginPath();
+          ctx.arc(ax, ay, ar, 0, Math.PI * 2);
+
+          if (imgOrNull) {
+            ctx.clip();
+            ctx.drawImage(imgOrNull, ax - ar, ay - ar, ar * 2, ar * 2);
+          } else {
+            const avatarGrad = ctx.createLinearGradient(ax - ar, ay - ar, ax + ar, ay + ar);
+            avatarGrad.addColorStop(0, '#059669');
+            avatarGrad.addColorStop(1, '#00f59b');
+            ctx.fillStyle = avatarGrad;
+            ctx.fill();
+            ctx.fillStyle = '#052e16';
+            ctx.font = '900 68px Outfit, sans-serif';
+            ctx.textAlign = 'center';
+            ctx.textBaseline = 'middle';
+            ctx.fillText(p.name.charAt(0).toUpperCase(), ax, ay);
+          }
+          ctx.restore();
+
+          // Avatar border & ring glow
+          ctx.save();
+          ctx.beginPath();
+          ctx.arc(ax, ay, ar, 0, Math.PI * 2);
+          ctx.lineWidth = 6;
+          ctx.strokeStyle = '#ffffff';
+          ctx.shadowColor = 'rgba(0, 245, 155, 0.6)';
+          ctx.shadowBlur = 24;
+          ctx.stroke();
+          ctx.restore();
+
+          // Player Name
+          ctx.textAlign = 'center';
+          ctx.textBaseline = 'alphabetic';
+          ctx.fillStyle = '#ffffff';
+          ctx.font = '900 44px Outfit, sans-serif';
+          ctx.fillText(p.name, 400, 315);
+
+          // Rank & Gender
+          const rankBadge = rank === 1 ? '\u{1F451}' : (rank === 2 ? '\u{1F948}' : (rank === 3 ? '\u{1F949}' : ''));
+          const genderSym = p.gender === 'Female' ? '\u2640 Female' : '\u2642 Male';
+          ctx.font = '700 20px Outfit, sans-serif';
+          ctx.fillStyle = '#ffd700';
+          ctx.fillText(`Overall Rank: #${rank} ${rankBadge}   \u2022   ${genderSym}`, 400, 355);
+
+          // ELO Rating Pill
+          ctx.fillStyle = 'rgba(255, 215, 0, 0.12)';
+          ctx.strokeStyle = 'rgba(255, 215, 0, 0.4)';
+          ctx.lineWidth = 2;
+          ctx.beginPath();
+          if (ctx.roundRect) {
+            ctx.roundRect(170, 380, 460, 46, 10);
+          } else {
+            ctx.rect(170, 380, 460, 46);
+          }
+          ctx.fill();
+          ctx.stroke();
+
+          ctx.fillStyle = '#ffd700';
+          ctx.font = '800 20px Outfit, sans-serif';
+          ctx.fillText(`\u26A1 ELO Rating: ${p.elo || 1200}`, 330, 411);
+          ctx.fillStyle = '#94a3b8';
+          ctx.font = '600 16px Outfit, sans-serif';
+          ctx.fillText(`(Peak: ${p.peakElo || 1200} | Low: ${p.lowestElo || 1200})`, 520, 411);
+
+          // Win Rate & Max Streak
+          ctx.font = '600 19px Outfit, sans-serif';
+          ctx.fillStyle = '#94a3b8';
+          ctx.fillText(`Win Rate: ${p.winRate.toFixed(1)}%   \u2022   Max Streak: ${p.maxStreak} \u{1F525}`, 400, 465);
+
+          // 4 Stat Boxes
+          const boxW = 160, boxH = 90, gap = 16, startX = 56, startY = 500;
+          const diffDisplay = p.diff > 0 ? `+${p.diff}` : `${p.diff}`;
+          const diffCol = p.diff > 0 ? '#00f59b' : (p.diff < 0 ? '#ef4444' : '#94a3b8');
+
+          const stats = [
+            { num: `${p.played}`, lbl: 'PLAYED', col: '#ffffff' },
+            { num: `${p.won}`, lbl: 'WON', col: '#00f59b' },
+            { num: `${p.lost}`, lbl: 'LOST', col: '#94a3b8' },
+            { num: diffDisplay, lbl: 'POINT DIFF', col: diffCol },
+          ];
+
+          stats.forEach((st, i) => {
+            const bx = startX + i * (boxW + gap);
+            ctx.fillStyle = 'rgba(7, 11, 18, 0.85)';
+            ctx.strokeStyle = 'rgba(255, 255, 255, 0.08)';
+            ctx.lineWidth = 1.5;
+            ctx.beginPath();
+            if (ctx.roundRect) {
+              ctx.roundRect(bx, startY, boxW, boxH, 8);
+            } else {
+              ctx.rect(bx, startY, boxW, boxH);
+            }
+            ctx.fill();
+            ctx.stroke();
+
+            ctx.fillStyle = st.col;
+            ctx.font = '900 32px Outfit, sans-serif';
+            ctx.fillText(st.num, bx + boxW / 2, startY + 42);
+
+            ctx.fillStyle = '#94a3b8';
+            ctx.font = '800 13px Outfit, sans-serif';
+            ctx.fillText(st.lbl, bx + boxW / 2, startY + 70);
+          });
+
+          // Championship Titles if any
+          let titleY = 625;
+          if (typeof computeHonorsStandings === 'function') {
+            const honors = computeHonorsStandings();
+            const h = honors.find(item => item.name === p.name);
+            if (h && h.titles > 0) {
+              const edList = (h.editionsWon && h.editionsWon.length > 0) ? ` (${h.editionsWon.join(', ')})` : '';
+              ctx.fillStyle = 'rgba(255, 215, 0, 0.12)';
+              ctx.strokeStyle = 'rgba(255, 215, 0, 0.4)';
+              ctx.lineWidth = 1.5;
+              ctx.beginPath();
+              if (ctx.roundRect) {
+                ctx.roundRect(140, 615, 520, 44, 8);
+              } else {
+                ctx.rect(140, 615, 520, 44);
+              }
+              ctx.fill();
+              ctx.stroke();
+
+              ctx.fillStyle = '#ffd700';
+              ctx.font = '800 17px Outfit, sans-serif';
+              ctx.fillText(`\u{1F3C6} ${h.titles} Championship Title${h.titles > 1 ? 's' : ''}${edList}`, 400, 643);
+              titleY = 680;
+            }
+          }
+
+          // Footer Watermark
+          ctx.fillStyle = 'rgba(255, 255, 255, 0.4)';
+          ctx.font = '800 15px Outfit, sans-serif';
+          ctx.fillText('\u{1F3F8} TK BADDY CHAMPIONSHIPS', 400, 745);
+
+          canvas.toBlob((b) => resolve(b), 'image/png');
+        }
+
+        // Try loading player photo if available
+        if (photoUrl) {
+          const img = new Image();
+          img.crossOrigin = 'anonymous';
+          let done = false;
+          const timer = setTimeout(() => {
+            if (!done) {
+              done = true;
+              finishDrawing(null);
+            }
+          }, 2500);
+
+          img.onload = () => {
+            if (!done) {
+              done = true;
+              clearTimeout(timer);
+              finishDrawing(img);
+            }
+          };
+          img.onerror = () => {
+            if (!done) {
+              done = true;
+              clearTimeout(timer);
+              finishDrawing(null);
+            }
+          };
+          img.src = photoUrl;
+        } else {
+          finishDrawing(null);
+        }
+      });
+    }
+
+    async function sharePlayerProfileAsImage() {
+      const playerName = appState.activeSpotlightPlayer;
+      if (!playerName) return;
+
+      const btn = document.getElementById('shareProfileCardBtn');
+      const origBtnHtml = btn ? btn.innerHTML : '';
+      if (btn) {
+        btn.disabled = true;
+        btn.innerHTML = '<span>&#9203;</span> Generating Image...';
+      }
+
+      try {
+        const blob = await generatePlayerCardImageBlob(playerName);
+        if (!blob) {
+          alert("Could not generate card image. Please try again.");
+          return;
+        }
+
+        const cleanName = playerName.replace(/\s+/g, '_');
+        const fileName = `${cleanName}_TK_Baddy_Profile.png`;
+        const file = new File([blob], fileName, { type: 'image/png' });
+
+        // If Web Share API supports file sharing (Mobile Safari, Chrome on Android, etc.)
+        if (navigator.canShare && navigator.canShare({ files: [file] })) {
+          await navigator.share({
+            files: [file],
+            title: `${playerName} - Player Profile`,
+            text: `${playerName}'s official player card from TK Baddy Championships! \u{1F3F8}`
+          });
+          showToast("Player card shared successfully! \u2728");
+        } else {
+          // Direct download fallback for desktop browsers
+          const url = URL.createObjectURL(blob);
+          const a = document.createElement('a');
+          a.href = url;
+          a.download = fileName;
+          document.body.appendChild(a);
+          a.click();
+          document.body.removeChild(a);
+          setTimeout(() => URL.revokeObjectURL(url), 1000);
+
+          // Attempt to copy image to clipboard for instant Ctrl+V into WhatsApp Web
+          if (navigator.clipboard && window.ClipboardItem) {
+            try {
+              await navigator.clipboard.write([new ClipboardItem({ 'image/png': blob })]);
+              showToast("Card image downloaded & copied! Paste directly in WhatsApp (Ctrl+V) \u{1F3F8}");
+            } catch {
+              showToast("Card image downloaded! Send directly in WhatsApp \u{1F3F8}");
+            }
+          } else {
+            showToast("Card image downloaded! Send directly in WhatsApp \u{1F3F8}");
+          }
+        }
+      } catch (err) {
+        if (err.name !== 'AbortError') {
+          console.error("Share error:", err);
+          showToast("Could not share image directly. Please try again.");
+        }
+      } finally {
+        if (btn) {
+          btn.disabled = false;
+          btn.innerHTML = origBtnHtml;
+        }
+      }
+    }
+
 
     /* ==========================================================================
        12. CSV EXPORT ENGINE

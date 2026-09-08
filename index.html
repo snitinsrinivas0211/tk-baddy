@@ -3439,6 +3439,298 @@
         line-height: 1.1;
       }
     }
+
+    /* ==========================================================================
+       NET CONTRIBUTION DIFFERENTIAL TAB STYLES
+       ========================================================================== */
+    .ncd-container {
+      max-width: 100%;
+      margin-bottom: 30px;
+    }
+    .ncd-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 18px;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+    .ncd-selectors-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-md);
+      padding: 16px;
+      margin-bottom: 18px;
+      display: grid;
+      grid-template-columns: 1fr auto 1fr;
+      align-items: flex-end;
+      gap: 14px;
+    }
+    .ncd-selector-col {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+    .ncd-selector-label {
+      font-size: 13px;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .ncd-label-dot {
+      display: inline-block;
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      flex-shrink: 0;
+    }
+    .ncd-swap-btn {
+      height: 42px;
+      padding: 0 14px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      font-size: 13px;
+      font-weight: 700;
+      border-radius: var(--radius-sm);
+      border: 1px solid var(--border-subtle);
+      background: rgba(255, 255, 255, 0.05);
+      color: var(--text-main);
+      cursor: pointer;
+      transition: all 0.2s ease;
+      margin-bottom: 1px;
+    }
+    .ncd-swap-btn:hover {
+      background: rgba(0, 245, 155, 0.12);
+      border-color: rgba(0, 245, 155, 0.4);
+      color: #00f59b;
+    }
+    .ncd-summary-card {
+      background: linear-gradient(135deg, rgba(15, 23, 42, 0.95) 0%, rgba(30, 41, 59, 0.95) 100%);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-md);
+      padding: 18px 20px;
+      margin-bottom: 18px;
+      display: flex;
+      align-items: center;
+      gap: 20px;
+      box-sizing: border-box;
+    }
+    .ncd-diff-val-badge {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      min-width: 110px;
+      padding: 12px 16px;
+      border-radius: var(--radius-md);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      flex-shrink: 0;
+      text-align: center;
+    }
+    .ncd-diff-val-badge.positive {
+      background: rgba(0, 245, 155, 0.12);
+      border-color: rgba(0, 245, 155, 0.35);
+      color: #00f59b;
+    }
+    .ncd-diff-val-badge.negative {
+      background: rgba(244, 63, 94, 0.12);
+      border-color: rgba(244, 63, 94, 0.35);
+      color: #f43f5e;
+    }
+    .ncd-diff-val-badge.neutral {
+      background: rgba(148, 163, 184, 0.12);
+      border-color: rgba(148, 163, 184, 0.3);
+      color: #94a3b8;
+    }
+    .ncd-diff-val-num {
+      font-size: 26px;
+      font-weight: 900;
+      line-height: 1;
+      letter-spacing: -0.5px;
+    }
+    .ncd-diff-val-sub {
+      font-size: 10px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      margin-top: 4px;
+      opacity: 0.85;
+    }
+    .ncd-diff-info {
+      flex: 1;
+      min-width: 0;
+    }
+    .ncd-diff-title {
+      font-size: 15px;
+      font-weight: 700;
+      color: var(--text-main);
+      margin-bottom: 4px;
+    }
+    .ncd-diff-desc {
+      font-size: 13px;
+      color: var(--text-dim);
+      line-height: 1.45;
+    }
+    .ncd-diff-desc strong {
+      color: var(--text-main);
+    }
+
+    /* Table styles */
+    table.standings-table.ncd-standings-table {
+      width: 100%;
+      border-collapse: collapse;
+      table-layout: fixed;
+    }
+    table.standings-table.ncd-standings-table th.ncd-col-partner,
+    table.standings-table.ncd-standings-table td.ncd-col-partner {
+      width: auto;
+      text-align: left;
+    }
+    table.standings-table.ncd-standings-table th.ncd-col-stat,
+    table.standings-table.ncd-standings-table td.ncd-col-stat {
+      width: 75px;
+      text-align: center;
+    }
+    table.standings-table.ncd-standings-table th.ncd-col-wr,
+    table.standings-table.ncd-standings-table td.ncd-col-wr {
+      width: 120px;
+      text-align: center;
+    }
+
+    .ncd-diff-pill {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 3px 10px;
+      border-radius: 9999px;
+      font-size: 12px;
+      font-weight: 800;
+      letter-spacing: 0.3px;
+      white-space: nowrap;
+    }
+    .ncd-diff-pill.positive {
+      background: rgba(0, 245, 155, 0.14);
+      color: #00f59b;
+      border: 1px solid rgba(0, 245, 155, 0.35);
+    }
+    .ncd-diff-pill.negative {
+      background: rgba(244, 63, 94, 0.14);
+      color: #f43f5e;
+      border: 1px solid rgba(244, 63, 94, 0.35);
+    }
+    .ncd-diff-pill.neutral {
+      background: rgba(148, 163, 184, 0.12);
+      color: #94a3b8;
+      border: 1px solid rgba(148, 163, 184, 0.25);
+    }
+
+    @media (max-width: 640px) {
+      .ncd-selectors-card {
+        grid-template-columns: 1fr;
+        gap: 10px;
+        padding: 12px 10px;
+      }
+      .ncd-swap-btn {
+        width: 100%;
+        height: 36px;
+        margin-bottom: 0;
+      }
+      .ncd-summary-card {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 12px;
+        padding: 14px 12px;
+      }
+      .ncd-diff-val-badge {
+        min-width: 0;
+        width: 100%;
+        box-sizing: border-box;
+        padding: 8px 12px;
+        flex-direction: row;
+        justify-content: space-between;
+        align-items: center;
+      }
+      .ncd-diff-val-num {
+        font-size: 20px;
+      }
+      .ncd-diff-val-sub {
+        margin-top: 0;
+      }
+      table.standings-table.ncd-standings-table {
+        width: 100% !important;
+        max-width: 100% !important;
+        table-layout: fixed !important;
+        font-size: 11.5px;
+        border-collapse: collapse;
+      }
+      table.standings-table.ncd-standings-table th,
+      table.standings-table.ncd-standings-table td {
+        box-sizing: border-box !important;
+      }
+      table.standings-table.ncd-standings-table th {
+        padding: 8px 1px !important;
+        font-size: 9.5px !important;
+        letter-spacing: 0 !important;
+        text-transform: none !important;
+        text-align: center;
+        overflow: hidden;
+        white-space: nowrap;
+        text-overflow: clip;
+      }
+      table.standings-table.ncd-standings-table th.ncd-col-partner {
+        width: auto !important;
+        text-align: left;
+        padding-left: 4px !important;
+      }
+      table.standings-table.ncd-standings-table td.ncd-col-partner {
+        width: auto !important;
+        padding: 6px 2px 6px 4px !important;
+        text-align: left;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+      }
+      table.standings-table.ncd-standings-table th.ncd-col-stat,
+      table.standings-table.ncd-standings-table td.ncd-col-stat {
+        width: 24px !important;
+        max-width: 24px !important;
+        min-width: 24px !important;
+        padding: 7px 1px !important;
+        text-align: center;
+        font-size: 11.5px;
+      }
+      table.standings-table.ncd-standings-table th.ncd-col-wr,
+      table.standings-table.ncd-standings-table td.ncd-col-wr {
+        width: 58px !important;
+        max-width: 58px !important;
+        min-width: 58px !important;
+        padding: 7px 1px !important;
+        text-align: center;
+      }
+      table.standings-table.ncd-standings-table td {
+        padding: 7px 1px !important;
+        font-size: 11.5px;
+        overflow: hidden;
+        white-space: nowrap;
+      }
+      table.standings-table.ncd-standings-table .doubles-winrate-pill,
+      table.standings-table.ncd-standings-table .ncd-diff-pill {
+        font-size: 10px !important;
+        font-weight: 800;
+        padding: 2px 3px !important;
+        max-width: 52px;
+        box-sizing: border-box;
+        letter-spacing: -0.3px !important;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        line-height: 1.1;
+      }
+    }
+
   </style>
 </head>
 <body>
@@ -3489,6 +3781,13 @@
                   <span class="organizer-lock-badge" id="teamGenLockBadge">&#128274; Organizer</span>
                 </div>
                 <div class="burger-item-subtitle">Organizer only &bull; Balanced by ELO &amp; Gender</div>
+              </div>
+            </div>
+            <div class="burger-menu-item" onclick="openNetContributionTab()">
+              <span class="burger-item-icon">&#128202;</span>
+              <div class="burger-item-content">
+                <div class="burger-item-title">Net Contribution Differential</div>
+                <div class="burger-item-subtitle">Partner synergy &amp; win rate impact</div>
               </div>
             </div>
           </div>
@@ -4026,6 +4325,97 @@
       </div>
     </div>
 
+
+    <!-- =========================================================================
+         TAB: NET CONTRIBUTION DIFFERENTIAL (Loaded via Burger Menu)
+         ========================================================================= -->
+    <div id="netContributionTabContent" style="display: none;">
+      <div class="ncd-container">
+        <!-- Header -->
+        <div class="ncd-header">
+          <div>
+            <h2 class="section-title"><span>&#128202;</span> Net Contribution Differential</h2>
+            <div class="section-subtitle">Compare a player's win rate with Player X versus their win rate across all other partners</div>
+          </div>
+          <button class="btn btn-outline" style="font-size: 12px; padding: 6px 12px;" onclick="switchMainTab('leaderboard')">
+            <span>&#8592;</span> Back to Leaderboard
+          </button>
+        </div>
+
+        <!-- Player Selection Controls -->
+        <div class="ncd-selectors-card">
+          <div class="ncd-selector-col">
+            <label for="ncdPlayerXSelect" class="ncd-selector-label" style="color: #00f59b;">
+              <span class="ncd-label-dot" style="background: #00f59b;"></span>
+              Select Player
+            </label>
+            <select id="ncdPlayerXSelect" class="form-select" onchange="handleNcdPlayerXChange()">
+              <!-- Populated dynamically -->
+            </select>
+          </div>
+
+          <button type="button" class="ncd-swap-btn" onclick="swapNcdPlayers()" title="Swap Player and Impact Player">
+            <span>&#8644;</span> Swap
+          </button>
+
+          <div class="ncd-selector-col">
+            <label for="ncdPlayerYSelect" class="ncd-selector-label" style="color: #ffd700;">
+              <span class="ncd-label-dot" style="background: #ffd700;"></span>
+              Select Impact Player
+            </label>
+            <select id="ncdPlayerYSelect" class="form-select" onchange="handleNcdPlayerYChange()">
+              <!-- Populated dynamically -->
+            </select>
+          </div>
+        </div>
+
+        <!-- Metric Highlight Card -->
+        <div id="ncdSummaryCard" class="ncd-summary-card">
+          <!-- Populated dynamically -->
+        </div>
+
+        <!-- Net Contribution Differential Comparison Table -->
+        <div class="leaderboard-card">
+          <div class="table-container">
+            <table class="standings-table ncd-standings-table">
+              <thead>
+                <tr>
+                  <th class="ncd-col-partner">
+                    <span class="desktop-lbl">Partnership</span>
+                    <span class="mobile-lbl">Partnership</span>
+                  </th>
+                  <th class="ncd-col-stat" style="text-align: center;">
+                    <span class="desktop-lbl">Played</span>
+                    <span class="mobile-lbl">P</span>
+                  </th>
+                  <th class="ncd-col-stat" style="text-align: center;">
+                    <span class="desktop-lbl">Won</span>
+                    <span class="mobile-lbl">W</span>
+                  </th>
+                  <th class="ncd-col-stat" style="text-align: center;">
+                    <span class="desktop-lbl">Lost</span>
+                    <span class="mobile-lbl">L</span>
+                  </th>
+                  <th class="ncd-col-wr" style="text-align: center;">
+                    <span class="desktop-lbl">Win Rate</span>
+                    <span class="mobile-lbl">Win %</span>
+                  </th>
+                </tr>
+              </thead>
+              <tbody id="ncdTableBody">
+                <!-- Populated dynamically -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- Additional Partnership Match History Strip if available -->
+        <div id="ncdMatchesTogetherContainer" style="margin-top: 24px; display: none;">
+          <!-- Populated dynamically -->
+        </div>
+
+      </div>
+    </div>
 
     <div id="historyTabContent" style="display: none;">
       <!-- SECTION 4: MATCH HISTORY FEED -->
@@ -5273,6 +5663,8 @@
       if (appState.activeMainTab === 'teams') {
         renderTeamGenPlayerTiles();
         updateTeamGenValidation();
+      } else if (appState.activeMainTab === 'netcontribution') {
+        renderNetContributionDifferential();
       }
     }
 
@@ -8701,6 +9093,7 @@
       const historyContent = document.getElementById('historyTabContent');
       const eloTrendsContent = document.getElementById('eloTrendsTabContent');
       const generateTeamsContent = document.getElementById('generateTeamsTabContent');
+      const netContributionContent = document.getElementById('netContributionTabContent');
 
       const tabBtnLeaderboard = document.getElementById('tabBtnLeaderboard');
       const tabBtnBadges = document.getElementById('tabBtnBadges');
@@ -8711,12 +9104,16 @@
       if (historyContent) historyContent.style.display = 'none';
       if (eloTrendsContent) eloTrendsContent.style.display = 'none';
       if (generateTeamsContent) generateTeamsContent.style.display = 'none';
+      if (netContributionContent) netContributionContent.style.display = 'none';
 
       if (tabBtnLeaderboard) tabBtnLeaderboard.classList.remove('active');
       if (tabBtnBadges) tabBtnBadges.classList.remove('active');
       if (tabBtnHistory) tabBtnHistory.classList.remove('active');
 
-      if (tabName === 'elotrends') {
+      if (tabName === 'netcontribution') {
+        if (netContributionContent) netContributionContent.style.display = 'block';
+        initNetContributionView();
+      } else if (tabName === 'elotrends') {
         if (eloTrendsContent) eloTrendsContent.style.display = 'block';
         initEloTrendsView();
       } else if (tabName === 'teams') {
@@ -9511,6 +9908,329 @@
     }
 
     
+
+    /* ==========================================================================
+       NET CONTRIBUTION DIFFERENTIAL LOGIC & RENDERING
+       ========================================================================== */
+    function openNetContributionTab() {
+      closeBurgerMenu();
+      switchMainTab('netcontribution');
+    }
+
+    function initNetContributionView() {
+      const pXSelect = document.getElementById('ncdPlayerXSelect');
+      const pYSelect = document.getElementById('ncdPlayerYSelect');
+      if (!pXSelect || !pYSelect) return;
+
+      const standings = computeStandings();
+      if (standings.length === 0) {
+        pXSelect.innerHTML = '<option value="" disabled selected>No players registered</option>';
+        pYSelect.innerHTML = '<option value="" disabled selected>No players registered</option>';
+        renderNcdEmptyState();
+        return;
+      }
+
+      const currentX = pXSelect.value;
+      const currentY = pYSelect.value;
+
+      // Populate Player X dropdown
+      pXSelect.innerHTML = '';
+      standings.forEach((p, idx) => {
+        const opt = document.createElement('option');
+        opt.value = p.name;
+        opt.textContent = `${p.name} (#${idx + 1} \u2022 ${p.elo || 1200} ELO)`;
+        pXSelect.appendChild(opt);
+      });
+
+      // Default Player X: previous selection or standings[0]
+      const validX = currentX && standings.some(s => s.name === currentX) ? currentX : standings[0].name;
+      pXSelect.value = validX;
+
+      // Populate Player Y (excluding Player X)
+      populateNcdPlayerYOptions(validX, currentY);
+
+      renderNetContributionDifferential();
+    }
+
+    function populateNcdPlayerYOptions(playerX, preferredY) {
+      const pYSelect = document.getElementById('ncdPlayerYSelect');
+      if (!pYSelect) return;
+
+      const standings = computeStandings();
+      const eligiblePlayers = standings.filter(p => p.name !== playerX);
+
+      pYSelect.innerHTML = '';
+      if (eligiblePlayers.length === 0) {
+        pYSelect.innerHTML = '<option value="" disabled selected>No other players available</option>';
+        return;
+      }
+
+      eligiblePlayers.forEach((p) => {
+        const originalRank = standings.findIndex(s => s.name === p.name) + 1;
+        const opt = document.createElement('option');
+        opt.value = p.name;
+        opt.textContent = `${p.name} (#${originalRank} \u2022 ${p.elo || 1200} ELO)`;
+        pYSelect.appendChild(opt);
+      });
+
+      // Default Player Y: preferredY if eligible, else first eligible
+      if (preferredY && eligiblePlayers.some(p => p.name === preferredY)) {
+        pYSelect.value = preferredY;
+      } else {
+        pYSelect.value = eligiblePlayers[0].name;
+      }
+    }
+
+    function handleNcdPlayerXChange() {
+      const pXSelect = document.getElementById('ncdPlayerXSelect');
+      const pYSelect = document.getElementById('ncdPlayerYSelect');
+      if (!pXSelect || !pYSelect) return;
+
+      const newX = pXSelect.value;
+      const currentY = pYSelect.value;
+
+      populateNcdPlayerYOptions(newX, currentY);
+      renderNetContributionDifferential();
+    }
+
+    function handleNcdPlayerYChange() {
+      renderNetContributionDifferential();
+    }
+
+    function swapNcdPlayers() {
+      const pXSelect = document.getElementById('ncdPlayerXSelect');
+      const pYSelect = document.getElementById('ncdPlayerYSelect');
+      if (!pXSelect || !pYSelect) return;
+
+      const oldX = pXSelect.value;
+      const oldY = pYSelect.value;
+      if (!oldX || !oldY || oldX === oldY) return;
+
+      pXSelect.value = oldY;
+      populateNcdPlayerYOptions(oldY, oldX);
+      renderNetContributionDifferential();
+    }
+
+    function computeNcdData(playerX, playerY) {
+      const matches = appState.matches || [];
+
+      let withY = { played: 0, won: 0, lost: 0, winRate: 0 };
+      let withOthers = { played: 0, won: 0, lost: 0, winRate: 0 };
+      const matchesTogether = [];
+
+      matches.forEach(m => {
+        const t1 = Array.isArray(m.team1) ? m.team1.map(p => (p || '').trim()) : [];
+        const t2 = Array.isArray(m.team2) ? m.team2.map(p => (p || '').trim()) : [];
+
+        const inT1 = t1.includes(playerX);
+        const inT2 = t2.includes(playerX);
+        if (!inT1 && !inT2) return; // Player X not in match
+
+        const myTeam = inT1 ? t1 : t2;
+        const oppTeam = inT1 ? t2 : t1;
+
+        // Doubles match or team match with partner(s)
+        const isTeamMatch = m.format === 'doubles' || (t1.length >= 2 && t2.length >= 2) || myTeam.length > 1;
+        if (!isTeamMatch) return; // Singles match without partners
+
+        const s1 = parseInt(m.team1Score, 10) || 0;
+        const s2 = parseInt(m.team2Score, 10) || 0;
+        const isWinner = inT1 ? (m.winner === 1 || s1 > s2) : (m.winner === 2 || s2 > s1);
+
+        if (myTeam.includes(playerY)) {
+          withY.played++;
+          if (isWinner) withY.won++;
+          else withY.lost++;
+          matchesTogether.push({
+            match: m,
+            isWinner,
+            myScore: inT1 ? s1 : s2,
+            oppScore: inT1 ? s2 : s1,
+            oppTeam
+          });
+        } else {
+          withOthers.played++;
+          if (isWinner) withOthers.won++;
+          else withOthers.lost++;
+        }
+      });
+
+      withY.winRate = withY.played > 0 ? (withY.won / withY.played) * 100 : 0;
+      withOthers.winRate = withOthers.played > 0 ? (withOthers.won / withOthers.played) * 100 : 0;
+      const diff = withY.winRate - withOthers.winRate;
+
+      return { withY, withOthers, diff, matchesTogether };
+    }
+
+    function renderNetContributionDifferential() {
+      const pXSelect = document.getElementById('ncdPlayerXSelect');
+      const pYSelect = document.getElementById('ncdPlayerYSelect');
+      const summaryCard = document.getElementById('ncdSummaryCard');
+      const tbody = document.getElementById('ncdTableBody');
+      const matchesContainer = document.getElementById('ncdMatchesTogetherContainer');
+
+      if (!pXSelect || !pYSelect || !tbody) return;
+
+      const playerX = pXSelect.value;
+      const playerY = pYSelect.value;
+
+      if (!playerX || !playerY || playerX === playerY) {
+        renderNcdEmptyState();
+        return;
+      }
+
+      const { withY, withOthers, diff, matchesTogether } = computeNcdData(playerX, playerY);
+
+      // Summary Card
+      if (summaryCard) {
+        let diffBadgeClass = 'neutral';
+        let diffSign = '';
+        let diffValText = '0.0%';
+        let descText = '';
+
+        if (withY.played === 0) {
+          diffBadgeClass = 'neutral';
+          diffValText = 'N/A';
+          descText = `<strong>${escapeHtml(playerX)}</strong> and <strong>${escapeHtml(playerY)}</strong> have not played any doubles matches as partners yet.`;
+        } else if (diff > 0.05) {
+          diffBadgeClass = 'positive';
+          diffSign = '+';
+          diffValText = `+${diff.toFixed(1)}%`;
+          descText = `<strong>Positive Synergy:</strong> ${escapeHtml(playerX)} has a <strong style="color: #00f59b;">+${diff.toFixed(1)}%</strong> higher win rate with ${escapeHtml(playerY)} (${withY.winRate.toFixed(1)}%) versus all other partners (${withOthers.winRate.toFixed(1)}%).`;
+        } else if (diff < -0.05) {
+          diffBadgeClass = 'negative';
+          diffValText = `${diff.toFixed(1)}%`;
+          descText = `<strong>Negative Differential:</strong> ${escapeHtml(playerX)}'s win rate is <strong style="color: #f43f5e;">${diff.toFixed(1)}%</strong> lower with ${escapeHtml(playerY)} (${withY.winRate.toFixed(1)}%) versus all other partners (${withOthers.winRate.toFixed(1)}%).`;
+        } else {
+          diffBadgeClass = 'neutral';
+          diffValText = '0.0%';
+          descText = `<strong>Neutral Differential:</strong> ${escapeHtml(playerX)}'s win rate with ${escapeHtml(playerY)} (${withY.winRate.toFixed(1)}%) matches their win rate with other partners (${withOthers.winRate.toFixed(1)}%).`;
+        }
+
+        summaryCard.innerHTML = `
+          <div class="ncd-diff-val-badge ${diffBadgeClass}">
+            <div class="ncd-diff-val-num">${diffValText}</div>
+            <div class="ncd-diff-val-sub">Net Differential</div>
+          </div>
+          <div class="ncd-diff-info">
+            <div class="ncd-diff-title">Impact of ${escapeHtml(playerY)} on ${escapeHtml(playerX)}</div>
+            <div class="ncd-diff-desc">${descText}</div>
+          </div>
+        `;
+      }
+
+      // Comparison Table Rows
+      const withYClass = withY.winRate >= 60 ? 'high' : (withY.winRate >= 40 ? 'mid' : 'low');
+      const withOthersClass = withOthers.winRate >= 60 ? 'high' : (withOthers.winRate >= 40 ? 'mid' : 'low');
+      const diffPillClass = withY.played === 0 ? 'neutral' : (diff > 0.05 ? 'positive' : (diff < -0.05 ? 'negative' : 'neutral'));
+      const diffSign = (withY.played > 0 && diff > 0.05) ? '+' : '';
+      const diffDisplay = withY.played === 0 ? 'N/A' : `${diffSign}${diff.toFixed(1)}%`;
+
+      tbody.innerHTML = `
+        <tr>
+          <td class="ncd-col-partner">
+            <div style="font-weight: 700; color: #f8fafc; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">
+              <span style="color: #00f59b;">${escapeHtml(playerX)}</span> with <span style="color: #ffd700;">${escapeHtml(playerY)}</span>
+            </div>
+          </td>
+          <td class="ncd-col-stat" style="font-weight: 600; color: var(--text-main);">${withY.played}</td>
+          <td class="ncd-col-stat" style="font-weight: 700; color: #00f59b;">${withY.won}</td>
+          <td class="ncd-col-stat" style="font-weight: 600; color: #94a3b8;">${withY.lost}</td>
+          <td class="ncd-col-wr">
+            <span class="doubles-winrate-pill ${withYClass}">
+              ${withY.played > 0 ? withY.winRate.toFixed(1) + '%' : '0.0%'}
+            </span>
+          </td>
+        </tr>
+        <tr>
+          <td class="ncd-col-partner">
+            <div style="font-weight: 700; color: #f8fafc; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">
+              <span style="color: #00f59b;">${escapeHtml(playerX)}</span> with all other players
+            </div>
+          </td>
+          <td class="ncd-col-stat" style="font-weight: 600; color: var(--text-main);">${withOthers.played}</td>
+          <td class="ncd-col-stat" style="font-weight: 700; color: #00f59b;">${withOthers.won}</td>
+          <td class="ncd-col-stat" style="font-weight: 600; color: #94a3b8;">${withOthers.lost}</td>
+          <td class="ncd-col-wr">
+            <span class="doubles-winrate-pill ${withOthersClass}">
+              ${withOthers.played > 0 ? withOthers.winRate.toFixed(1) + '%' : '0.0%'}
+            </span>
+          </td>
+        </tr>
+        <tr style="background: rgba(15, 23, 42, 0.7); border-top: 1px solid rgba(255, 255, 255, 0.08);">
+          <td class="ncd-col-partner" style="font-weight: 800; color: #f8fafc;">
+            <span style="color: #00f59b;">\u25C6</span> Net Contribution Differential
+          </td>
+          <td class="ncd-col-stat" style="color: var(--text-dim); font-size: 13px;">&bull;</td>
+          <td class="ncd-col-stat" style="color: var(--text-dim); font-size: 13px;">&bull;</td>
+          <td class="ncd-col-stat" style="color: var(--text-dim); font-size: 13px;">&bull;</td>
+          <td class="ncd-col-wr">
+            <span class="ncd-diff-pill ${diffPillClass}">
+              ${diffDisplay}
+            </span>
+          </td>
+        </tr>
+      `;
+
+      // Matches Together section
+      if (matchesContainer) {
+        if (matchesTogether.length > 0) {
+          matchesContainer.style.display = 'block';
+          matchesContainer.innerHTML = `
+            <div class="section-header" style="margin-bottom: 12px; margin-top: 24px;">
+              <div>
+                <h3 class="section-title" style="font-size: 15px;"><span>\u{1F3F8}</span> Matches as Partners (${matchesTogether.length})</h3>
+                <div class="section-subtitle">${escapeHtml(playerX)} &amp; ${escapeHtml(playerY)} on the same team</div>
+              </div>
+            </div>
+            <div style="display: grid; gap: 8px;">
+              ${matchesTogether.map(item => {
+                const badge = item.isWinner 
+                  ? '<span style="background: rgba(0, 245, 155, 0.15); color: #00f59b; border: 1px solid rgba(0, 245, 155, 0.3); font-size: 10px; font-weight: 800; padding: 2px 6px; border-radius: 4px;">WON</span>'
+                  : '<span style="background: rgba(244, 63, 94, 0.15); color: #f43f5e; border: 1px solid rgba(244, 63, 94, 0.3); font-size: 10px; font-weight: 800; padding: 2px 6px; border-radius: 4px;">LOST</span>';
+                return `
+                  <div style="background: var(--bg-card); border: 1px solid var(--border-subtle); border-radius: var(--radius-sm); padding: 10px 12px; display: flex; justify-content: space-between; align-items: center; gap: 10px; flex-wrap: wrap;">
+                    <div style="display: flex; align-items: center; gap: 8px;">
+                      ${badge}
+                      <span style="font-size: 12px; color: var(--text-dim);">${escapeHtml(item.match.date || 'Recent match')}</span>
+                    </div>
+                    <div style="font-size: 13px; font-weight: 700; color: var(--text-main);">
+                      Score: <span style="color: ${item.isWinner ? '#00f59b' : '#f43f5e'}">${item.myScore}</span> - <span>${item.oppScore}</span>
+                      <span style="font-size: 11px; font-weight: 400; color: var(--text-dim); margin-left: 6px;">vs ${escapeHtml(item.oppTeam.join(' &amp; '))}</span>
+                    </div>
+                  </div>
+                `;
+              }).join('')}
+            </div>
+          `;
+        } else {
+          matchesContainer.style.display = 'none';
+          matchesContainer.innerHTML = '';
+        }
+      }
+    }
+
+    function renderNcdEmptyState() {
+      const summaryCard = document.getElementById('ncdSummaryCard');
+      const tbody = document.getElementById('ncdTableBody');
+      if (summaryCard) {
+        summaryCard.innerHTML = `
+          <div style="text-align: center; width: 100%; color: var(--text-dim); font-size: 13px; padding: 10px;">
+            Select Player and Impact Player above to view Net Contribution Differential.
+          </div>
+        `;
+      }
+      if (tbody) {
+        tbody.innerHTML = `
+          <tr>
+            <td colspan="5" class="empty-state" style="padding: 30px; text-align: center; color: var(--text-muted);">
+              Please select two different players to compare partnership impact.
+            </td>
+          </tr>
+        `;
+      }
+    }
+
     /* ==========================================================================
        DOUBLES LEADERBOARD COMPUTATION & RENDERING
        ========================================================================== */

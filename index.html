@@ -5692,8 +5692,49 @@
     }
 
     /* ==========================================================================
-       11. PLAYER SPOTLIGHT MODAL
+       11. PLAYER SPOTLIGHT MODAL & SKILL TIERS
        ========================================================================== */
+    function getPlayerSkillTier(elo) {
+      const rating = (typeof elo === 'number') ? elo : (parseInt(elo, 10) || 1200);
+      if (rating >= 1400) {
+        return {
+          tier: 'Court Master',
+          color: '#fbbf24',
+          bg: 'rgba(251, 191, 36, 0.15)',
+          border: 'rgba(251, 191, 36, 0.45)',
+          glow: 'rgba(251, 191, 36, 0.25)',
+          icon: '\u{1F3C6}'
+        };
+      } else if (rating >= 1300) {
+        return {
+          tier: 'Advanced',
+          color: '#00f59b',
+          bg: 'rgba(0, 245, 155, 0.15)',
+          border: 'rgba(0, 245, 155, 0.45)',
+          glow: 'rgba(0, 245, 155, 0.25)',
+          icon: '\u26A1'
+        };
+      } else if (rating >= 1200) {
+        return {
+          tier: 'Intermediate',
+          color: '#06b6d4',
+          bg: 'rgba(6, 182, 212, 0.15)',
+          border: 'rgba(6, 182, 212, 0.45)',
+          glow: 'rgba(6, 182, 212, 0.25)',
+          icon: '\u{1F3F8}'
+        };
+      } else {
+        return {
+          tier: 'Challenger',
+          color: '#94a3b8',
+          bg: 'rgba(148, 163, 184, 0.15)',
+          border: 'rgba(148, 163, 184, 0.35)',
+          glow: 'rgba(148, 163, 184, 0.15)',
+          icon: '\u{1F6E1}\uFE0F'
+        };
+      }
+    }
+
     function openPlayerSpotlight(playerName) {
       appState.activeSpotlightPlayer = playerName;
       const standings = computeStandings();
@@ -5741,6 +5782,8 @@
         }
       }
 
+      const tier = getPlayerSkillTier(p.elo || 1200);
+
       body.innerHTML = `
         <div class="player-profile-card">
           <div class="player-profile-hero">
@@ -5752,9 +5795,15 @@
                 <span style="color: var(--text-dim);">&bull;</span>
                 <span class="player-profile-gender" style="color: ${genderColor};">${genderSymbol}</span>
               </div>
-              <div class="player-profile-elo">
+              <div style="margin-top: 5px; display: flex; align-items: center; gap: 8px;">
+                <span class="player-skill-tier-badge" style="display: inline-flex; align-items: center; gap: 6px; padding: 3px 12px; border-radius: 14px; font-size: 11px; font-weight: 800; text-transform: uppercase; letter-spacing: 0.05em; background: ${tier.bg}; border: 1px solid ${tier.border}; color: ${tier.color}; box-shadow: 0 0 12px ${tier.glow};">
+                  <span>${tier.icon}</span>
+                  <span>${tier.tier} Tier</span>
+                </span>
+              </div>
+              <div class="player-profile-elo" style="margin-top: 8px;">
                 <span>\u26A1 ELO Rating:</span>
-                <span class="elo-val">${p.elo || 1200}</span>
+                <span class="elo-val" style="color: ${tier.color};">${p.elo || 1200}</span>
                 <span class="elo-range">(Peak: ${p.peakElo || 1200} | Low: ${p.lowestElo || 1200})</span>
               </div>
             </div>
@@ -5911,27 +5960,60 @@
           const genderSym = p.gender === 'Female' ? '\u2640 Female' : '\u2642 Male';
           ctx.font = '700 28px Outfit, -apple-system, sans-serif';
           ctx.fillStyle = '#ffd700';
-          ctx.fillText(`Overall Rank: #${rank} ${rankBadge}   \u2022   ${genderSym}`, 600, 510);
+          ctx.fillText(`Overall Rank: #${rank} ${rankBadge}   \u2022   ${genderSym}`, 600, 502);
+
+          // 6B. Skill Tier Rank Badge
+          const tier = getPlayerSkillTier(p.elo || 1200);
+          const tierText = `${tier.icon} ${tier.tier.toUpperCase()} TIER`;
+          ctx.font = '800 21px Outfit, -apple-system, sans-serif';
+          const tierTextW = ctx.measureText(tierText).width;
+          const tierPillW = tierTextW + 42;
+          const tierPillH = 38;
+          const tierPillX = 600 - tierPillW / 2;
+          const tierPillY = 518;
+
+          ctx.save();
+          ctx.fillStyle = tier.bg;
+          ctx.strokeStyle = tier.border;
+          ctx.lineWidth = 2;
+          ctx.shadowColor = tier.glow;
+          ctx.shadowBlur = 14;
+          ctx.beginPath();
+          if (ctx.roundRect) {
+            ctx.roundRect(tierPillX, tierPillY, tierPillW, tierPillH, 19);
+          } else {
+            ctx.rect(tierPillX, tierPillY, tierPillW, tierPillH);
+          }
+          ctx.fill();
+          ctx.stroke();
+          ctx.restore();
+
+          ctx.textAlign = 'center';
+          ctx.textBaseline = 'middle';
+          ctx.fillStyle = tier.color;
+          ctx.font = '800 21px Outfit, -apple-system, sans-serif';
+          ctx.fillText(tierText, 600, tierPillY + tierPillH / 2 + 1);
 
           // 7. ELO Rating Pill
+          ctx.textBaseline = 'alphabetic';
           ctx.fillStyle = 'rgba(255, 215, 0, 0.12)';
-          ctx.strokeStyle = 'rgba(255, 215, 0, 0.45)';
+          ctx.strokeStyle = tier.border;
           ctx.lineWidth = 2.5;
           ctx.beginPath();
           if (ctx.roundRect) {
-            ctx.roundRect(260, 545, 680, 66, 14);
+            ctx.roundRect(260, 574, 680, 66, 14);
           } else {
-            ctx.rect(260, 545, 680, 66);
+            ctx.rect(260, 574, 680, 66);
           }
           ctx.fill();
           ctx.stroke();
 
-          ctx.fillStyle = '#ffd700';
+          ctx.fillStyle = tier.color;
           ctx.font = '900 28px Outfit, -apple-system, sans-serif';
-          ctx.fillText(`\u26A1 ELO Rating: ${p.elo || 1200}`, 490, 588);
+          ctx.fillText(`\u26A1 ELO Rating: ${p.elo || 1200}`, 490, 616);
           ctx.fillStyle = '#94a3b8';
           ctx.font = '600 23px Outfit, -apple-system, sans-serif';
-          ctx.fillText(`(Peak: ${p.peakElo || 1200} | Low: ${p.lowestElo || 1200})`, 770, 588);
+          ctx.fillText(`(Peak: ${p.peakElo || 1200} | Low: ${p.lowestElo || 1200})`, 770, 616);
 
           // 8. Win Rate & Max Streak
           ctx.font = '600 26px Outfit, -apple-system, sans-serif';
@@ -7416,3 +7498,4 @@
   </script>
 </body>
 </html>
+

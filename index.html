@@ -10822,7 +10822,7 @@
         } else if (diff < -0.05) {
           diffBadgeClass = 'negative';
           diffValText = `${diff.toFixed(1)}%`;
-          descText = `<strong>Negative Differential:</strong> ${escapeHtml(playerX)}'s win rate is <strong style="color: #f43f5e;">${diff.toFixed(1)}%</strong> lower with ${escapeHtml(playerY)} (${withY.winRate.toFixed(1)}%) versus all other partners (${withOthers.winRate.toFixed(1)}%).`;
+          descText = `<strong>Negative Differential:</strong> ${escapeHtml(playerX)}'s win rate is <strong style="color: #f43f5e;">${Math.abs(diff).toFixed(1)}%</strong> lower with ${escapeHtml(playerY)} (${withY.winRate.toFixed(1)}%) versus all other partners (${withOthers.winRate.toFixed(1)}%).`;
         } else {
           diffBadgeClass = 'neutral';
           diffValText = '0.0%';
@@ -11254,6 +11254,176 @@
       };
     }
 
+    function computePartnershipDynamics(playerA, playerB, p) {
+      if (p.togetherPlayed === 0) {
+        return {
+          verdict: 'NEVER_PARTNERED',
+          icon: '&#9876;&#65039;',
+          canvasIcon: '\u2694\uFE0F',
+          cardClass: 'rivals',
+          title: 'Pure Rivals (Never Partnered in Doubles)',
+          badgeText: '0 Doubles Matches Together',
+          badgeColor: '#94a3b8',
+          badgeBg: 'rgba(148, 163, 184, 0.15)',
+          desc: 'These two fierce competitors have exclusively clashed on opposite sides of the net and have not yet played on the same doubles team.',
+          canvasDesc: 'These two fierce competitors have exclusively clashed on opposite sides of the net and have not yet played on the same doubles team.'
+        };
+      }
+
+      if (p.aWithoutBPlayed === 0 && p.bWithoutAPlayed === 0) {
+        return {
+          verdict: 'EXCLUSIVE_PARTNERS',
+          icon: '&#129309;',
+          canvasIcon: '\u{1F91D}',
+          cardClass: 'duo',
+          title: 'Exclusive Doubles Pair',
+          badgeText: 'No Other Partners',
+          badgeColor: '#ffd700',
+          badgeBg: 'rgba(255, 215, 0, 0.15)',
+          desc: `All doubles matches on record for both <strong>${escapeHtml(playerA)}</strong> and <strong>${escapeHtml(playerB)}</strong> have been played together as a pair (${p.togetherPlayed} matches, ${p.togetherWinRate.toFixed(1)}% Win Rate). No outside baselines exist.`,
+          canvasDesc: `All doubles matches on record for both ${playerA} and ${playerB} have been played together as a pair (${p.togetherPlayed} matches, ${p.togetherWinRate.toFixed(1)}% Win Rate).`
+        };
+      }
+
+      if (p.aWithoutBPlayed === 0) {
+        const dStr = p.deltaB >= 0 ? `+${p.deltaB.toFixed(1)}% lift` : `${p.deltaB.toFixed(1)}% dip`;
+        return {
+          verdict: 'NEW_PARTNERSHIP',
+          icon: '&#129309;',
+          canvasIcon: '\u{1F91D}',
+          cardClass: 'duo',
+          title: `Dedicated Partnership for ${escapeHtml(playerA)}`,
+          badgeText: 'Exclusive Partner',
+          badgeColor: '#ffd700',
+          badgeBg: 'rgba(255, 215, 0, 0.15)',
+          desc: `<strong>${escapeHtml(playerA)}</strong> has exclusively played doubles alongside <strong>${escapeHtml(playerB)}</strong> (${p.togetherWinRate.toFixed(1)}% Win Rate across ${p.togetherPlayed} matches), giving ${escapeHtml(playerB)} a ${dStr} compared to their baseline without ${escapeHtml(playerA)} (${p.bWithoutAWinRate.toFixed(1)}%).`,
+          canvasDesc: `${playerA} has exclusively played doubles alongside ${playerB} (${p.togetherWinRate.toFixed(1)}% Win Rate across ${p.togetherPlayed} matches), giving ${playerB} a ${dStr} vs their solo baseline (${p.bWithoutAWinRate.toFixed(1)}%).`
+        };
+      }
+
+      if (p.bWithoutAPlayed === 0) {
+        const dStr = p.deltaA >= 0 ? `+${p.deltaA.toFixed(1)}% lift` : `${p.deltaA.toFixed(1)}% dip`;
+        return {
+          verdict: 'NEW_PARTNERSHIP',
+          icon: '&#129309;',
+          canvasIcon: '\u{1F91D}',
+          cardClass: 'duo',
+          title: `Dedicated Partnership for ${escapeHtml(playerB)}`,
+          badgeText: 'Exclusive Partner',
+          badgeColor: '#ffd700',
+          badgeBg: 'rgba(255, 215, 0, 0.15)',
+          desc: `<strong>${escapeHtml(playerB)}</strong> has exclusively played doubles alongside <strong>${escapeHtml(playerA)}</strong> (${p.togetherWinRate.toFixed(1)}% Win Rate across ${p.togetherPlayed} matches), giving ${escapeHtml(playerA)} a ${dStr} compared to their baseline without ${escapeHtml(playerB)} (${p.aWithoutBWinRate.toFixed(1)}%).`,
+          canvasDesc: `${playerB} has exclusively played doubles alongside ${playerA} (${p.togetherWinRate.toFixed(1)}% Win Rate across ${p.togetherPlayed} matches), giving ${playerA} a ${dStr} vs their solo baseline (${p.aWithoutBWinRate.toFixed(1)}%).`
+        };
+      }
+
+      const deltaA = p.deltaA;
+      const deltaB = p.deltaB;
+      const carryDelta = p.carryDelta;
+
+      function fmtPerf(name, wrT, wrBase, d, isHtml) {
+        const strongStart = isHtml ? '<strong>' : '';
+        const strongEnd = isHtml ? '</strong>' : '';
+        if (d > 0.05) {
+          return `${strongStart}${name}${strongEnd} gains a ${strongStart}+${d.toFixed(1)}%${strongEnd} lift (rising from ${wrBase.toFixed(1)}% to ${wrT.toFixed(1)}%)`;
+        } else if (d < -0.05) {
+          return `${strongStart}${name}${strongEnd} experiences a ${strongStart}${d.toFixed(1)}%${strongEnd} dip (dropping from ${wrBase.toFixed(1)}% to ${wrT.toFixed(1)}%)`;
+        } else {
+          return `${strongStart}${name}${strongEnd} holds steady at ${strongStart}${wrT.toFixed(1)}%${strongEnd}`;
+        }
+      }
+
+      // Case 1: Both suffer a notable dip (Style Clash / Negative Chemistry)
+      if (deltaA <= -3.0 && deltaB <= -3.0) {
+        return {
+          verdict: 'STYLE_CLASH',
+          icon: '&#9889;',
+          canvasIcon: '\u26A1',
+          cardClass: 'rivals',
+          title: 'Style Clash / Tough Chemistry',
+          badgeText: 'Both Dip Together',
+          badgeColor: '#f43f5e',
+          badgeBg: 'rgba(244, 63, 94, 0.15)',
+          desc: `Both players perform better with other partners than as a tandem. ${fmtPerf(escapeHtml(playerA), p.togetherWinRate, p.aWithoutBWinRate, deltaA, true)}, while ${fmtPerf(escapeHtml(playerB), p.togetherWinRate, p.bWithoutAWinRate, deltaB, true)}. Neither player carried this partnership  --  their styles may clash on court!`,
+          canvasDesc: `Both players perform better with other partners than as a tandem. ${fmtPerf(playerA, p.togetherWinRate, p.aWithoutBWinRate, deltaA, false)}, while ${fmtPerf(playerB, p.togetherWinRate, p.bWithoutAWinRate, deltaB, false)}. Neither player carried this partnership.`
+        };
+      }
+
+      // Case 2: Player A carried Player B
+      const isCarryA = (deltaB >= 4.0 && deltaA <= 0.0) || (deltaA > 0.0 && deltaB > 0.0 && carryDelta >= 8.0 && deltaB >= 8.0);
+      if (isCarryA) {
+        const badgeText = deltaA <= 0 ? `+${deltaB.toFixed(1)}% Lift for ${escapeHtml(playerB)}` : `+${carryDelta.toFixed(1)}% Differential`;
+        const canvasBadge = deltaA <= 0 ? `+${deltaB.toFixed(1)}% Lift for ${playerB}` : `+${carryDelta.toFixed(1)}% Differential`;
+        const anchorHtml = deltaA <= 0 ? `<strong>${escapeHtml(playerA)}</strong> did the heavy lifting to anchor the duo to a <strong>${p.togetherWinRate.toFixed(1)}%</strong> record!` : `<strong>${escapeHtml(playerA)}</strong> provided the anchor that powered this duo!`;
+        const anchorCanvas = deltaA <= 0 ? `${playerA} did the heavy lifting to anchor the duo to a ${p.togetherWinRate.toFixed(1)}% record!` : `${playerA} provided the anchor that powered this duo!`;
+
+        return {
+          verdict: 'A_CARRIED_B',
+          icon: '&#128092;',
+          canvasIcon: '\u{1F392}',
+          cardClass: 'carry-a',
+          title: `${escapeHtml(playerA)} Carried ${escapeHtml(playerB)}!`,
+          badgeText: badgeText,
+          badgeColor: '#00f59b',
+          badgeBg: 'rgba(0, 245, 155, 0.15)',
+          desc: `<strong>${escapeHtml(playerA)}</strong> carried this partnership! ${fmtPerf(escapeHtml(playerB), p.togetherWinRate, p.bWithoutAWinRate, deltaB, true)}, while ${fmtPerf(escapeHtml(playerA), p.togetherWinRate, p.aWithoutBWinRate, deltaA, true)}. ${anchorHtml}`,
+          canvasDesc: `${playerA} carried this partnership! ${fmtPerf(playerB, p.togetherWinRate, p.bWithoutAWinRate, deltaB, false)}, while ${fmtPerf(playerA, p.togetherWinRate, p.aWithoutBWinRate, deltaA, false)}. ${anchorCanvas}`
+        };
+      }
+
+      // Case 3: Player B carried Player A
+      const isCarryB = (deltaA >= 4.0 && deltaB <= 0.0) || (deltaA > 0.0 && deltaB > 0.0 && -carryDelta >= 8.0 && deltaA >= 8.0);
+      if (isCarryB) {
+        const badgeText = deltaB <= 0 ? `+${deltaA.toFixed(1)}% Lift for ${escapeHtml(playerA)}` : `+${(-carryDelta).toFixed(1)}% Differential`;
+        const canvasBadge = deltaB <= 0 ? `+${deltaA.toFixed(1)}% Lift for ${playerA}` : `+${(-carryDelta).toFixed(1)}% Differential`;
+        const anchorHtml = deltaB <= 0 ? `<strong>${escapeHtml(playerB)}</strong> did the heavy lifting to anchor the duo to a <strong>${p.togetherWinRate.toFixed(1)}%</strong> record!` : `<strong>${escapeHtml(playerB)}</strong> provided the anchor that powered this duo!`;
+        const anchorCanvas = deltaB <= 0 ? `${playerB} did the heavy lifting to anchor the duo to a ${p.togetherWinRate.toFixed(1)}% record!` : `${playerB} provided the anchor that powered this duo!`;
+
+        return {
+          verdict: 'B_CARRIED_A',
+          icon: '&#128092;',
+          canvasIcon: '\u{1F392}',
+          cardClass: 'carry-b',
+          title: `${escapeHtml(playerB)} Carried ${escapeHtml(playerA)}!`,
+          badgeText: badgeText,
+          badgeColor: '#38bdf8',
+          badgeBg: 'rgba(56, 189, 248, 0.15)',
+          desc: `<strong>${escapeHtml(playerB)}</strong> carried this partnership! ${fmtPerf(escapeHtml(playerA), p.togetherWinRate, p.aWithoutBWinRate, deltaA, true)}, while ${fmtPerf(escapeHtml(playerB), p.togetherWinRate, p.bWithoutAWinRate, deltaB, true)}. ${anchorHtml}`,
+          canvasDesc: `${playerB} carried this partnership! ${fmtPerf(playerA, p.togetherWinRate, p.aWithoutBWinRate, deltaA, false)}, while ${fmtPerf(playerB, p.togetherWinRate, p.bWithoutAWinRate, deltaB, false)}. ${anchorCanvas}`
+        };
+      }
+
+      // Case 4: Both gained (Dynamic Duo)
+      if (deltaA > 0.0 && deltaB > 0.0) {
+        return {
+          verdict: 'DYNAMIC_DUO',
+          icon: '&#129309;',
+          canvasIcon: '\u{1F91D}',
+          cardClass: 'duo',
+          title: 'Dynamic Duo! (Mutual Synergy)',
+          badgeText: 'Balanced Synergy',
+          badgeColor: '#ffd700',
+          badgeBg: 'rgba(255, 215, 0, 0.15)',
+          desc: `Outstanding mutual synergy! Both players perform substantially better together than with other partners. ${fmtPerf(escapeHtml(playerA), p.togetherWinRate, p.aWithoutBWinRate, deltaA, true)}, while ${fmtPerf(escapeHtml(playerB), p.togetherWinRate, p.bWithoutAWinRate, deltaB, true)}. Neither player carried the other  --  they elevate each other equally!`,
+          canvasDesc: `Outstanding mutual synergy! Both players perform better together than apart. ${fmtPerf(playerA, p.togetherWinRate, p.aWithoutBWinRate, deltaA, false)}, while ${fmtPerf(playerB, p.togetherWinRate, p.bWithoutAWinRate, deltaB, false)}.`
+        };
+      }
+
+      // Case 5: Balanced / Steady
+      return {
+        verdict: 'BALANCED',
+        icon: '&#129309;',
+        canvasIcon: '\u{1F91D}',
+        cardClass: 'duo',
+        title: 'Even Partnership (Steady Output)',
+        badgeText: 'Balanced Chemistry',
+        badgeColor: '#94a3b8',
+        badgeBg: 'rgba(148, 163, 184, 0.15)',
+        desc: `Consistent partnership output! ${fmtPerf(escapeHtml(playerA), p.togetherWinRate, p.aWithoutBWinRate, deltaA, true)}, while ${fmtPerf(escapeHtml(playerB), p.togetherWinRate, p.bWithoutAWinRate, deltaB, true)}.`,
+        canvasDesc: `Consistent partnership output. ${fmtPerf(playerA, p.togetherWinRate, p.aWithoutBWinRate, deltaA, false)}, while ${fmtPerf(playerB, p.togetherWinRate, p.bWithoutAWinRate, deltaB, false)}.`
+      };
+    }
+
     function renderH2HShowcase() {
       const pASelect = document.getElementById('h2hPlayerASelect');
       const pBSelect = document.getElementById('h2hPlayerBSelect');
@@ -11443,38 +11613,12 @@
       // 3. PARTNERSHIP DYNAMICS & WHO CARRIED WHO CARD
       if (partnershipCard) {
         const p = h2h.partnership;
-
-        let verdictCardClass = 'rivals';
-        let verdictIcon = '&#9876;&#65039;';
-        let verdictTitle = '';
-        let verdictDesc = '';
-
-        if (p.carryVerdict === 'A_CARRIED_B') {
-          verdictCardClass = 'carry-a';
-          verdictIcon = '&#128092;';
-          verdictTitle = `<span>${escapeHtml(playerA)} Carried ${escapeHtml(playerB)}!</span> <span style="font-size: 12px; font-weight: 700; color: #00f59b; background: rgba(0, 245, 155, 0.15); padding: 2px 8px; border-radius: 9999px;">+${p.carryDelta.toFixed(1)}% Differential</span>`;
-          verdictDesc = `When teaming up in doubles, <strong>${escapeHtml(playerB)}</strong> experiences a massive <strong>+${p.deltaB.toFixed(1)}%</strong> win rate boost compared to their baseline without ${escapeHtml(playerA)} (jumping from ${p.bWithoutAWinRate.toFixed(1)}% to ${p.togetherWinRate.toFixed(1)}%), while <strong>${escapeHtml(playerA)}</strong> sees a <strong>+${p.deltaA.toFixed(1)}%</strong> lift. <strong>${escapeHtml(playerA)} did the heavy lifting in this tandem!</strong>`;
-        } else if (p.carryVerdict === 'B_CARRIED_A') {
-          verdictCardClass = 'carry-b';
-          verdictIcon = '&#128092;';
-          verdictTitle = `<span>${escapeHtml(playerB)} Carried ${escapeHtml(playerA)}!</span> <span style="font-size: 12px; font-weight: 700; color: #38bdf8; background: rgba(56, 189, 248, 0.15); padding: 2px 8px; border-radius: 9999px;">+${(-p.carryDelta).toFixed(1)}% Differential</span>`;
-          verdictDesc = `When teaming up in doubles, <strong>${escapeHtml(playerA)}</strong> experiences a massive <strong>+${p.deltaA.toFixed(1)}%</strong> win rate boost compared to their baseline without ${escapeHtml(playerB)} (jumping from ${p.aWithoutBWinRate.toFixed(1)}% to ${p.togetherWinRate.toFixed(1)}%), while <strong>${escapeHtml(playerB)}</strong> sees a <strong>+${p.deltaB.toFixed(1)}%</strong> lift. <strong>${escapeHtml(playerB)} did the heavy lifting in this tandem!</strong>`;
-        } else if (p.carryVerdict === 'EQUAL_PARTNERS') {
-          verdictCardClass = 'duo';
-          verdictIcon = '&#129309;';
-          verdictTitle = `<span>Dynamic Duo! (Equal Partners)</span> <span style="font-size: 12px; font-weight: 700; color: #ffd700; background: rgba(255, 215, 0, 0.15); padding: 2px 8px; border-radius: 9999px;">Balanced Partnership</span>`;
-          verdictDesc = `Both players complement each other and elevate their games equally (<strong>${p.deltaA >= 0 ? '+' : ''}${p.deltaA.toFixed(1)}%</strong> vs <strong>${p.deltaB >= 0 ? '+' : ''}${p.deltaB.toFixed(1)}%</strong> lift). Neither player carries the other - they share the load evenly!`;
-        } else {
-          verdictCardClass = 'rivals';
-          verdictIcon = '&#9876;&#65039;';
-          verdictTitle = `<span>Pure Rivals (Never Partnered in Doubles)</span>`;
-          verdictDesc = `These two fierce competitors have exclusively clashed on opposite sides of the net and have not yet played on the same doubles team.`;
-        }
+        const dynamics = computePartnershipDynamics(playerA, playerB, p);
 
         const liftClassA = p.deltaA > 0.05 ? 'positive' : (p.deltaA < -0.05 ? 'negative' : 'neutral');
         const liftClassB = p.deltaB > 0.05 ? 'positive' : (p.deltaB < -0.05 ? 'negative' : 'neutral');
-        const liftSignA = p.deltaA > 0.05 ? '+' : '';
-        const liftSignB = p.deltaB > 0.05 ? '+' : '';
+        const liftLabelA = p.deltaA > 0.05 ? `+${p.deltaA.toFixed(1)}% Lift` : (p.deltaA < -0.05 ? `${p.deltaA.toFixed(1)}% Dip` : '0.0% Diff');
+        const liftLabelB = p.deltaB > 0.05 ? `+${p.deltaB.toFixed(1)}% Lift` : (p.deltaB < -0.05 ? `${p.deltaB.toFixed(1)}% Dip` : '0.0% Diff');
 
         partnershipCard.innerHTML = `
           <div class="h2h-card-title">
@@ -11482,11 +11626,14 @@
           </div>
 
           <!-- Carry Verdict Banner -->
-          <div class="h2h-carry-verdict-card ${verdictCardClass}">
-            <div class="h2h-carry-icon">${verdictIcon}</div>
+          <div class="h2h-carry-verdict-card ${dynamics.cardClass}">
+            <div class="h2h-carry-icon">${dynamics.icon}</div>
             <div>
-              <div class="h2h-carry-title">${verdictTitle}</div>
-              <div class="h2h-carry-desc">${verdictDesc}</div>
+              <div class="h2h-carry-title">
+                <span>${dynamics.title}</span>
+                <span style="font-size: 12px; font-weight: 700; color: ${dynamics.badgeColor}; background: ${dynamics.badgeBg}; padding: 2px 8px; border-radius: 9999px;">${dynamics.badgeText}</span>
+              </div>
+              <div class="h2h-carry-desc">${dynamics.desc}</div>
             </div>
           </div>
 
@@ -11515,26 +11662,26 @@
             <div class="h2h-synergy-card">
               <div class="h2h-synergy-header">
                 <span>${escapeHtml(playerA)}'s Synergy</span>
-                ${p.togetherPlayed > 0 ? `<span class="h2h-synergy-lift ${liftClassA}">${liftSignA}${p.deltaA.toFixed(1)}% Lift</span>` : ''}
+                ${p.togetherPlayed > 0 ? `<span class="h2h-synergy-lift ${liftClassA}">${liftLabelA}</span>` : ''}
               </div>
               <div class="h2h-synergy-body">
                 ${p.togetherPlayed > 0 ? `With ${escapeHtml(playerB)}: <strong style="color: #00f59b;">${p.togetherWinRate.toFixed(1)}%</strong>` : 'No doubles matches together'}
               </div>
               <div class="h2h-synergy-sub">
-                Without ${escapeHtml(playerB)}: ${p.aWithoutBWinRate.toFixed(1)}% (${p.aWithoutBPlayed} matches)
+                ${p.aWithoutBPlayed > 0 ? `Without ${escapeHtml(playerB)}: ${p.aWithoutBWinRate.toFixed(1)}% (${p.aWithoutBPlayed} matches)` : 'No matches without partner'}
               </div>
             </div>
 
             <div class="h2h-synergy-card">
               <div class="h2h-synergy-header">
                 <span>${escapeHtml(playerB)}'s Synergy</span>
-                ${p.togetherPlayed > 0 ? `<span class="h2h-synergy-lift ${liftClassB}">${liftSignB}${p.deltaB.toFixed(1)}% Lift</span>` : ''}
+                ${p.togetherPlayed > 0 ? `<span class="h2h-synergy-lift ${liftClassB}">${liftLabelB}</span>` : ''}
               </div>
               <div class="h2h-synergy-body">
                 ${p.togetherPlayed > 0 ? `With ${escapeHtml(playerA)}: <strong style="color: #38bdf8;">${p.togetherWinRate.toFixed(1)}%</strong>` : 'No doubles matches together'}
               </div>
               <div class="h2h-synergy-sub">
-                Without ${escapeHtml(playerA)}: ${p.bWithoutAWinRate.toFixed(1)}% (${p.bWithoutAPlayed} matches)
+                ${p.bWithoutAPlayed > 0 ? `Without ${escapeHtml(playerA)}: ${p.bWithoutAWinRate.toFixed(1)}% (${p.bWithoutAPlayed} matches)` : 'No matches without partner'}
               </div>
             </div>
           </div>
@@ -12085,40 +12232,35 @@
         ctx.font = 'bold 14px system-ui, -apple-system, sans-serif';
         ctx.fillText(`Played Together: ${p.togetherPlayed}  \u2022  Won: ${p.togetherWon}  \u2022  Lost: ${p.togetherLost}  \u2022  Win Rate: ${p.togetherPlayed > 0 ? p.togetherWinRate.toFixed(1) + '%' : '0.0%'}`, 70, 955);
 
-        // Carry Verdict Callout Box (y: 975, h: 155)
+        // Carry Verdict Callout Box (y: 975, h: 140)
         const verdictY = 975;
+        const dynamics = computePartnershipDynamics(playerA, playerB, p);
+
         let vBorderColor = 'rgba(148, 163, 184, 0.4)';
         let vBgColor = 'rgba(148, 163, 184, 0.1)';
-        let vTitle = 'Pure Rivals (Never Partnered in Doubles)';
-        let vDesc = 'These two fierce competitors have exclusively clashed on opposite sides of the net and have not yet played on the same doubles team.';
-
-        if (p.carryVerdict === 'A_CARRIED_B') {
+        if (dynamics.verdict === 'STYLE_CLASH') {
+          vBorderColor = 'rgba(244, 63, 94, 0.45)';
+          vBgColor = 'rgba(244, 63, 94, 0.1)';
+        } else if (dynamics.verdict === 'A_CARRIED_B') {
           vBorderColor = 'rgba(0, 245, 155, 0.45)';
           vBgColor = 'rgba(0, 245, 155, 0.1)';
-          vTitle = `\u{1F392} ${playerA} Carried ${playerB}! (+${p.carryDelta.toFixed(1)}% Differential)`;
-          vDesc = `${playerB} gains a substantial +${p.deltaB.toFixed(1)}% win rate boost teaming with ${playerA} (from ${p.bWithoutAWinRate.toFixed(1)}% to ${p.togetherWinRate.toFixed(1)}%), while ${playerA} sees a +${p.deltaA.toFixed(1)}% lift. ${playerA} carries the bulk of this partnership's success!`;
-        } else if (p.carryVerdict === 'B_CARRIED_A') {
+        } else if (dynamics.verdict === 'B_CARRIED_A') {
           vBorderColor = 'rgba(56, 189, 248, 0.45)';
           vBgColor = 'rgba(56, 189, 248, 0.1)';
-          vTitle = `\u{1F392} ${playerB} Carried ${playerA}! (+${(-p.carryDelta).toFixed(1)}% Differential)`;
-          vDesc = `${playerA} gains a substantial +${p.deltaA.toFixed(1)}% win rate boost teaming with ${playerB} (from ${p.aWithoutBWinRate.toFixed(1)}% to ${p.togetherWinRate.toFixed(1)}%), while ${playerB} sees a +${p.deltaB.toFixed(1)}% lift. ${playerB} carries the bulk of this partnership's success!`;
-        } else if (p.carryVerdict === 'EQUAL_PARTNERS') {
+        } else if (dynamics.verdict === 'DYNAMIC_DUO' || dynamics.verdict === 'EXCLUSIVE_PARTNERS' || dynamics.verdict === 'NEW_PARTNERSHIP') {
           vBorderColor = 'rgba(255, 215, 0, 0.45)';
           vBgColor = 'rgba(255, 215, 0, 0.1)';
-          vTitle = `\u{1F91D} Dynamic Duo! (Equal Partners - Balanced Synergy)`;
-          vDesc = `Both players complement each other equally (+${p.deltaA.toFixed(1)}% vs +${p.deltaB.toFixed(1)}% lift). Neither player carries the other - they share the load as true equals!`;
         }
 
         drawCanvasRoundRect(ctx, barX, verdictY, barW, 140, 12, vBgColor, vBorderColor, 1.5);
 
         ctx.fillStyle = '#ffffff';
         ctx.font = '900 18px system-ui, -apple-system, sans-serif';
-        ctx.fillText(vTitle, barX + 24, verdictY + 40);
+        ctx.fillText(`${dynamics.canvasIcon} ${dynamics.title} (${dynamics.badgeText})`, barX + 24, verdictY + 40);
 
         ctx.fillStyle = '#cbd5e1';
         ctx.font = '500 14px system-ui, -apple-system, sans-serif';
-        // Wrap verdict text if needed
-        const words = vDesc.split(' ');
+        const words = dynamics.canvasDesc.split(' ');
         let line = '';
         let textY = verdictY + 72;
         words.forEach(w => {
@@ -12137,6 +12279,11 @@
         const synY = 1135;
         const synW = (barW - gapCol) / 2;
 
+        const labelA = p.deltaA > 0.05 ? 'Lift' : (p.deltaA < -0.05 ? 'Dip' : 'Diff');
+        const labelB = p.deltaB > 0.05 ? 'Lift' : (p.deltaB < -0.05 ? 'Dip' : 'Diff');
+        const signA = p.deltaA > 0.05 ? '+' : '';
+        const signB = p.deltaB > 0.05 ? '+' : '';
+
         // Player A Synergy Box
         drawCanvasRoundRect(ctx, barX, synY, synW, 160, 10, 'rgba(30, 41, 59, 0.6)', 'rgba(255, 255, 255, 0.08)', 1);
         ctx.fillStyle = '#00f59b';
@@ -12149,12 +12296,11 @@
 
         ctx.fillStyle = '#94a3b8';
         ctx.font = '500 13.5px system-ui, -apple-system, sans-serif';
-        ctx.fillText(`Baseline without ${playerB}: ${p.aWithoutBWinRate.toFixed(1)}% (${p.aWithoutBPlayed} matches)`, barX + 18, synY + 102);
+        ctx.fillText(p.aWithoutBPlayed > 0 ? `Baseline without ${playerB}: ${p.aWithoutBWinRate.toFixed(1)}% (${p.aWithoutBPlayed} matches)` : 'No matches without partner', barX + 18, synY + 102);
 
-        const signA = p.deltaA >= 0 ? '+' : '';
-        ctx.fillStyle = p.deltaA >= 0 ? '#00f59b' : '#f43f5e';
+        ctx.fillStyle = p.deltaA > 0.05 ? '#00f59b' : (p.deltaA < -0.05 ? '#f43f5e' : '#94a3b8');
         ctx.font = 'bold 14px system-ui, -apple-system, sans-serif';
-        ctx.fillText(`Net Synergy Lift: ${signA}${p.deltaA.toFixed(1)}%`, barX + 18, synY + 132);
+        ctx.fillText(`Net Synergy ${labelA}: ${signA}${p.deltaA.toFixed(1)}%`, barX + 18, synY + 132);
 
         // Player B Synergy Box
         drawCanvasRoundRect(ctx, barX + synW + gapCol, synY, synW, 160, 10, 'rgba(30, 41, 59, 0.6)', 'rgba(255, 255, 255, 0.08)', 1);
@@ -12168,12 +12314,11 @@
 
         ctx.fillStyle = '#94a3b8';
         ctx.font = '500 13.5px system-ui, -apple-system, sans-serif';
-        ctx.fillText(`Baseline without ${playerA}: ${p.bWithoutAWinRate.toFixed(1)}% (${p.bWithoutAPlayed} matches)`, barX + synW + gapCol + 18, synY + 102);
+        ctx.fillText(p.bWithoutAPlayed > 0 ? `Baseline without ${playerA}: ${p.bWithoutAWinRate.toFixed(1)}% (${p.bWithoutAPlayed} matches)` : 'No matches without partner', barX + synW + gapCol + 18, synY + 102);
 
-        const signB = p.deltaB >= 0 ? '+' : '';
-        ctx.fillStyle = p.deltaB >= 0 ? '#00f59b' : '#f43f5e';
+        ctx.fillStyle = p.deltaB > 0.05 ? '#00f59b' : (p.deltaB < -0.05 ? '#f43f5e' : '#94a3b8');
         ctx.font = 'bold 14px system-ui, -apple-system, sans-serif';
-        ctx.fillText(`Net Synergy Lift: ${signB}${p.deltaB.toFixed(1)}%`, barX + synW + gapCol + 18, synY + 132);
+        ctx.fillText(`Net Synergy ${labelB}: ${signB}${p.deltaB.toFixed(1)}%`, barX + synW + gapCol + 18, synY + 132);
 
         // 6. Footer (y: 1355)
         ctx.fillStyle = '#64748b';

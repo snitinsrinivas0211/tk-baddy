@@ -3219,6 +3219,7 @@
       align-items: center;
       border-bottom: 1px solid rgba(51, 65, 85, 0.6);
       padding-bottom: 10px;
+      gap: 8px;
     }
 
     .team-gen-team-title {
@@ -3228,6 +3229,8 @@
       display: flex;
       align-items: center;
       gap: 8px;
+      min-width: 0;
+      overflow: hidden;
     }
 
     .team-gen-blended-pill {
@@ -3239,6 +3242,8 @@
       font-size: 12px;
       font-weight: 800;
       border: 1px solid;
+      white-space: nowrap;
+      flex-shrink: 0;
     }
 
     .team-gen-roster-list {
@@ -8256,7 +8261,6 @@
         }
 
         // 4. Header Section
-        // Pill: TK BADDY CHAMPIONSHIPS
         const pillW = 340;
         const pillH = 34;
         const pillX = (canvasW - pillW) / 2;
@@ -8326,35 +8330,54 @@
           // Card Header: Team Name & Gender
           ctx.textAlign = 'left';
           ctx.textBaseline = 'middle';
-          ctx.font = '900 24px Outfit, -apple-system, sans-serif';
+          ctx.font = '900 22px Outfit, -apple-system, sans-serif';
           ctx.fillStyle = '#ffffff';
           ctx.fillText(`Team ${i + 1}`, cardX + 16, cardY + 27);
 
           const teamTitleW = ctx.measureText(`Team ${i + 1}`).width;
-          ctx.font = '700 15px Outfit, -apple-system, sans-serif';
+          ctx.font = '700 14px Outfit, -apple-system, sans-serif';
           ctx.fillStyle = '#94a3b8';
           const genderStr = `(${stats.males}M \u00B7 ${stats.females}F)`;
-          ctx.fillText(genderStr, cardX + 16 + teamTitleW + 10, cardY + 27);
+          ctx.fillText(genderStr, cardX + 16 + teamTitleW + 8, cardY + 27);
 
-          // Blended ELO Pill on Right (Big & Bold)
-          const eloBadgeW = 145;
-          const eloBadgeH = 34;
+          // Blended ELO Pill on Right (Dynamically sized, crisp vector, guaranteed inside wrap)
+          const eloText = `${blendedElo} ELO`;
+          ctx.font = '900 16px Outfit, -apple-system, sans-serif';
+          const eloTextW = ctx.measureText(eloText).width;
+          const dotRadius = 4;
+          const dotSpacing = 8;
+          const pillPaddingX = 14;
+          const eloBadgeW = Math.max(116, Math.round(eloTextW + (dotRadius * 2) + dotSpacing + (pillPaddingX * 2)));
+          const eloBadgeH = 32;
           const eloBadgeX = cardX + cardW - eloBadgeW - 14;
-          const eloBadgeY = cardY + 10;
+          const eloBadgeY = cardY + 11;
 
+          // Draw pill background & border
           ctx.fillStyle = tier.bg;
           ctx.beginPath();
-          drawRRect(eloBadgeX, eloBadgeY, eloBadgeW, eloBadgeH, 17);
+          drawRRect(eloBadgeX, eloBadgeY, eloBadgeW, eloBadgeH, 16);
           ctx.fill();
 
           ctx.strokeStyle = tier.border;
-          ctx.lineWidth = 2;
+          ctx.lineWidth = 1.5;
           ctx.stroke();
 
-          ctx.textAlign = 'center';
-          ctx.font = '900 17px Outfit, -apple-system, sans-serif';
+          // Perfectly center the glowing tier dot + ELO text together inside the pill
+          const contentTotalW = (dotRadius * 2) + dotSpacing + eloTextW;
+          const contentStartX = eloBadgeX + (eloBadgeW - contentTotalW) / 2;
+
+          // Glowing Tier Status Dot
           ctx.fillStyle = tier.color;
-          ctx.fillText(`${tier.icon} ${blendedElo} ELO`, eloBadgeX + eloBadgeW / 2, eloBadgeY + eloBadgeH / 2);
+          ctx.beginPath();
+          ctx.arc(contentStartX + dotRadius, eloBadgeY + eloBadgeH / 2, dotRadius, 0, Math.PI * 2);
+          ctx.fill();
+
+          // Crisp Vector ELO Text
+          ctx.textAlign = 'left';
+          ctx.textBaseline = 'middle';
+          ctx.fillStyle = tier.color;
+          ctx.font = '900 16px Outfit, -apple-system, sans-serif';
+          ctx.fillText(eloText, contentStartX + (dotRadius * 2) + dotSpacing, eloBadgeY + eloBadgeH / 2);
 
           // Divider Line
           ctx.strokeStyle = 'rgba(51, 65, 85, 0.5)';
@@ -8384,49 +8407,63 @@
             ctx.lineWidth = 1;
             ctx.stroke();
 
-            // Player Avatar / Shuttlecock
-            const avatarX = rowX + 14;
-            ctx.textAlign = 'left';
-            ctx.textBaseline = 'middle';
-            ctx.font = '18px Outfit, -apple-system, sans-serif';
-            ctx.fillStyle = '#ffffff';
-            ctx.fillText(player.avatar || '\u{1F3F8}', avatarX, rowY + rowH / 2);
+            // Player Avatar Initial Circle (Crisp vector badge)
+            const avR = 12;
+            const avX = rowX + 18;
+            const avY = rowY + rowH / 2;
+            ctx.fillStyle = isF ? 'rgba(244, 114, 182, 0.22)' : 'rgba(56, 189, 248, 0.22)';
+            ctx.beginPath();
+            ctx.arc(avX, avY, avR, 0, Math.PI * 2);
+            ctx.fill();
+            ctx.strokeStyle = isF ? 'rgba(244, 114, 182, 0.55)' : 'rgba(56, 189, 248, 0.55)';
+            ctx.lineWidth = 1;
+            ctx.stroke();
 
-            // Player Name (Large, Bold 21px for mobile clarity)
-            const nameX = avatarX + 26;
-            ctx.font = '800 21px Outfit, -apple-system, sans-serif';
+            ctx.textAlign = 'center';
+            ctx.textBaseline = 'middle';
+            ctx.font = '800 12px Outfit, -apple-system, sans-serif';
+            ctx.fillStyle = isF ? '#f472b6' : '#38bdf8';
+            ctx.fillText(player.name.charAt(0).toUpperCase(), avX, avY);
+
+            // Player Name
+            const nameX = avX + avR + 10;
+            ctx.textAlign = 'left';
+            ctx.font = '800 20px Outfit, -apple-system, sans-serif';
             ctx.fillStyle = '#f8fafc';
             ctx.fillText(player.name, nameX, rowY + rowH / 2);
 
-            // Gender Mark Pill right after Name
+            // Gender Capsule
             const nameW = ctx.measureText(player.name).width;
             const genderPillX = nameX + nameW + 8;
-            const genderPillW = 32;
-            const genderPillH = 22;
+            const genderPillW = 28;
+            const genderPillH = 20;
             const genderPillY = rowY + (rowH - genderPillH) / 2;
 
             ctx.fillStyle = isF ? 'rgba(244, 114, 182, 0.18)' : 'rgba(56, 189, 248, 0.18)';
             ctx.beginPath();
-            drawRRect(genderPillX, genderPillY, genderPillW, genderPillH, 11);
+            drawRRect(genderPillX, genderPillY, genderPillW, genderPillH, 10);
             ctx.fill();
             ctx.strokeStyle = isF ? 'rgba(244, 114, 182, 0.45)' : 'rgba(56, 189, 248, 0.45)';
             ctx.lineWidth = 1;
             ctx.stroke();
 
             ctx.textAlign = 'center';
-            ctx.font = '800 12px Outfit, -apple-system, sans-serif';
+            ctx.font = '800 11px Outfit, -apple-system, sans-serif';
             ctx.fillStyle = isF ? '#f472b6' : '#38bdf8';
             ctx.fillText(isF ? 'F' : 'M', genderPillX + genderPillW / 2, genderPillY + genderPillH / 2);
 
             // Individual Player ELO Badge on Right
-            const pEloBadgeW = 110;
-            const pEloBadgeH = 28;
+            const pEloText = `${player.elo} ELO`;
+            ctx.font = '800 14px Outfit, -apple-system, sans-serif';
+            const pEloTextW = ctx.measureText(pEloText).width;
+            const pEloBadgeW = Math.max(94, Math.round(pEloTextW + 24));
+            const pEloBadgeH = 26;
             const pEloBadgeX = rowX + rowW - pEloBadgeW - 8;
             const pEloBadgeY = rowY + (rowH - pEloBadgeH) / 2;
 
             ctx.fillStyle = pTier.bg;
             ctx.beginPath();
-            drawRRect(pEloBadgeX, pEloBadgeY, pEloBadgeW, pEloBadgeH, 14);
+            drawRRect(pEloBadgeX, pEloBadgeY, pEloBadgeW, pEloBadgeH, 13);
             ctx.fill();
 
             ctx.strokeStyle = pTier.border;
@@ -8434,15 +8471,14 @@
             ctx.stroke();
 
             ctx.textAlign = 'center';
-            ctx.font = '800 15px Outfit, -apple-system, sans-serif';
+            ctx.font = '800 14px Outfit, -apple-system, sans-serif';
             ctx.fillStyle = pTier.color;
-            ctx.fillText(`${player.elo} ELO`, pEloBadgeX + pEloBadgeW / 2, pEloBadgeY + pEloBadgeH / 2);
+            ctx.fillText(pEloText, pEloBadgeX + pEloBadgeW / 2, pEloBadgeY + pEloBadgeH / 2);
 
-            // Subtle Dotted Leader Line between Gender Pill and ELO Badge
-            // Eliminates awkward blank space and creates an elegant connection
+            // Dotted Leader Line between Gender Capsule and ELO Badge
             const lineStartX = genderPillX + genderPillW + 10;
             const lineEndX = pEloBadgeX - 10;
-            if (lineEndX > lineStartX + 15) {
+            if (lineEndX > lineStartX + 12) {
               ctx.save();
               ctx.strokeStyle = 'rgba(100, 116, 139, 0.35)';
               ctx.lineWidth = 1.5;

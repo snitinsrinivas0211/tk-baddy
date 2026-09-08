@@ -5899,7 +5899,7 @@
 
         // Helper to complete drawing text & stats after photo resolves
         function finishDrawing(imgOrNull) {
-          const ax = 600, ay = 250, ar = 130;
+          const ax = 600, ay = 195, ar = 135;
 
           // 4. Draw Avatar with Exact Object-Fit: Cover (Zero Aspect Ratio Distortion)
           ctx.save();
@@ -5930,7 +5930,7 @@
             ctx.fillStyle = avatarGrad;
             ctx.fill();
             ctx.fillStyle = '#052e16';
-            ctx.font = '900 100px Outfit, -apple-system, sans-serif';
+            ctx.font = '900 110px Outfit, -apple-system, sans-serif';
             ctx.textAlign = 'center';
             ctx.textBaseline = 'middle';
             ctx.fillText(p.name.charAt(0).toUpperCase(), ax, ay);
@@ -5943,44 +5943,44 @@
           ctx.arc(ax, ay, ar, 0, Math.PI * 2);
           ctx.lineWidth = 8;
           ctx.strokeStyle = '#ffffff';
-          ctx.shadowColor = 'rgba(0, 245, 155, 0.75)';
-          ctx.shadowBlur = 36;
+          ctx.shadowColor = 'rgba(0, 245, 155, 0.85)';
+          ctx.shadowBlur = 40;
           ctx.stroke();
           ctx.restore();
 
-          // 5. Player Name (Extra-Large, Crystal Clear Vector Display)
+          // 5. Player Name (Extra-Large, Punchy Vector Display)
           ctx.textAlign = 'center';
           ctx.textBaseline = 'alphabetic';
           ctx.fillStyle = '#ffffff';
-          ctx.font = '900 64px Outfit, -apple-system, sans-serif';
-          ctx.fillText(p.name, 600, 455);
+          ctx.font = '900 74px Outfit, -apple-system, sans-serif';
+          ctx.fillText(p.name, 600, 405);
 
           // 6. Rank & Gender
           const rankBadge = rank === 1 ? '\u{1F451}' : (rank === 2 ? '\u{1F948}' : (rank === 3 ? '\u{1F949}' : ''));
           const genderSym = p.gender === 'Female' ? '\u2640 Female' : '\u2642 Male';
-          ctx.font = '700 28px Outfit, -apple-system, sans-serif';
+          ctx.font = '800 32px Outfit, -apple-system, sans-serif';
           ctx.fillStyle = '#ffd700';
-          ctx.fillText(`Overall Rank: #${rank} ${rankBadge}   \u2022   ${genderSym}`, 600, 502);
+          ctx.fillText(`Overall Rank: #${rank} ${rankBadge}   \u2022   ${genderSym}`, 600, 458);
 
-          // 6B. Skill Tier Rank Badge
+          // 6B. Skill Tier Rank Badge Pill
           const tier = getPlayerSkillTier(p.elo || 1200);
-          const tierText = `${tier.icon} ${tier.tier.toUpperCase()} TIER`;
-          ctx.font = '800 21px Outfit, -apple-system, sans-serif';
+          const tierText = `${tier.icon}  ${tier.tier.toUpperCase()} TIER`;
+          ctx.font = '900 25px Outfit, -apple-system, sans-serif';
           const tierTextW = ctx.measureText(tierText).width;
-          const tierPillW = tierTextW + 42;
-          const tierPillH = 38;
+          const tierPillW = tierTextW + 52;
+          const tierPillH = 46;
           const tierPillX = 600 - tierPillW / 2;
-          const tierPillY = 518;
+          const tierPillY = 480;
 
           ctx.save();
           ctx.fillStyle = tier.bg;
           ctx.strokeStyle = tier.border;
-          ctx.lineWidth = 2;
+          ctx.lineWidth = 2.5;
           ctx.shadowColor = tier.glow;
-          ctx.shadowBlur = 14;
+          ctx.shadowBlur = 18;
           ctx.beginPath();
           if (ctx.roundRect) {
-            ctx.roundRect(tierPillX, tierPillY, tierPillW, tierPillH, 19);
+            ctx.roundRect(tierPillX, tierPillY, tierPillW, tierPillH, 23);
           } else {
             ctx.rect(tierPillX, tierPillY, tierPillW, tierPillH);
           }
@@ -5991,37 +5991,65 @@
           ctx.textAlign = 'center';
           ctx.textBaseline = 'middle';
           ctx.fillStyle = tier.color;
-          ctx.font = '800 21px Outfit, -apple-system, sans-serif';
+          ctx.font = '900 25px Outfit, -apple-system, sans-serif';
           ctx.fillText(tierText, 600, tierPillY + tierPillH / 2 + 1);
 
-          // 7. ELO Rating Pill
-          ctx.textBaseline = 'alphabetic';
-          ctx.fillStyle = 'rgba(255, 215, 0, 0.12)';
+          // 7. ELO Rating Showcase (Big & Bold for Mobile)
+          const eloW = 960, eloH = 105, eloX = 120, eloY = 555;
+          ctx.save();
+          ctx.fillStyle = 'rgba(15, 23, 42, 0.96)';
           ctx.strokeStyle = tier.border;
-          ctx.lineWidth = 2.5;
+          ctx.lineWidth = 3;
+          ctx.shadowColor = tier.glow;
+          ctx.shadowBlur = 20;
           ctx.beginPath();
           if (ctx.roundRect) {
-            ctx.roundRect(260, 574, 680, 66, 14);
+            ctx.roundRect(eloX, eloY, eloW, eloH, 16);
           } else {
-            ctx.rect(260, 574, 680, 66);
+            ctx.rect(eloX, eloY, eloW, eloH);
+          }
+          ctx.fill();
+          ctx.stroke();
+          ctx.restore();
+
+          // Inside ELO Box
+          ctx.textBaseline = 'middle';
+          ctx.textAlign = 'left';
+          ctx.font = '900 50px Outfit, -apple-system, sans-serif';
+          ctx.fillStyle = '#ffffff';
+          ctx.fillText('\u26A1 ELO: ', eloX + 35, eloY + eloH / 2);
+          const eloPrefixW = ctx.measureText('\u26A1 ELO: ').width;
+          ctx.fillStyle = tier.color;
+          ctx.font = '900 58px Outfit, -apple-system, sans-serif';
+          ctx.fillText(`${p.elo || 1200}`, eloX + 35 + eloPrefixW, eloY + eloH / 2);
+
+          ctx.textAlign = 'right';
+          ctx.fillStyle = '#94a3b8';
+          ctx.font = '700 26px Outfit, -apple-system, sans-serif';
+          ctx.fillText(`Peak: ${p.peakElo || 1200}  \u2022  Low: ${p.lowestElo || 1200}`, eloX + eloW - 35, eloY + eloH / 2);
+
+          // 8. Win Rate & Max Streak Bar
+          const wrW = 960, wrH = 68, wrX = 120, wrY = 680;
+          ctx.fillStyle = 'rgba(15, 23, 42, 0.8)';
+          ctx.strokeStyle = 'rgba(255, 255, 255, 0.12)';
+          ctx.lineWidth = 2;
+          ctx.beginPath();
+          if (ctx.roundRect) {
+            ctx.roundRect(wrX, wrY, wrW, wrH, 14);
+          } else {
+            ctx.rect(wrX, wrY, wrW, wrH);
           }
           ctx.fill();
           ctx.stroke();
 
-          ctx.fillStyle = tier.color;
-          ctx.font = '900 28px Outfit, -apple-system, sans-serif';
-          ctx.fillText(`\u26A1 ELO Rating: ${p.elo || 1200}`, 490, 616);
-          ctx.fillStyle = '#94a3b8';
-          ctx.font = '600 23px Outfit, -apple-system, sans-serif';
-          ctx.fillText(`(Peak: ${p.peakElo || 1200} | Low: ${p.lowestElo || 1200})`, 770, 616);
+          ctx.textAlign = 'center';
+          ctx.textBaseline = 'middle';
+          ctx.font = '800 30px Outfit, -apple-system, sans-serif';
+          ctx.fillStyle = '#e2e8f0';
+          ctx.fillText(`WIN RATE: ${p.winRate.toFixed(1)}%    \u2022    MAX STREAK: ${p.maxStreak} \u{1F525}`, 600, wrY + wrH / 2 + 1);
 
-          // 8. Win Rate & Max Streak
-          ctx.font = '600 26px Outfit, -apple-system, sans-serif';
-          ctx.fillStyle = '#94a3b8';
-          ctx.fillText(`Win Rate: ${p.winRate.toFixed(1)}%   \u2022   Max Streak: ${p.maxStreak} \u{1F525}`, 600, 660);
-
-          // 9. 4 Stat Boxes (High-Definition Grid)
-          const boxW = 230, boxH = 125, gap = 20, startX = 115, startY = 705;
+          // 9. 4 Stat Boxes (Substantial, Tall & Punchy)
+          const boxW = 225, boxH = 160, gap = 20, startX = 120, startY = 770;
           const diffDisplay = p.diff > 0 ? `+${p.diff}` : `${p.diff}`;
           const diffCol = p.diff > 0 ? '#00f59b' : (p.diff < 0 ? '#ef4444' : '#94a3b8');
 
@@ -6034,55 +6062,91 @@
 
           stats.forEach((st, i) => {
             const bx = startX + i * (boxW + gap);
-            ctx.fillStyle = 'rgba(7, 11, 18, 0.88)';
-            ctx.strokeStyle = 'rgba(255, 255, 255, 0.08)';
-            ctx.lineWidth = 2;
+            ctx.fillStyle = 'rgba(15, 23, 42, 0.92)';
+            ctx.strokeStyle = 'rgba(255, 255, 255, 0.12)';
+            ctx.lineWidth = 2.5;
             ctx.beginPath();
             if (ctx.roundRect) {
-              ctx.roundRect(bx, startY, boxW, boxH, 12);
+              ctx.roundRect(bx, startY, boxW, boxH, 14);
             } else {
               ctx.rect(bx, startY, boxW, boxH);
             }
             ctx.fill();
             ctx.stroke();
 
+            ctx.textAlign = 'center';
+            ctx.textBaseline = 'alphabetic';
             ctx.fillStyle = st.col;
-            ctx.font = '900 46px Outfit, -apple-system, sans-serif';
-            ctx.fillText(st.num, bx + boxW / 2, startY + 58);
+            ctx.font = '900 62px Outfit, -apple-system, sans-serif';
+            ctx.fillText(st.num, bx + boxW / 2, startY + 76);
 
             ctx.fillStyle = '#94a3b8';
-            ctx.font = '800 18px Outfit, -apple-system, sans-serif';
-            ctx.fillText(st.lbl, bx + boxW / 2, startY + 100);
+            ctx.font = '800 24px Outfit, -apple-system, sans-serif';
+            ctx.fillText(st.lbl, bx + boxW / 2, startY + 130);
           });
 
-          // 10. Championship Titles (if any)
+          // 10. Accolade / Championship Banner (Eliminates bottom whitespace)
+          const accW = 960, accH = 88, accX = 120, accY = 955;
+          let hasHonors = false;
           if (typeof computeHonorsStandings === 'function') {
             const honors = computeHonorsStandings();
             const h = honors.find(item => item.name === p.name);
             if (h && h.titles > 0) {
+              hasHonors = true;
               const edList = (h.editionsWon && h.editionsWon.length > 0) ? ` (${h.editionsWon.join(', ')})` : '';
-              ctx.fillStyle = 'rgba(255, 215, 0, 0.12)';
-              ctx.strokeStyle = 'rgba(255, 215, 0, 0.4)';
-              ctx.lineWidth = 2;
+
+              ctx.save();
+              ctx.fillStyle = 'rgba(255, 215, 0, 0.15)';
+              ctx.strokeStyle = 'rgba(255, 215, 0, 0.5)';
+              ctx.lineWidth = 2.5;
+              ctx.shadowColor = 'rgba(255, 215, 0, 0.3)';
+              ctx.shadowBlur = 18;
               ctx.beginPath();
               if (ctx.roundRect) {
-                ctx.roundRect(220, 875, 760, 64, 12);
+                ctx.roundRect(accX, accY, accW, accH, 14);
               } else {
-                ctx.rect(220, 875, 760, 64);
+                ctx.rect(accX, accY, accW, accH);
               }
               ctx.fill();
               ctx.stroke();
+              ctx.restore();
 
+              ctx.textAlign = 'center';
+              ctx.textBaseline = 'middle';
               ctx.fillStyle = '#ffd700';
-              ctx.font = '800 24px Outfit, -apple-system, sans-serif';
-              ctx.fillText(`\u{1F3C6} ${h.titles} Championship Title${h.titles > 1 ? 's' : ''}${edList}`, 600, 915);
+              ctx.font = '900 32px Outfit, -apple-system, sans-serif';
+              ctx.fillText(`\u{1F3C6} ${h.titles} Championship Title${h.titles > 1 ? 's' : ''}${edList}`, 600, accY + accH / 2 + 1);
             }
           }
 
+          if (!hasHonors) {
+            ctx.save();
+            ctx.fillStyle = 'rgba(15, 23, 42, 0.75)';
+            ctx.strokeStyle = 'rgba(0, 245, 155, 0.28)';
+            ctx.lineWidth = 2;
+            ctx.beginPath();
+            if (ctx.roundRect) {
+              ctx.roundRect(accX, accY, accW, accH, 14);
+            } else {
+              ctx.rect(accX, accY, accW, accH);
+            }
+            ctx.fill();
+            ctx.stroke();
+            ctx.restore();
+
+            ctx.textAlign = 'center';
+            ctx.textBaseline = 'middle';
+            ctx.fillStyle = '#00f59b';
+            ctx.font = '800 26px Outfit, -apple-system, sans-serif';
+            ctx.fillText('\u{1F3F8} OFFICIAL CONTENDER  \u2022  TK BADDY CHAMPIONSHIPS', 600, accY + accH / 2 + 1);
+          }
+
           // 11. Official Footer Watermark
+          ctx.textAlign = 'center';
+          ctx.textBaseline = 'alphabetic';
           ctx.fillStyle = 'rgba(255, 255, 255, 0.45)';
-          ctx.font = '800 22px Outfit, -apple-system, sans-serif';
-          ctx.fillText('\u{1F3F8} TK BADDY CHAMPIONSHIPS', 600, 1110);
+          ctx.font = '800 24px Outfit, -apple-system, sans-serif';
+          ctx.fillText('\u{1F3F8} TK BADDY CHAMPIONSHIPS  \u2022  PLAYER STATS CARD', 600, 1135);
 
           canvas.toBlob((b) => resolve(b), 'image/png');
         }

@@ -2313,7 +2313,7 @@
          TAB 2: BADGES CONTENT
          ========================================================================= -->
     <div id="badgesTabContent" style="display: none;">
-      <!-- SECTION 3: PLAYER BADGES & ACHIEVEMENTS (EXACTLY 5 BADGES) -->
+      <!-- SECTION 3: PLAYER BADGES & ACHIEVEMENTS -->
     <section>
       <div class="section-header">
         <div>
@@ -2365,6 +2365,62 @@
           </div>
           <div class="badge-holders" id="badgeHolders-flawlessChampion">
             <span class="badge-locked-tag">Locked &#8226; Undefeated in a Championship season</span>
+          </div>
+        </div>
+
+        <!-- Badge 4: Deuce Master -->
+        <div class="badge-card" id="badgeCard-deuceMaster">
+          <div class="badge-top">
+            <div class="badge-emblem">&#9878;&#65039;</div>
+            <div class="badge-info">
+              <div class="badge-title">Deuce Master</div>
+              <div class="badge-desc">Won 3+ matches that extended beyond 15-15 to 17+ points.</div>
+            </div>
+          </div>
+          <div class="badge-holders" id="badgeHolders-deuceMaster">
+            <span class="badge-locked-tag">Locked &#8226; Win 3+ matches extended to 17+ pts</span>
+          </div>
+        </div>
+
+        <!-- Badge 5: Giant Slayer -->
+        <div class="badge-card" id="badgeCard-giantSlayer">
+          <div class="badge-top">
+            <div class="badge-emblem">&#127993;</div>
+            <div class="badge-info">
+              <div class="badge-title">Giant Slayer</div>
+              <div class="badge-desc">Defeated an opponent ranked 150+ ELO above you.</div>
+            </div>
+          </div>
+          <div class="badge-holders" id="badgeHolders-giantSlayer">
+            <span class="badge-locked-tag">Locked &#8226; Defeat an opponent 150+ ELO above you</span>
+          </div>
+        </div>
+
+        <!-- Badge 6: Iron Pair -->
+        <div class="badge-card" id="badgeCard-ironPair">
+          <div class="badge-top">
+            <div class="badge-emblem">&#129309;</div>
+            <div class="badge-info">
+              <div class="badge-title">Iron Pair</div>
+              <div class="badge-desc">Won 5 consecutive doubles matches with the same partner.</div>
+            </div>
+          </div>
+          <div class="badge-holders" id="badgeHolders-ironPair">
+            <span class="badge-locked-tag">Locked &#8226; Win 5 consecutive doubles matches together</span>
+          </div>
+        </div>
+
+        <!-- Badge 7: Comeback King -->
+        <div class="badge-card" id="badgeCard-comebackKing">
+          <div class="badge-top">
+            <div class="badge-emblem">&#128259;</div>
+            <div class="badge-info">
+              <div class="badge-title">Comeback King</div>
+              <div class="badge-desc">Won 3 consecutive matches after losing 3 consecutive matches.</div>
+            </div>
+          </div>
+          <div class="badge-holders" id="badgeHolders-comebackKing">
+            <span class="badge-locked-tag">Locked &#8226; Win 3 in a row after losing 3 in a row</span>
           </div>
         </div>
       </div>
@@ -3952,6 +4008,168 @@
         }
       });
       renderBadgeStatus('flawlessChampion', flawlessHolders, 'Undefeated in a Championship season');
+
+      // Sort matches chronologically for timeline-dependent badge calculations
+      const sortedChronoMatches = [...(appState.matches || [])].sort((a, b) => {
+        const da = a.date || '';
+        const db = b.date || '';
+        if (da !== db) return da.localeCompare(db);
+        const ca = a.createdAt || '';
+        const cb = b.createdAt || '';
+        if (ca !== cb) return ca.localeCompare(cb);
+        return (a.id || '').localeCompare(b.id || '');
+      });
+
+      // 4. Deuce Master: Won 3+ matches that extended beyond 15-15 to 17+ points
+      const deuceMasterHolders = [];
+      allPlayers.forEach(pName => {
+        let deuceWinCount = 0;
+        (appState.matches || []).forEach(match => {
+          const isT1 = (match.team1 || []).includes(pName);
+          const isT2 = (match.team2 || []).includes(pName);
+          if (!isT1 && !isT2) return;
+
+          const won = (isT1 && match.winner === 1) || (isT2 && match.winner === 2);
+          if (!won) return;
+
+          let hasDeuce17 = false;
+          (match.sets || []).forEach(s => {
+            const s1 = parseInt(s.t1) || 0;
+            const s2 = parseInt(s.t2) || 0;
+            if (Math.min(s1, s2) >= 15 && Math.max(s1, s2) >= 17) {
+              hasDeuce17 = true;
+            }
+          });
+
+          if (hasDeuce17) {
+            deuceWinCount++;
+          }
+        });
+
+        if (deuceWinCount >= 3) {
+          deuceMasterHolders.push({ name: pName });
+        }
+      });
+      renderBadgeStatus('deuceMaster', deuceMasterHolders, 'Win 3+ matches extended to 17+ pts');
+
+      // 5. Giant Slayer: Defeated an opponent ranked 150+ ELO above you
+      const giantSlayerEarned = new Set();
+      const runningElos = {};
+      allPlayers.forEach(p => { runningElos[p] = 1200; });
+
+      sortedChronoMatches.forEach(match => {
+        const team1 = match.team1 || [];
+        const team2 = match.team2 || [];
+        if (team1.length === 0 || team2.length === 0) return;
+
+        team1.forEach(p => { if (runningElos[p] === undefined) runningElos[p] = 1200; });
+        team2.forEach(p => { if (runningElos[p] === undefined) runningElos[p] = 1200; });
+
+        const isT1Winner = match.winner === 1;
+        const winners = isT1Winner ? team1 : team2;
+        const losers = isT1Winner ? team2 : team1;
+
+        // Check Giant Slayer milestone for each winning player
+        winners.forEach(w => {
+          const wElo = runningElos[w] || 1200;
+          losers.forEach(l => {
+            const lElo = runningElos[l] || 1200;
+            if (lElo - wElo >= 150) {
+              giantSlayerEarned.add(w);
+            }
+          });
+        });
+
+        // Replay ELO rating delta for timeline accuracy
+        const r1 = team1.reduce((acc, p) => acc + (runningElos[p] || 1200), 0) / team1.length;
+        const r2 = team2.reduce((acc, p) => acc + (runningElos[p] || 1200), 0) / team2.length;
+        const e1 = 1.0 / (1.0 + Math.pow(10, (r2 - r1) / 400.0));
+        const e2 = 1.0 - e1;
+
+        let t1Delta = 0;
+        let t2Delta = 0;
+        if (isT1Winner) {
+          const delta = Math.round(32 * (1.0 - e1));
+          t1Delta = delta;
+          t2Delta = -delta;
+        } else {
+          const delta = Math.round(32 * (1.0 - e2));
+          t1Delta = -delta;
+          t2Delta = delta;
+        }
+
+        team1.forEach(p => {
+          runningElos[p] = Math.min(2000, Math.max(400, (runningElos[p] || 1200) + t1Delta));
+        });
+        team2.forEach(p => {
+          runningElos[p] = Math.min(2000, Math.max(400, (runningElos[p] || 1200) + t2Delta));
+        });
+      });
+
+      const giantSlayerHolders = allPlayers
+        .filter(pName => giantSlayerEarned.has(pName))
+        .map(pName => ({ name: pName }));
+      renderBadgeStatus('giantSlayer', giantSlayerHolders, 'Defeat an opponent 150+ ELO above you');
+
+      // 6. Iron Pair: Won 5 consecutive doubles matches with the same partner
+      const ironPairHolders = [];
+      const pairWinStreaks = {};
+      const unlockedPairs = new Set();
+
+      const doublesMatches = sortedChronoMatches.filter(m => 
+        m.format === 'doubles' || 
+        (m.team1 && m.team1.length === 2) || 
+        (m.team2 && m.team2.length === 2)
+      );
+
+      doublesMatches.forEach(m => {
+        const t1 = m.team1 || [];
+        const t2 = m.team2 || [];
+
+        if (t1.length === 2) {
+          const k1 = [...t1].sort().join(' & ');
+          if (m.winner === 1) {
+            pairWinStreaks[k1] = (pairWinStreaks[k1] || 0) + 1;
+            if (pairWinStreaks[k1] >= 5) unlockedPairs.add(k1);
+          } else {
+            pairWinStreaks[k1] = 0;
+          }
+        }
+
+        if (t2.length === 2) {
+          const k2 = [...t2].sort().join(' & ');
+          if (m.winner === 2) {
+            pairWinStreaks[k2] = (pairWinStreaks[k2] || 0) + 1;
+            if (pairWinStreaks[k2] >= 5) unlockedPairs.add(k2);
+          } else {
+            pairWinStreaks[k2] = 0;
+          }
+        }
+      });
+
+      Array.from(unlockedPairs).forEach(pairName => {
+        ironPairHolders.push({ name: pairName });
+      });
+      renderBadgeStatus('ironPair', ironPairHolders, 'Win 5 consecutive doubles matches together');
+
+      // 7. Comeback King: Won 3 consecutive matches after losing 3 consecutive matches
+      const comebackKingHolders = [];
+      allPlayers.forEach(pName => {
+        const pMatches = sortedChronoMatches.filter(m => 
+          ((m.team1 || []).includes(pName)) || ((m.team2 || []).includes(pName))
+        );
+
+        const outcomes = pMatches.map(m => {
+          const isT1 = (m.team1 || []).includes(pName);
+          const won = (isT1 && m.winner === 1) || (!isT1 && m.winner === 2);
+          return won ? 'W' : 'L';
+        });
+
+        if (outcomes.join('').includes('LLLWWW')) {
+          comebackKingHolders.push({ name: pName });
+        }
+      });
+      renderBadgeStatus('comebackKing', comebackKingHolders, 'Win 3 in a row after losing 3 in a row');
     }
 
     function renderBadgeStatus(badgeKey, holders, requirementText) {
@@ -6529,4 +6747,3 @@
   </script>
 </body>
 </html>
-

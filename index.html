@@ -3304,6 +3304,73 @@
       }
     }
 
+  
+    /* Doubles Leaderboard Table */
+    .doubles-winrate-pill {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 3px 10px;
+      border-radius: 9999px;
+      font-size: 12px;
+      font-weight: 800;
+      letter-spacing: 0.3px;
+      white-space: nowrap;
+    }
+    .doubles-winrate-pill.high {
+      background: rgba(0, 245, 155, 0.14);
+      color: #00f59b;
+      border: 1px solid rgba(0, 245, 155, 0.35);
+    }
+    .doubles-winrate-pill.mid {
+      background: rgba(6, 182, 212, 0.14);
+      color: #06b6d4;
+      border: 1px solid rgba(6, 182, 212, 0.35);
+    }
+    .doubles-winrate-pill.low {
+      background: rgba(148, 163, 184, 0.12);
+      color: #94a3b8;
+      border: 1px solid rgba(148, 163, 184, 0.25);
+    }
+
+    @media (max-width: 640px) {
+      table.standings-table.doubles-standings-table {
+        width: 100%;
+        table-layout: fixed;
+        font-size: 11.5px;
+      }
+      table.standings-table.doubles-standings-table th {
+        padding: 8px 2px !important;
+        font-size: 10.5px !important;
+        letter-spacing: 0 !important;
+        text-transform: none !important;
+        text-align: center;
+        overflow: hidden;
+        white-space: nowrap;
+        box-sizing: border-box;
+      }
+      table.standings-table.doubles-standings-table th.th-player {
+        text-align: left;
+        padding-left: 4px !important;
+      }
+      table.standings-table.doubles-standings-table td {
+        padding: 8px 2px !important;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+        box-sizing: border-box;
+      }
+      table.standings-table.doubles-standings-table .rank-cell {
+        width: 32px !important;
+      }
+      table.standings-table.doubles-standings-table .th-player {
+        width: 44% !important;
+      }
+      table.standings-table.doubles-standings-table .doubles-winrate-pill {
+        font-size: 10.5px;
+        padding: 2px 5px;
+      }
+    }
   </style>
 </head>
 <body>
@@ -3382,6 +3449,7 @@
         <div class="pill-filter-group" style="margin: 0;">
           <button class="pill-btn active" id="subBtnChampions" onclick="toggleLeaderboardView('champions')">&#127942; Titles</button>
           <button class="pill-btn" id="subBtnMatches" onclick="toggleLeaderboardView('matches')">&#127992; Player Standings</button>
+          <button class="pill-btn" id="subBtnDoubles" onclick="toggleLeaderboardView('doubles')">&#129309; Doubles</button>
         </div>
         <div id="standingsGenderFilters" class="pill-filter-group" style="margin: 0; display: none;">
           <button class="pill-btn active" id="genderFilterAll" onclick="handleGenderFilter('all', this)">All</button>
@@ -3484,6 +3552,51 @@
           <!-- Dynamically populated edition cards -->
         </div>
       </section>
+      </div>
+
+      <!-- View C: Doubles Leaderboard Table -->
+      <div id="standingsDoublesSection" style="display: none;">
+        <section style="margin-bottom: 30px;">
+          <div class="section-header" style="margin-bottom: 14px;">
+            <div>
+              <h2 class="section-title"><span>&#129309;</span> Doubles Leaderboard</h2>
+              <div class="section-subtitle">Ranked by win rate across doubles partnerships (sorted high to low)</div>
+            </div>
+          </div>
+
+          <div class="table-container">
+            <table class="standings-table doubles-standings-table">
+              <thead>
+                <tr>
+                  <th class="rank-cell">#</th>
+                  <th class="sortable th-player" onclick="sortDoublesTable('players')">
+                    <span class="desktop-lbl">Players <span class="sort-arrow" id="doublesSort_players">&#8597;</span></span>
+                    <span class="mobile-lbl">Players</span>
+                  </th>
+                  <th class="sortable" onclick="sortDoublesTable('played')" style="text-align: center;">
+                    <span class="desktop-lbl">Played <span class="sort-arrow" id="doublesSort_played">&#8597;</span></span>
+                    <span class="mobile-lbl">P</span>
+                  </th>
+                  <th class="sortable" onclick="sortDoublesTable('won')" style="text-align: center;">
+                    <span class="desktop-lbl">Won <span class="sort-arrow" id="doublesSort_won">&#8597;</span></span>
+                    <span class="mobile-lbl">W</span>
+                  </th>
+                  <th class="sortable" onclick="sortDoublesTable('lost')" style="text-align: center;">
+                    <span class="desktop-lbl">Lost <span class="sort-arrow" id="doublesSort_lost">&#8597;</span></span>
+                    <span class="mobile-lbl">L</span>
+                  </th>
+                  <th class="sortable" onclick="sortDoublesTable('winRate')" style="text-align: center;">
+                    <span class="desktop-lbl">Win Rate <span class="sort-arrow" id="doublesSort_winRate">&#8595;</span></span>
+                    <span class="mobile-lbl">Win %</span>
+                  </th>
+                </tr>
+              </thead>
+              <tbody id="doublesTableBody">
+                <!-- Populated dynamically -->
+              </tbody>
+            </table>
+          </div>
+        </section>
       </div>
     </div>
     <!-- END TAB 1 -->
@@ -5086,6 +5199,7 @@
       populatePlayerDropdowns();
       populateChampionsDropdowns();
       renderHonorsUI();
+      renderDoublesTable();
       if (appState.activeMainTab === 'teams') {
         renderTeamGenPlayerTiles();
         updateTeamGenValidation();
@@ -8558,6 +8672,8 @@
         if (tabBtnLeaderboard) tabBtnLeaderboard.classList.add('active');
         if (appState.activeLeaderboardView === 'matches') {
           toggleLeaderboardView('matches');
+        } else if (appState.activeLeaderboardView === 'doubles') {
+          toggleLeaderboardView('doubles');
         } else {
           toggleLeaderboardView('champions');
         }
@@ -9042,22 +9158,33 @@
       appState.activeLeaderboardView = view;
       const matchesSection = document.getElementById('standingsMatchesSection');
       const honorsSection = document.getElementById('standingsHonorsSection');
+      const doublesSection = document.getElementById('standingsDoublesSection');
       const subBtnMatches = document.getElementById('subBtnMatches');
       const subBtnChampions = document.getElementById('subBtnChampions');
+      const subBtnDoubles = document.getElementById('subBtnDoubles');
       const genderFilters = document.getElementById('standingsGenderFilters');
+
+      if (matchesSection) matchesSection.style.display = 'none';
+      if (honorsSection) honorsSection.style.display = 'none';
+      if (doublesSection) doublesSection.style.display = 'none';
+
+      if (subBtnMatches) subBtnMatches.classList.remove('active');
+      if (subBtnChampions) subBtnChampions.classList.remove('active');
+      if (subBtnDoubles) subBtnDoubles.classList.remove('active');
 
       if (view === 'matches') {
         if (matchesSection) matchesSection.style.display = 'block';
-        if (honorsSection) honorsSection.style.display = 'none';
         if (subBtnMatches) subBtnMatches.classList.add('active');
-        if (subBtnChampions) subBtnChampions.classList.remove('active');
         if (genderFilters) genderFilters.style.display = 'flex';
         renderStandingsTable(computeStandings());
+      } else if (view === 'doubles') {
+        if (doublesSection) doublesSection.style.display = 'block';
+        if (subBtnDoubles) subBtnDoubles.classList.add('active');
+        if (genderFilters) genderFilters.style.display = 'none';
+        renderDoublesTable();
       } else {
         // 'champions' (Titles view)
-        if (matchesSection) matchesSection.style.display = 'none';
         if (honorsSection) honorsSection.style.display = 'block';
-        if (subBtnMatches) subBtnMatches.classList.remove('active');
         if (subBtnChampions) subBtnChampions.classList.add('active');
         if (genderFilters) genderFilters.style.display = 'none';
         renderHonorsUI();
@@ -9311,6 +9438,192 @@
         el.innerHTML = html;
         if (currentVal) el.value = currentVal;
       });
+    }
+
+    
+    /* ==========================================================================
+       DOUBLES LEADERBOARD COMPUTATION & RENDERING
+       ========================================================================== */
+    let doublesSortColumn = 'winRate';
+    let doublesSortAsc = false;
+
+    function computeDoublesStandings() {
+      const pairsMap = {};
+
+      (appState.matches || []).forEach(match => {
+        const team1 = match.team1 || [];
+        const team2 = match.team2 || [];
+        const isDoubles = match.format === 'doubles' || (team1.length === 2 && team2.length === 2);
+        if (!isDoubles) return;
+
+        const isT1Winner = match.winner === 1 || (parseInt(match.team1Score, 10) > parseInt(match.team2Score, 10));
+        const isT2Winner = match.winner === 2 || (parseInt(match.team2Score, 10) > parseInt(match.team1Score, 10));
+
+        // Team 1 Pair
+        if (team1.length === 2) {
+          const p1 = (team1[0] || '').trim();
+          const p2 = (team1[1] || '').trim();
+          if (p1 && p2) {
+            const sorted = [p1, p2].sort((a, b) => a.localeCompare(b));
+            const pairKey = sorted.join(' - ');
+            if (!pairsMap[pairKey]) {
+              pairsMap[pairKey] = {
+                players: pairKey,
+                player1: sorted[0],
+                player2: sorted[1],
+                played: 0,
+                won: 0,
+                lost: 0,
+                winRate: 0
+              };
+            }
+            pairsMap[pairKey].played++;
+            if (isT1Winner) {
+              pairsMap[pairKey].won++;
+            } else {
+              pairsMap[pairKey].lost++;
+            }
+          }
+        }
+
+        // Team 2 Pair
+        if (team2.length === 2) {
+          const p1 = (team2[0] || '').trim();
+          const p2 = (team2[1] || '').trim();
+          if (p1 && p2) {
+            const sorted = [p1, p2].sort((a, b) => a.localeCompare(b));
+            const pairKey = sorted.join(' - ');
+            if (!pairsMap[pairKey]) {
+              pairsMap[pairKey] = {
+                players: pairKey,
+                player1: sorted[0],
+                player2: sorted[1],
+                played: 0,
+                won: 0,
+                lost: 0,
+                winRate: 0
+              };
+            }
+            pairsMap[pairKey].played++;
+            if (isT2Winner) {
+              pairsMap[pairKey].won++;
+            } else {
+              pairsMap[pairKey].lost++;
+            }
+          }
+        }
+      });
+
+      const pairsArray = Object.values(pairsMap);
+      pairsArray.forEach(p => {
+        p.winRate = p.played > 0 ? (p.won / p.played) * 100 : 0;
+      });
+
+      // Default: Sort high to low by Win Rate (tiebreak by Won desc, Played desc, then pair name)
+      pairsArray.sort((a, b) => {
+        if (b.winRate !== a.winRate) return b.winRate - a.winRate;
+        if (b.won !== a.won) return b.won - a.won;
+        if (b.played !== a.played) return b.played - a.played;
+        return a.players.localeCompare(b.players);
+      });
+
+      return pairsArray;
+    }
+
+    function sortDoublesTable(col) {
+      if (doublesSortColumn === col) {
+        doublesSortAsc = !doublesSortAsc;
+      } else {
+        doublesSortColumn = col;
+        doublesSortAsc = (col === 'players');
+      }
+      renderDoublesTable();
+    }
+
+    function renderDoublesTable() {
+      const tbody = document.getElementById('doublesTableBody');
+      if (!tbody) return;
+
+      const pairs = computeDoublesStandings();
+
+      // Update sort arrow indicators
+      const sortCols = ['players', 'played', 'won', 'lost', 'winRate'];
+      sortCols.forEach(c => {
+        const arrow = document.getElementById('doublesSort_' + c);
+        if (arrow) {
+          if (doublesSortColumn === c) {
+            arrow.innerHTML = doublesSortAsc ? '&#8593;' : '&#8595;';
+            arrow.style.opacity = '1';
+            arrow.style.color = '#00f59b';
+          } else {
+            arrow.innerHTML = '&#8597;';
+            arrow.style.opacity = '0.35';
+            arrow.style.color = '';
+          }
+        }
+      });
+
+      if (pairs.length === 0) {
+        tbody.innerHTML = `
+          <tr>
+            <td colspan="6" class="empty-state" style="padding: 40px 20px; text-align: center; color: var(--text-muted);">
+              <div style="font-size: 32px; margin-bottom: 8px;">\u{1F91D}</div>
+              <div style="font-size: 15px; font-weight: 700; color: var(--text-main);">No doubles matches logged yet</div>
+              <div style="font-size: 13px; margin-top: 4px;">Log doubles matches in the Match History to see partnership win rates!</div>
+            </td>
+          </tr>
+        `;
+        return;
+      }
+
+      // Sort based on current sort settings
+      pairs.sort((a, b) => {
+        let fieldA = a[doublesSortColumn];
+        let fieldB = b[doublesSortColumn];
+
+        if (doublesSortColumn === 'players') {
+          return doublesSortAsc ? fieldA.localeCompare(fieldB) : fieldB.localeCompare(fieldA);
+        }
+
+        if (fieldA === fieldB) {
+          if (a.won !== b.won) return b.won - a.won;
+          if (a.played !== b.played) return b.played - a.played;
+          return a.players.localeCompare(b.players);
+        }
+
+        return doublesSortAsc ? fieldA - fieldB : fieldB - fieldA;
+      });
+
+      tbody.innerHTML = pairs.map((pair, idx) => {
+        const rank = idx + 1;
+        let rankBadge = `<span class="rank-badge ${rank === 1 ? 'crown' : (rank === 2 ? 'silver' : (rank === 3 ? 'bronze' : ''))}">#${rank}</span>`;
+        if (rank === 1) rankBadge = `<span class="rank-badge crown">#1 \u{1F451}</span>`;
+
+        const winRateClass = pair.winRate >= 60 ? 'high' : (pair.winRate >= 40 ? 'mid' : 'low');
+
+        return `
+          <tr>
+            <td class="rank-cell ${rank <= 3 ? 'top-rank' : ''}">${rankBadge}</td>
+            <td class="player-col-cell">
+              <div class="player-cell">
+                <div class="player-name-wrapper">
+                  <span class="player-name">
+                    <span class="player-display-name" style="font-weight: 700; color: #f8fafc;">${escapeHtml(pair.players)}</span>
+                  </span>
+                </div>
+              </div>
+            </td>
+            <td style="text-align: center; font-weight: 600; color: var(--text-main);">${pair.played}</td>
+            <td style="text-align: center; font-weight: 700; color: #00f59b;">${pair.won}</td>
+            <td style="text-align: center; font-weight: 600; color: #94a3b8;">${pair.lost}</td>
+            <td style="text-align: center;">
+              <span class="doubles-winrate-pill ${winRateClass}">
+                ${pair.winRate.toFixed(1)}%
+              </span>
+            </td>
+          </tr>
+        `;
+      }).join('');
     }
 
     function computeHonorsStandings() {

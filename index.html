@@ -4911,7 +4911,14 @@
        PLAYER PROFILE CARD IMAGE GENERATION & SOCIAL SHARING (WHATSAPP)
        ========================================================================== */
     function generatePlayerCardImageBlob(playerName) {
-      return new Promise((resolve) => {
+      return new Promise(async (resolve) => {
+        // Ensure web fonts are completely ready before rendering
+        if (document.fonts && document.fonts.ready) {
+          try {
+            await document.fonts.ready;
+          } catch (e) {}
+        }
+
         const standings = computeStandings();
         const p = standings.find(s => s.name === playerName);
         if (!p) {
@@ -4924,43 +4931,62 @@
         const rawPhoto = (regPlayer && regPlayer.photoUrl) ? regPlayer.photoUrl : '';
         const photoUrl = formatDirectPhotoUrl(rawPhoto);
 
+        // 1200x1200 Ultra-High Definition 1:1 Square Canvas
         const canvas = document.createElement('canvas');
-        canvas.width = 800;
-        canvas.height = 800;
+        canvas.width = 1200;
+        canvas.height = 1200;
         const ctx = canvas.getContext('2d');
 
-        // Draw Background
-        const bgGrad = ctx.createLinearGradient(0, 0, 800, 800);
+        // High quality image smoothing
+        ctx.imageSmoothingEnabled = true;
+        ctx.imageSmoothingQuality = 'high';
+
+        // 1. Draw Deep Tournament Background
+        const bgGrad = ctx.createLinearGradient(0, 0, 1200, 1200);
         bgGrad.addColorStop(0, '#0d172a');
         bgGrad.addColorStop(1, '#060b14');
         ctx.fillStyle = bgGrad;
-        ctx.fillRect(0, 0, 800, 800);
+        ctx.fillRect(0, 0, 1200, 1200);
 
-        // Outer Border
-        ctx.strokeStyle = 'rgba(0, 245, 155, 0.35)';
-        ctx.lineWidth = 4;
-        ctx.strokeRect(2, 2, 796, 796);
+        // 2. Outer Border & Glow
+        ctx.strokeStyle = 'rgba(0, 245, 155, 0.4)';
+        ctx.lineWidth = 6;
+        ctx.strokeRect(3, 3, 1194, 1194);
 
-        // Top Accent Gradient Stripe
-        const topGrad = ctx.createLinearGradient(0, 0, 800, 0);
+        // 3. Top Accent Gradient Stripe
+        const topGrad = ctx.createLinearGradient(0, 0, 1200, 0);
         topGrad.addColorStop(0, '#00f59b');
         topGrad.addColorStop(0.5, '#ffd700');
         topGrad.addColorStop(1, '#38bdf8');
         ctx.fillStyle = topGrad;
-        ctx.fillRect(0, 0, 800, 8);
+        ctx.fillRect(0, 0, 1200, 12);
 
         // Helper to complete drawing text & stats after photo resolves
         function finishDrawing(imgOrNull) {
-          const ax = 400, ay = 175, ar = 85;
+          const ax = 600, ay = 250, ar = 130;
 
-          // Draw avatar circle
+          // 4. Draw Avatar with Exact Object-Fit: Cover (Zero Aspect Ratio Distortion)
           ctx.save();
           ctx.beginPath();
           ctx.arc(ax, ay, ar, 0, Math.PI * 2);
 
           if (imgOrNull) {
             ctx.clip();
-            ctx.drawImage(imgOrNull, ax - ar, ay - ar, ar * 2, ar * 2);
+            const imgW = imgOrNull.naturalWidth || imgOrNull.width || 400;
+            const imgH = imgOrNull.naturalHeight || imgOrNull.height || 400;
+            let sx = 0, sy = 0, sw = imgW, sh = imgH;
+
+            if (imgW > imgH) {
+              // Landscape image: crop sides evenly
+              sw = imgH;
+              sx = (imgW - sw) / 2;
+            } else {
+              // Portrait image: crop top/bottom with bias toward upper portion for face
+              sh = imgW;
+              sy = Math.max(0, (imgH - sh) * 0.25);
+            }
+
+            ctx.drawImage(imgOrNull, sx, sy, sw, sh, ax - ar, ay - ar, ar * 2, ar * 2);
           } else {
             const avatarGrad = ctx.createLinearGradient(ax - ar, ay - ar, ax + ar, ay + ar);
             avatarGrad.addColorStop(0, '#059669');
@@ -4968,65 +4994,65 @@
             ctx.fillStyle = avatarGrad;
             ctx.fill();
             ctx.fillStyle = '#052e16';
-            ctx.font = '900 68px Outfit, sans-serif';
+            ctx.font = '900 100px Outfit, -apple-system, sans-serif';
             ctx.textAlign = 'center';
             ctx.textBaseline = 'middle';
             ctx.fillText(p.name.charAt(0).toUpperCase(), ax, ay);
           }
           ctx.restore();
 
-          // Avatar border & ring glow
+          // Avatar 8px White Border & Ambient Neon Ring Glow
           ctx.save();
           ctx.beginPath();
           ctx.arc(ax, ay, ar, 0, Math.PI * 2);
-          ctx.lineWidth = 6;
+          ctx.lineWidth = 8;
           ctx.strokeStyle = '#ffffff';
-          ctx.shadowColor = 'rgba(0, 245, 155, 0.6)';
-          ctx.shadowBlur = 24;
+          ctx.shadowColor = 'rgba(0, 245, 155, 0.75)';
+          ctx.shadowBlur = 36;
           ctx.stroke();
           ctx.restore();
 
-          // Player Name
+          // 5. Player Name (Extra-Large, Crystal Clear Vector Display)
           ctx.textAlign = 'center';
           ctx.textBaseline = 'alphabetic';
           ctx.fillStyle = '#ffffff';
-          ctx.font = '900 44px Outfit, sans-serif';
-          ctx.fillText(p.name, 400, 315);
+          ctx.font = '900 64px Outfit, -apple-system, sans-serif';
+          ctx.fillText(p.name, 600, 455);
 
-          // Rank & Gender
+          // 6. Rank & Gender
           const rankBadge = rank === 1 ? '\u{1F451}' : (rank === 2 ? '\u{1F948}' : (rank === 3 ? '\u{1F949}' : ''));
           const genderSym = p.gender === 'Female' ? '\u2640 Female' : '\u2642 Male';
-          ctx.font = '700 20px Outfit, sans-serif';
+          ctx.font = '700 28px Outfit, -apple-system, sans-serif';
           ctx.fillStyle = '#ffd700';
-          ctx.fillText(`Overall Rank: #${rank} ${rankBadge}   \u2022   ${genderSym}`, 400, 355);
+          ctx.fillText(`Overall Rank: #${rank} ${rankBadge}   \u2022   ${genderSym}`, 600, 510);
 
-          // ELO Rating Pill
+          // 7. ELO Rating Pill
           ctx.fillStyle = 'rgba(255, 215, 0, 0.12)';
-          ctx.strokeStyle = 'rgba(255, 215, 0, 0.4)';
-          ctx.lineWidth = 2;
+          ctx.strokeStyle = 'rgba(255, 215, 0, 0.45)';
+          ctx.lineWidth = 2.5;
           ctx.beginPath();
           if (ctx.roundRect) {
-            ctx.roundRect(170, 380, 460, 46, 10);
+            ctx.roundRect(260, 545, 680, 66, 14);
           } else {
-            ctx.rect(170, 380, 460, 46);
+            ctx.rect(260, 545, 680, 66);
           }
           ctx.fill();
           ctx.stroke();
 
           ctx.fillStyle = '#ffd700';
-          ctx.font = '800 20px Outfit, sans-serif';
-          ctx.fillText(`\u26A1 ELO Rating: ${p.elo || 1200}`, 330, 411);
+          ctx.font = '900 28px Outfit, -apple-system, sans-serif';
+          ctx.fillText(`\u26A1 ELO Rating: ${p.elo || 1200}`, 490, 588);
           ctx.fillStyle = '#94a3b8';
-          ctx.font = '600 16px Outfit, sans-serif';
-          ctx.fillText(`(Peak: ${p.peakElo || 1200} | Low: ${p.lowestElo || 1200})`, 520, 411);
+          ctx.font = '600 23px Outfit, -apple-system, sans-serif';
+          ctx.fillText(`(Peak: ${p.peakElo || 1200} | Low: ${p.lowestElo || 1200})`, 770, 588);
 
-          // Win Rate & Max Streak
-          ctx.font = '600 19px Outfit, sans-serif';
+          // 8. Win Rate & Max Streak
+          ctx.font = '600 26px Outfit, -apple-system, sans-serif';
           ctx.fillStyle = '#94a3b8';
-          ctx.fillText(`Win Rate: ${p.winRate.toFixed(1)}%   \u2022   Max Streak: ${p.maxStreak} \u{1F525}`, 400, 465);
+          ctx.fillText(`Win Rate: ${p.winRate.toFixed(1)}%   \u2022   Max Streak: ${p.maxStreak} \u{1F525}`, 600, 660);
 
-          // 4 Stat Boxes
-          const boxW = 160, boxH = 90, gap = 16, startX = 56, startY = 500;
+          // 9. 4 Stat Boxes (High-Definition Grid)
+          const boxW = 230, boxH = 125, gap = 20, startX = 115, startY = 705;
           const diffDisplay = p.diff > 0 ? `+${p.diff}` : `${p.diff}`;
           const diffCol = p.diff > 0 ? '#00f59b' : (p.diff < 0 ? '#ef4444' : '#94a3b8');
 
@@ -5039,12 +5065,12 @@
 
           stats.forEach((st, i) => {
             const bx = startX + i * (boxW + gap);
-            ctx.fillStyle = 'rgba(7, 11, 18, 0.85)';
+            ctx.fillStyle = 'rgba(7, 11, 18, 0.88)';
             ctx.strokeStyle = 'rgba(255, 255, 255, 0.08)';
-            ctx.lineWidth = 1.5;
+            ctx.lineWidth = 2;
             ctx.beginPath();
             if (ctx.roundRect) {
-              ctx.roundRect(bx, startY, boxW, boxH, 8);
+              ctx.roundRect(bx, startY, boxW, boxH, 12);
             } else {
               ctx.rect(bx, startY, boxW, boxH);
             }
@@ -5052,16 +5078,15 @@
             ctx.stroke();
 
             ctx.fillStyle = st.col;
-            ctx.font = '900 32px Outfit, sans-serif';
-            ctx.fillText(st.num, bx + boxW / 2, startY + 42);
+            ctx.font = '900 46px Outfit, -apple-system, sans-serif';
+            ctx.fillText(st.num, bx + boxW / 2, startY + 58);
 
             ctx.fillStyle = '#94a3b8';
-            ctx.font = '800 13px Outfit, sans-serif';
-            ctx.fillText(st.lbl, bx + boxW / 2, startY + 70);
+            ctx.font = '800 18px Outfit, -apple-system, sans-serif';
+            ctx.fillText(st.lbl, bx + boxW / 2, startY + 100);
           });
 
-          // Championship Titles if any
-          let titleY = 625;
+          // 10. Championship Titles (if any)
           if (typeof computeHonorsStandings === 'function') {
             const honors = computeHonorsStandings();
             const h = honors.find(item => item.name === p.name);
@@ -5069,27 +5094,26 @@
               const edList = (h.editionsWon && h.editionsWon.length > 0) ? ` (${h.editionsWon.join(', ')})` : '';
               ctx.fillStyle = 'rgba(255, 215, 0, 0.12)';
               ctx.strokeStyle = 'rgba(255, 215, 0, 0.4)';
-              ctx.lineWidth = 1.5;
+              ctx.lineWidth = 2;
               ctx.beginPath();
               if (ctx.roundRect) {
-                ctx.roundRect(140, 615, 520, 44, 8);
+                ctx.roundRect(220, 875, 760, 64, 12);
               } else {
-                ctx.rect(140, 615, 520, 44);
+                ctx.rect(220, 875, 760, 64);
               }
               ctx.fill();
               ctx.stroke();
 
               ctx.fillStyle = '#ffd700';
-              ctx.font = '800 17px Outfit, sans-serif';
-              ctx.fillText(`\u{1F3C6} ${h.titles} Championship Title${h.titles > 1 ? 's' : ''}${edList}`, 400, 643);
-              titleY = 680;
+              ctx.font = '800 24px Outfit, -apple-system, sans-serif';
+              ctx.fillText(`\u{1F3C6} ${h.titles} Championship Title${h.titles > 1 ? 's' : ''}${edList}`, 600, 915);
             }
           }
 
-          // Footer Watermark
-          ctx.fillStyle = 'rgba(255, 255, 255, 0.4)';
-          ctx.font = '800 15px Outfit, sans-serif';
-          ctx.fillText('\u{1F3F8} TK BADDY CHAMPIONSHIPS', 400, 745);
+          // 11. Official Footer Watermark
+          ctx.fillStyle = 'rgba(255, 255, 255, 0.45)';
+          ctx.font = '800 22px Outfit, -apple-system, sans-serif';
+          ctx.fillText('\u{1F3F8} TK BADDY CHAMPIONSHIPS', 600, 1110);
 
           canvas.toBlob((b) => resolve(b), 'image/png');
         }

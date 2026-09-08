@@ -3731,6 +3731,637 @@
       }
     }
 
+
+    /* ==========================================================================
+       HEAD-TO-HEAD SHOWDOWN TAB STYLES
+       ========================================================================== */
+    .h2h-container {
+      max-width: 100%;
+      margin-bottom: 30px;
+    }
+    .h2h-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 18px;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+    .h2h-header-actions {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+    .h2h-selectors-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-md);
+      padding: 16px;
+      margin-bottom: 18px;
+      display: grid;
+      grid-template-columns: 1fr auto 1fr;
+      align-items: flex-end;
+      gap: 14px;
+    }
+    .h2h-selector-col {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+    .h2h-selector-label {
+      font-size: 13px;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .h2h-label-dot {
+      display: inline-block;
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      flex-shrink: 0;
+    }
+    .h2h-swap-btn {
+      height: 42px;
+      padding: 0 14px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      font-size: 13px;
+      font-weight: 700;
+      border-radius: var(--radius-sm);
+      border: 1px solid var(--border-subtle);
+      background: rgba(255, 255, 255, 0.05);
+      color: var(--text-main);
+      cursor: pointer;
+      transition: all 0.2s ease;
+      margin-bottom: 1px;
+    }
+    .h2h-swap-btn:hover {
+      background: rgba(0, 245, 155, 0.12);
+      border-color: rgba(0, 245, 155, 0.4);
+      color: #00f59b;
+    }
+
+    /* Hero Showcase Card */
+    .h2h-hero-card {
+      background: linear-gradient(135deg, rgba(15, 23, 42, 0.95) 0%, rgba(30, 41, 59, 0.92) 100%);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: var(--radius-lg);
+      padding: 24px 20px;
+      margin-bottom: 20px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      position: relative;
+      overflow: hidden;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.35);
+    }
+    .h2h-player-hero {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+      min-width: 0;
+    }
+    .h2h-avatar-box {
+      width: clamp(90px, 24vw, 130px);
+      height: clamp(90px, 24vw, 130px);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+      flex-shrink: 0;
+      position: relative;
+      margin-bottom: 12px;
+      transition: transform 0.2s ease;
+    }
+    .h2h-avatar-box.player-a {
+      border: 3.5px solid #00f59b;
+      box-shadow: 0 0 24px rgba(0, 245, 155, 0.4), 0 0 10px rgba(0, 245, 155, 0.2);
+      background: linear-gradient(135deg, #059669 0%, #00f59b 100%);
+    }
+    .h2h-avatar-box.player-b {
+      border: 3.5px solid #38bdf8;
+      box-shadow: 0 0 24px rgba(56, 189, 248, 0.4), 0 0 10px rgba(56, 189, 248, 0.2);
+      background: linear-gradient(135deg, #0284c7 0%, #38bdf8 100%);
+    }
+    .h2h-avatar-img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+    .h2h-avatar-fallback {
+      font-family: var(--font-display);
+      font-size: clamp(34px, 9vw, 52px);
+      font-weight: 900;
+      color: #052e16;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 100%;
+      height: 100%;
+      letter-spacing: -1px;
+    }
+    .h2h-avatar-box.player-b .h2h-avatar-fallback {
+      color: #082f49;
+    }
+    .h2h-player-name {
+      font-family: var(--font-display);
+      font-size: clamp(16px, 4.2vw, 22px);
+      font-weight: 900;
+      letter-spacing: -0.3px;
+      color: #fff;
+      line-height: 1.2;
+      margin-bottom: 6px;
+      word-break: break-word;
+      max-width: 100%;
+    }
+    .h2h-player-sub {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      flex-wrap: wrap;
+      font-size: 12px;
+      font-weight: 700;
+    }
+    .h2h-elo-badge {
+      display: inline-flex;
+      align-items: center;
+      padding: 3px 8px;
+      border-radius: 6px;
+      font-size: 11.5px;
+      font-weight: 800;
+    }
+    .h2h-elo-badge.player-a {
+      background: rgba(0, 245, 155, 0.15);
+      color: #00f59b;
+      border: 1px solid rgba(0, 245, 155, 0.3);
+    }
+    .h2h-elo-badge.player-b {
+      background: rgba(56, 189, 248, 0.15);
+      color: #38bdf8;
+      border: 1px solid rgba(56, 189, 248, 0.3);
+    }
+    .h2h-tier-badge {
+      display: inline-flex;
+      align-items: center;
+      padding: 2px 7px;
+      border-radius: 6px;
+      font-size: 11px;
+      font-weight: 700;
+    }
+
+    /* Center VS */
+    .h2h-vs-center {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      padding: 0 10px;
+    }
+    .h2h-vs-emblem {
+      width: 44px;
+      height: 44px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
+      border: 2px solid #ffd700;
+      color: #ffd700;
+      font-family: var(--font-display);
+      font-weight: 900;
+      font-size: 15px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 0 16px rgba(255, 215, 0, 0.3);
+      margin-bottom: 8px;
+    }
+    .h2h-vs-score {
+      font-family: var(--font-display);
+      font-size: clamp(26px, 7vw, 40px);
+      font-weight: 900;
+      line-height: 1;
+      letter-spacing: -0.5px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .h2h-vs-label {
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      color: var(--text-muted);
+      margin-top: 6px;
+      text-align: center;
+    }
+
+    /* Cards */
+    .h2h-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-md);
+      padding: 20px;
+      margin-bottom: 20px;
+      box-sizing: border-box;
+    }
+    .h2h-card-title {
+      font-size: 15px;
+      font-weight: 800;
+      color: var(--text-main);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 14px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    /* Win Rate Progress Bar */
+    .h2h-wr-bar-container {
+      margin-bottom: 18px;
+    }
+    .h2h-wr-bar-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 13px;
+      font-weight: 800;
+      margin-bottom: 8px;
+    }
+    .h2h-wr-bar-track {
+      height: 22px;
+      background: rgba(255, 255, 255, 0.06);
+      border-radius: 9999px;
+      overflow: hidden;
+      display: flex;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.3);
+    }
+    .h2h-wr-bar-fill-a {
+      background: linear-gradient(90deg, #059669 0%, #00f59b 100%);
+      height: 100%;
+      transition: width 0.4s ease;
+      display: flex;
+      align-items: center;
+      justify-content: flex-start;
+      padding-left: 10px;
+      font-size: 11px;
+      font-weight: 900;
+      color: #052e16;
+      white-space: nowrap;
+      min-width: 0;
+    }
+    .h2h-wr-bar-fill-b {
+      background: linear-gradient(90deg, #38bdf8 0%, #0284c7 100%);
+      height: 100%;
+      transition: width 0.4s ease;
+      display: flex;
+      align-items: center;
+      justify-content: flex-end;
+      padding-right: 10px;
+      font-size: 11px;
+      font-weight: 900;
+      color: #082f49;
+      white-space: nowrap;
+      min-width: 0;
+    }
+
+    /* Metrics Grid */
+    .h2h-stats-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 12px;
+      margin-bottom: 16px;
+    }
+    .h2h-stat-box {
+      background: rgba(15, 23, 42, 0.6);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: var(--radius-sm);
+      padding: 12px 10px;
+      text-align: center;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+    }
+    .h2h-stat-label {
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      color: var(--text-muted);
+      margin-bottom: 6px;
+    }
+    .h2h-stat-values {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      font-family: var(--font-display);
+      font-size: 18px;
+      font-weight: 800;
+    }
+
+    /* Avg Points Differential Highlight Box */
+    .h2h-point-diff-box {
+      background: linear-gradient(135deg, rgba(15, 23, 42, 0.85) 0%, rgba(30, 41, 59, 0.85) 100%);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-sm);
+      padding: 14px 16px;
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+    .h2h-point-diff-badge {
+      padding: 10px 14px;
+      border-radius: var(--radius-sm);
+      text-align: center;
+      flex-shrink: 0;
+      min-width: 110px;
+    }
+    .h2h-point-diff-badge.player-a {
+      background: rgba(0, 245, 155, 0.12);
+      border: 1px solid rgba(0, 245, 155, 0.35);
+      color: #00f59b;
+    }
+    .h2h-point-diff-badge.player-b {
+      background: rgba(56, 189, 248, 0.12);
+      border: 1px solid rgba(56, 189, 248, 0.35);
+      color: #38bdf8;
+    }
+    .h2h-point-diff-badge.even {
+      background: rgba(148, 163, 184, 0.12);
+      border: 1px solid rgba(148, 163, 184, 0.25);
+      color: #94a3b8;
+    }
+    .h2h-point-diff-num {
+      font-size: 22px;
+      font-weight: 900;
+      line-height: 1;
+    }
+    .h2h-point-diff-sub {
+      font-size: 10px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      margin-top: 3px;
+    }
+    .h2h-point-diff-text {
+      font-size: 13px;
+      color: var(--text-dim);
+      line-height: 1.4;
+    }
+    .h2h-point-diff-text strong {
+      color: var(--text-main);
+    }
+
+    /* Carry Verdict Callout */
+    .h2h-carry-verdict-card {
+      border-radius: var(--radius-md);
+      padding: 16px 18px;
+      margin-bottom: 16px;
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      display: flex;
+      align-items: flex-start;
+      gap: 16px;
+    }
+    .h2h-carry-verdict-card.carry-a {
+      background: linear-gradient(135deg, rgba(5, 150, 105, 0.15) 0%, rgba(0, 245, 155, 0.08) 100%);
+      border-color: rgba(0, 245, 155, 0.4);
+    }
+    .h2h-carry-verdict-card.carry-b {
+      background: linear-gradient(135deg, rgba(2, 132, 199, 0.15) 0%, rgba(56, 189, 248, 0.08) 100%);
+      border-color: rgba(56, 189, 248, 0.4);
+    }
+    .h2h-carry-verdict-card.duo {
+      background: linear-gradient(135deg, rgba(245, 158, 11, 0.15) 0%, rgba(255, 215, 0, 0.08) 100%);
+      border-color: rgba(255, 215, 0, 0.4);
+    }
+    .h2h-carry-verdict-card.rivals {
+      background: linear-gradient(135deg, rgba(148, 163, 184, 0.12) 0%, rgba(100, 116, 139, 0.06) 100%);
+      border-color: rgba(148, 163, 184, 0.3);
+    }
+    .h2h-carry-icon {
+      font-size: 32px;
+      line-height: 1;
+      flex-shrink: 0;
+      margin-top: 2px;
+    }
+    .h2h-carry-title {
+      font-size: 16px;
+      font-weight: 800;
+      color: #fff;
+      margin-bottom: 4px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+    .h2h-carry-desc {
+      font-size: 13px;
+      color: var(--text-dim);
+      line-height: 1.45;
+    }
+    .h2h-carry-desc strong {
+      color: #fff;
+    }
+
+    /* Synergy Lift Cards */
+    .h2h-synergy-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+    }
+    .h2h-synergy-card {
+      background: rgba(15, 23, 42, 0.6);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: var(--radius-sm);
+      padding: 12px 14px;
+    }
+    .h2h-synergy-header {
+      font-size: 12px;
+      font-weight: 700;
+      color: var(--text-muted);
+      margin-bottom: 6px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .h2h-synergy-lift {
+      font-size: 12px;
+      font-weight: 800;
+      padding: 2px 7px;
+      border-radius: 9999px;
+    }
+    .h2h-synergy-lift.positive {
+      background: rgba(0, 245, 155, 0.15);
+      color: #00f59b;
+    }
+    .h2h-synergy-lift.negative {
+      background: rgba(244, 63, 94, 0.15);
+      color: #f43f5e;
+    }
+    .h2h-synergy-lift.neutral {
+      background: rgba(148, 163, 184, 0.15);
+      color: #94a3b8;
+    }
+    .h2h-synergy-body {
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--text-main);
+    }
+    .h2h-synergy-sub {
+      font-size: 11.5px;
+      color: var(--text-dim);
+      margin-top: 2px;
+    }
+
+    /* Match Encounters List */
+    .h2h-match-item {
+      background: rgba(15, 23, 42, 0.6);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: var(--radius-sm);
+      padding: 12px 14px;
+      margin-bottom: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+    }
+    .h2h-match-teams {
+      flex: 1;
+      min-width: 0;
+    }
+    .h2h-match-team-row {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--text-main);
+    }
+    .h2h-match-team-row.winner {
+      color: #00f59b;
+    }
+    .h2h-match-score {
+      font-family: var(--font-mono, monospace);
+      font-size: 13px;
+      font-weight: 800;
+      color: #ffd700;
+      background: rgba(255, 215, 0, 0.1);
+      padding: 4px 8px;
+      border-radius: 4px;
+      border: 1px solid rgba(255, 215, 0, 0.25);
+      white-space: nowrap;
+    }
+
+    @media (max-width: 640px) {
+      .h2h-selectors-card {
+        grid-template-columns: 1fr;
+        gap: 10px;
+        padding: 12px 10px;
+      }
+      .h2h-swap-btn {
+        width: 100%;
+        height: 36px;
+        margin-bottom: 0;
+      }
+      .h2h-hero-card {
+        padding: 16px 10px;
+        gap: 8px;
+      }
+      .h2h-avatar-box {
+        width: 80px;
+        height: 80px;
+        margin-bottom: 8px;
+      }
+      .h2h-avatar-fallback {
+        font-size: 30px;
+      }
+      .h2h-player-name {
+        font-size: 15px;
+      }
+      .h2h-vs-emblem {
+        width: 36px;
+        height: 36px;
+        font-size: 13px;
+        margin-bottom: 4px;
+      }
+      .h2h-vs-score {
+        font-size: 24px;
+      }
+      .h2h-vs-label {
+        font-size: 9.5px;
+      }
+      .h2h-stats-grid {
+        grid-template-columns: 1fr 1fr 1fr;
+        gap: 6px;
+      }
+      .h2h-stat-box {
+        padding: 8px 4px;
+      }
+      .h2h-stat-label {
+        font-size: 9.5px;
+      }
+      .h2h-stat-values {
+        font-size: 14px;
+        gap: 3px;
+      }
+      .h2h-point-diff-box {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 10px;
+        padding: 12px 10px;
+      }
+      .h2h-point-diff-badge {
+        min-width: 0;
+        width: 100%;
+        box-sizing: border-box;
+        padding: 8px 10px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+      }
+      .h2h-point-diff-num {
+        font-size: 18px;
+      }
+      .h2h-point-diff-sub {
+        margin-top: 0;
+      }
+      .h2h-carry-verdict-card {
+        flex-direction: column;
+        gap: 10px;
+        padding: 12px 10px;
+      }
+      .h2h-synergy-grid {
+        grid-template-columns: 1fr;
+        gap: 8px;
+      }
+      .h2h-match-item {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 8px;
+      }
+      .h2h-header-actions {
+        width: 100%;
+        justify-content: space-between;
+      }
+      .h2h-header-actions .btn {
+        flex: 1;
+        justify-content: center;
+      }
+    }
+
   </style>
 </head>
 <body>
@@ -3788,6 +4419,13 @@
               <div class="burger-item-content">
                 <div class="burger-item-title">Net Contribution Differential</div>
                 <div class="burger-item-subtitle">Partner synergy &amp; win rate impact</div>
+              </div>
+            </div>
+            <div class="burger-menu-item" onclick="openH2HTab()">
+              <span class="burger-item-icon">&#9876;&#65039;</span>
+              <div class="burger-item-content">
+                <div class="burger-item-title">Head-to-Head</div>
+                <div class="burger-item-subtitle">Direct rivalry, point diff &amp; partner carry</div>
               </div>
             </div>
           </div>
@@ -4411,6 +5049,77 @@
 
         <!-- Additional Partnership Match History Strip if available -->
         <div id="ncdMatchesTogetherContainer" style="margin-top: 24px; display: none;">
+          <!-- Populated dynamically -->
+        </div>
+
+      </div>
+    </div>
+
+    <!-- =========================================================================
+         TAB: HEAD-TO-HEAD SHOWDOWN (Loaded via Burger Menu)
+         ========================================================================= -->
+    <div id="h2hTabContent" style="display: none;">
+      <div class="h2h-container">
+        <!-- Header -->
+        <div class="h2h-header">
+          <div>
+            <h2 class="section-title"><span>&#9876;&#65039;</span> Head-to-Head Showdown</h2>
+            <div class="section-subtitle">Direct rivalry record, average points differential &amp; doubles carry analysis</div>
+          </div>
+          <div class="h2h-header-actions">
+            <button class="btn btn-primary" id="h2hShareBtn" onclick="shareH2HAsImage()" style="font-size: 13px; padding: 7px 14px; gap: 6px; box-shadow: 0 0 15px rgba(0, 245, 155, 0.25);">
+              <span>&#128247;</span> Share on WhatsApp
+            </button>
+            <button class="btn btn-outline" style="font-size: 12px; padding: 6px 12px;" onclick="switchMainTab('leaderboard')">
+              <span>&#8592;</span> Back to Leaderboard
+            </button>
+          </div>
+        </div>
+
+        <!-- Player Selection Controls -->
+        <div class="h2h-selectors-card">
+          <div class="h2h-selector-col">
+            <label for="h2hPlayerASelect" class="h2h-selector-label" style="color: #00f59b;">
+              <span class="h2h-label-dot" style="background: #00f59b;"></span>
+              Select Player 1
+            </label>
+            <select id="h2hPlayerASelect" class="form-select" onchange="handleH2HPlayerAChange()">
+              <!-- Populated dynamically -->
+            </select>
+          </div>
+
+          <button type="button" class="h2h-swap-btn" onclick="swapH2HPlayers()" title="Swap Player 1 and Player 2">
+            <span>&#8644;</span> Swap
+          </button>
+
+          <div class="h2h-selector-col">
+            <label for="h2hPlayerBSelect" class="h2h-selector-label" style="color: #38bdf8;">
+              <span class="h2h-label-dot" style="background: #38bdf8;"></span>
+              Select Player 2
+            </label>
+            <select id="h2hPlayerBSelect" class="form-select" onchange="handleH2HPlayerBChange()">
+              <!-- Populated dynamically -->
+            </select>
+          </div>
+        </div>
+
+        <!-- Hero Showcase Card (Big Profile Pictures + VS) -->
+        <div id="h2hHeroCard" class="h2h-hero-card">
+          <!-- Populated dynamically -->
+        </div>
+
+        <!-- Direct Rivalry Scoreboard & Point Differential -->
+        <div id="h2hRivalryCard" class="h2h-card">
+          <!-- Populated dynamically -->
+        </div>
+
+        <!-- Partnership Dynamics & Who Carried Who -->
+        <div id="h2hPartnershipCard" class="h2h-card">
+          <!-- Populated dynamically -->
+        </div>
+
+        <!-- Recent Head-to-Head Encounters -->
+        <div id="h2hMatchesEncountersSection" class="h2h-card" style="margin-top: 20px;">
           <!-- Populated dynamically -->
         </div>
 
@@ -9094,6 +9803,7 @@
       const eloTrendsContent = document.getElementById('eloTrendsTabContent');
       const generateTeamsContent = document.getElementById('generateTeamsTabContent');
       const netContributionContent = document.getElementById('netContributionTabContent');
+      const h2hContent = document.getElementById('h2hTabContent');
 
       const tabBtnLeaderboard = document.getElementById('tabBtnLeaderboard');
       const tabBtnBadges = document.getElementById('tabBtnBadges');
@@ -9105,12 +9815,16 @@
       if (eloTrendsContent) eloTrendsContent.style.display = 'none';
       if (generateTeamsContent) generateTeamsContent.style.display = 'none';
       if (netContributionContent) netContributionContent.style.display = 'none';
+      if (h2hContent) h2hContent.style.display = 'none';
 
       if (tabBtnLeaderboard) tabBtnLeaderboard.classList.remove('active');
       if (tabBtnBadges) tabBtnBadges.classList.remove('active');
       if (tabBtnHistory) tabBtnHistory.classList.remove('active');
 
-      if (tabName === 'netcontribution') {
+      if (tabName === 'h2h') {
+        if (h2hContent) h2hContent.style.display = 'block';
+        initH2HView();
+      } else if (tabName === 'netcontribution') {
         if (netContributionContent) netContributionContent.style.display = 'block';
         initNetContributionView();
       } else if (tabName === 'elotrends') {
@@ -10248,6 +10962,1236 @@
         `;
       }
     }
+
+    /* ==========================================================================
+       HEAD-TO-HEAD SHOWDOWN LOGIC & RENDERING
+       ========================================================================== */
+    function openH2HTab() {
+      closeBurgerMenu();
+      switchMainTab('h2h');
+    }
+
+    function getPlayerInitials(name) {
+      if (!name) return '?';
+      const parts = name.trim().split(/\s+/);
+      if (parts.length >= 2) {
+        return (parts[0].charAt(0) + parts[parts.length - 1].charAt(0)).toUpperCase();
+      }
+      return name.substring(0, Math.min(2, name.length)).toUpperCase();
+    }
+
+    function initH2HView() {
+      const pASelect = document.getElementById('h2hPlayerASelect');
+      const pBSelect = document.getElementById('h2hPlayerBSelect');
+      if (!pASelect || !pBSelect) return;
+
+      const standings = computeStandings();
+      if (standings.length < 2) {
+        pASelect.innerHTML = '<option value="" disabled selected>Not enough players registered</option>';
+        pBSelect.innerHTML = '<option value="" disabled selected>Not enough players registered</option>';
+        renderH2HEmptyState();
+        return;
+      }
+
+      const currentA = pASelect.value;
+      const currentB = pBSelect.value;
+
+      // Populate Player A dropdown
+      pASelect.innerHTML = '';
+      standings.forEach((p, idx) => {
+        const opt = document.createElement('option');
+        opt.value = p.name;
+        opt.textContent = `${p.name} (#${idx + 1} \u2022 ${p.elo || 1200} ELO)`;
+        pASelect.appendChild(opt);
+      });
+
+      const validA = currentA && standings.some(s => s.name === currentA) ? currentA : standings[0].name;
+      pASelect.value = validA;
+
+      // Populate Player B (excluding Player A)
+      populateH2HPlayerBOptions(validA, currentB);
+
+      renderH2HShowcase();
+    }
+
+    function populateH2HPlayerBOptions(playerA, preferredB) {
+      const pBSelect = document.getElementById('h2hPlayerBSelect');
+      if (!pBSelect) return;
+
+      const standings = computeStandings();
+      const eligiblePlayers = standings.filter(p => p.name !== playerA);
+
+      pBSelect.innerHTML = '';
+      if (eligiblePlayers.length === 0) {
+        pBSelect.innerHTML = '<option value="" disabled selected>No other players available</option>';
+        return;
+      }
+
+      eligiblePlayers.forEach(p => {
+        const origRank = standings.findIndex(s => s.name === p.name) + 1;
+        const opt = document.createElement('option');
+        opt.value = p.name;
+        opt.textContent = `${p.name} (#${origRank} \u2022 ${p.elo || 1200} ELO)`;
+        pBSelect.appendChild(opt);
+      });
+
+      if (preferredB && eligiblePlayers.some(p => p.name === preferredB)) {
+        pBSelect.value = preferredB;
+      } else {
+        pBSelect.value = eligiblePlayers[0].name;
+      }
+    }
+
+    function handleH2HPlayerAChange() {
+      const pASelect = document.getElementById('h2hPlayerASelect');
+      const pBSelect = document.getElementById('h2hPlayerBSelect');
+      if (!pASelect || !pBSelect) return;
+      populateH2HPlayerBOptions(pASelect.value, pBSelect.value);
+      renderH2HShowcase();
+    }
+
+    function handleH2HPlayerBChange() {
+      renderH2HShowcase();
+    }
+
+    function swapH2HPlayers() {
+      const pASelect = document.getElementById('h2hPlayerASelect');
+      const pBSelect = document.getElementById('h2hPlayerBSelect');
+      if (!pASelect || !pBSelect) return;
+
+      const oldA = pASelect.value;
+      const oldB = pBSelect.value;
+      if (!oldA || !oldB || oldA === oldB) return;
+
+      pASelect.value = oldB;
+      populateH2HPlayerBOptions(oldB, oldA);
+      renderH2HShowcase();
+    }
+
+    function computeH2HData(playerA, playerB) {
+      const matches = appState.matches || [];
+
+      // 1. Matches AGAINST each other (Direct Rivalry)
+      const matchesAgainst = [];
+      let winsA = 0;
+      let winsB = 0;
+      let setsWonA = 0;
+      let setsWonB = 0;
+      let ptsA = 0;
+      let ptsB = 0;
+
+      // 2. Matches TOGETHER as doubles partners
+      const matchesTogether = [];
+      let togetherWon = 0;
+      let togetherLost = 0;
+
+      // 3. Baseline doubles records without each other (for Carry Analysis)
+      let aWithoutBPlayed = 0;
+      let aWithoutBWon = 0;
+      let bWithoutAPlayed = 0;
+      let bWithoutAWon = 0;
+
+      matches.forEach(m => {
+        const t1 = Array.isArray(m.team1) ? m.team1.map(p => (p || '').trim()) : [];
+        const t2 = Array.isArray(m.team2) ? m.team2.map(p => (p || '').trim()) : [];
+
+        const aInT1 = t1.includes(playerA);
+        const aInT2 = t2.includes(playerA);
+        const bInT1 = t1.includes(playerB);
+        const bInT2 = t2.includes(playerB);
+
+        // Calculate sets won for t1 and t2
+        let t1SetsWon = 0;
+        let t2SetsWon = 0;
+        let t1MatchPts = 0;
+        let t2MatchPts = 0;
+        const parsedSets = [];
+
+        if (Array.isArray(m.sets) && m.sets.length > 0) {
+          m.sets.forEach(s => {
+            const s1 = parseInt(s.t1, 10) || 0;
+            const s2 = parseInt(s.t2, 10) || 0;
+            t1MatchPts += s1;
+            t2MatchPts += s2;
+            if (s1 > s2) t1SetsWon++;
+            else if (s2 > s1) t2SetsWon++;
+            parsedSets.push({ t1: s1, t2: s2 });
+          });
+        }
+
+        const t1IsWinner = (m.winner === 1) || (t1SetsWon > t2SetsWon);
+        const t2IsWinner = (m.winner === 2) || (t2SetsWon > t1SetsWon);
+
+        // A. DIRECT RIVALRY: A is on one team, B is on opposing team
+        if ((aInT1 && bInT2) || (aInT2 && bInT1)) {
+          const aIsT1 = aInT1;
+          const aWonMatch = aIsT1 ? t1IsWinner : t2IsWinner;
+          const matchSetsWonA = aIsT1 ? t1SetsWon : t2SetsWon;
+          const matchSetsWonB = aIsT1 ? t2SetsWon : t1SetsWon;
+          const matchPtsA = aIsT1 ? t1MatchPts : t2MatchPts;
+          const matchPtsB = aIsT1 ? t2MatchPts : t1MatchPts;
+
+          if (aWonMatch) winsA++;
+          else winsB++;
+
+          setsWonA += matchSetsWonA;
+          setsWonB += matchSetsWonB;
+          ptsA += matchPtsA;
+          ptsB += matchPtsB;
+
+          matchesAgainst.push({
+            match: m,
+            date: m.date || '',
+            format: m.format || (t1.length > 1 ? 'doubles' : 'singles'),
+            aWon: aWonMatch,
+            teamA: aIsT1 ? t1 : t2,
+            teamB: aIsT1 ? t2 : t1,
+            matchPtsA,
+            matchPtsB,
+            ptDiff: matchPtsA - matchPtsB,
+            sets: parsedSets
+          });
+        }
+
+        // B. DOUBLES PARTNERSHIP: A and B are on the SAME team in doubles
+        const isTeamMatch = m.format === 'doubles' || t1.length >= 2 || t2.length >= 2;
+        if (isTeamMatch) {
+          const togetherInT1 = aInT1 && bInT1;
+          const togetherInT2 = aInT2 && bInT2;
+
+          if (togetherInT1 || togetherInT2) {
+            const won = togetherInT1 ? t1IsWinner : t2IsWinner;
+            if (won) togetherWon++;
+            else togetherLost++;
+
+            matchesTogether.push({
+              match: m,
+              date: m.date || '',
+              won,
+              oppTeam: togetherInT1 ? t2 : t1,
+              sets: parsedSets
+            });
+          } else {
+            // Player A playing doubles WITHOUT Player B
+            if ((aInT1 || aInT2) && !bInT1 && !bInT2) {
+              aWithoutBPlayed++;
+              const aWon = aInT1 ? t1IsWinner : t2IsWinner;
+              if (aWon) aWithoutBWon++;
+            }
+            // Player B playing doubles WITHOUT Player A
+            if ((bInT1 || bInT2) && !aInT1 && !aInT2) {
+              bWithoutAPlayed++;
+              const bWon = bInT1 ? t1IsWinner : t2IsWinner;
+              if (bWon) bWithoutAWon++;
+            }
+          }
+        }
+      });
+
+      // Sort matches against newest first
+      matchesAgainst.sort((a, b) => (b.date || '').localeCompare(a.date || ''));
+
+      const playedAgainst = matchesAgainst.length;
+      const winRateA = playedAgainst > 0 ? (winsA / playedAgainst) * 100 : 0;
+      const winRateB = playedAgainst > 0 ? (winsB / playedAgainst) * 100 : 0;
+      const avgPtDiffA = playedAgainst > 0 ? (ptsA - ptsB) / playedAgainst : 0;
+
+      // Partnership stats
+      const togetherPlayed = matchesTogether.length;
+      const togetherWinRate = togetherPlayed > 0 ? (togetherWon / togetherPlayed) * 100 : 0;
+
+      const aWithoutBWinRate = aWithoutBPlayed > 0 ? (aWithoutBWon / aWithoutBPlayed) * 100 : 0;
+      const bWithoutAWinRate = bWithoutAPlayed > 0 ? (bWithoutAWon / bWithoutAPlayed) * 100 : 0;
+
+      const deltaA = togetherWinRate - aWithoutBWinRate; // A's lift teaming with B
+      const deltaB = togetherWinRate - bWithoutAWinRate; // B's lift teaming with A
+      const carryDelta = deltaB - deltaA; // If positive, B gained more from A -> A carried B
+
+      let carryVerdict = 'NEVER_PARTNERED';
+      if (togetherPlayed > 0) {
+        if (carryDelta > 8.0) {
+          carryVerdict = 'A_CARRIED_B';
+        } else if (carryDelta < -8.0) {
+          carryVerdict = 'B_CARRIED_A';
+        } else {
+          carryVerdict = 'EQUAL_PARTNERS';
+        }
+      }
+
+      return {
+        playerA,
+        playerB,
+        rivalry: {
+          played: playedAgainst,
+          winsA,
+          winsB,
+          winRateA,
+          winRateB,
+          setsWonA,
+          setsWonB,
+          ptsA,
+          ptsB,
+          avgPtDiffA,
+          matches: matchesAgainst
+        },
+        partnership: {
+          togetherPlayed,
+          togetherWon,
+          togetherLost,
+          togetherWinRate,
+          aWithoutBPlayed,
+          aWithoutBWon,
+          aWithoutBWinRate,
+          bWithoutAPlayed,
+          bWithoutAWon,
+          bWithoutAWinRate,
+          deltaA,
+          deltaB,
+          carryDelta,
+          carryVerdict,
+          matchesTogether
+        }
+      };
+    }
+
+    function renderH2HShowcase() {
+      const pASelect = document.getElementById('h2hPlayerASelect');
+      const pBSelect = document.getElementById('h2hPlayerBSelect');
+      const heroCard = document.getElementById('h2hHeroCard');
+      const rivalryCard = document.getElementById('h2hRivalryCard');
+      const partnershipCard = document.getElementById('h2hPartnershipCard');
+      const encountersSection = document.getElementById('h2hMatchesEncountersSection');
+
+      if (!pASelect || !pBSelect || !heroCard) return;
+
+      const playerA = pASelect.value;
+      const playerB = pBSelect.value;
+
+      if (!playerA || !playerB || playerA === playerB) {
+        renderH2HEmptyState();
+        return;
+      }
+
+      const standings = computeStandings();
+      const pAObj = appState.players.find(p => p.name === playerA) || { name: playerA };
+      const pBObj = appState.players.find(p => p.name === playerB) || { name: playerB };
+      const sAObj = standings.find(s => s.name === playerA) || { elo: 1200 };
+      const sBObj = standings.find(s => s.name === playerB) || { elo: 1200 };
+
+      const rankA = standings.findIndex(s => s.name === playerA) + 1;
+      const rankB = standings.findIndex(s => s.name === playerB) + 1;
+
+      const tierA = getPlayerSkillTier(sAObj.elo || 1200);
+      const tierB = getPlayerSkillTier(sBObj.elo || 1200);
+
+      const h2h = computeH2HData(playerA, playerB);
+
+      // 1. HERO SHOWCASE CARD (Big Profile Pictures + VS Badge)
+      let avatarHtmlA = '';
+      if (pAObj.photoUrl) {
+        avatarHtmlA = `
+          <div class="h2h-avatar-box player-a">
+            <img src="${escapeHtml(formatDirectPhotoUrl(pAObj.photoUrl))}" referrerpolicy="no-referrer" class="h2h-avatar-img" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+            <div class="h2h-avatar-fallback" style="display: none;">${getPlayerInitials(playerA)}</div>
+          </div>
+        `;
+      } else {
+        avatarHtmlA = `
+          <div class="h2h-avatar-box player-a">
+            <div class="h2h-avatar-fallback">${getPlayerInitials(playerA)}</div>
+          </div>
+        `;
+      }
+
+      let avatarHtmlB = '';
+      if (pBObj.photoUrl) {
+        avatarHtmlB = `
+          <div class="h2h-avatar-box player-b">
+            <img src="${escapeHtml(formatDirectPhotoUrl(pBObj.photoUrl))}" referrerpolicy="no-referrer" class="h2h-avatar-img" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+            <div class="h2h-avatar-fallback" style="display: none;">${getPlayerInitials(playerB)}</div>
+          </div>
+        `;
+      } else {
+        avatarHtmlB = `
+          <div class="h2h-avatar-box player-b">
+            <div class="h2h-avatar-fallback">${getPlayerInitials(playerB)}</div>
+          </div>
+        `;
+      }
+
+      heroCard.innerHTML = `
+        <div class="h2h-player-hero">
+          ${avatarHtmlA}
+          <div class="h2h-player-name">${escapeHtml(playerA)}</div>
+          <div class="h2h-player-sub">
+            <span class="h2h-elo-badge player-a">#${rankA} \u2022 ${sAObj.elo || 1200} ELO</span>
+            <span class="h2h-tier-badge" style="color: ${tierA.color}; background: ${tierA.bg}; border: 1px solid ${tierA.border};">${tierA.tier}</span>
+          </div>
+        </div>
+
+        <div class="h2h-vs-center">
+          <div class="h2h-vs-emblem">VS</div>
+          <div class="h2h-vs-score">
+            <span style="color: #00f59b;">${h2h.rivalry.winsA}</span>
+            <span style="color: rgba(255, 255, 255, 0.35); font-size: 0.8em;">-</span>
+            <span style="color: #38bdf8;">${h2h.rivalry.winsB}</span>
+          </div>
+          <div class="h2h-vs-label">${h2h.rivalry.played} Matches Faced</div>
+        </div>
+
+        <div class="h2h-player-hero">
+          ${avatarHtmlB}
+          <div class="h2h-player-name">${escapeHtml(playerB)}</div>
+          <div class="h2h-player-sub">
+            <span class="h2h-elo-badge player-b">#${rankB} \u2022 ${sBObj.elo || 1200} ELO</span>
+            <span class="h2h-tier-badge" style="color: ${tierB.color}; background: ${tierB.bg}; border: 1px solid ${tierB.border};">${tierB.tier}</span>
+          </div>
+        </div>
+      `;
+
+      // 2. DIRECT RIVALRY CARD
+      if (rivalryCard) {
+        const r = h2h.rivalry;
+        const wrBarWidthA = r.played > 0 ? r.winRateA : 50;
+        const wrBarWidthB = r.played > 0 ? r.winRateB : 50;
+
+        let diffBadgeClass = 'even';
+        let diffNumText = '0.0';
+        let diffDesc = 'No head-to-head matches played yet.';
+
+        if (r.played > 0) {
+          if (r.avgPtDiffA > 0.05) {
+            diffBadgeClass = 'player-a';
+            diffNumText = `+${r.avgPtDiffA.toFixed(1)}`;
+            diffDesc = `<strong>${escapeHtml(playerA)}</strong> outscores <strong>${escapeHtml(playerB)}</strong> by an average of <strong>+${r.avgPtDiffA.toFixed(1)} pts</strong> per match (${r.ptsA} pts vs ${r.ptsB} pts total across ${r.setsWonA + r.setsWonB} sets).`;
+          } else if (r.avgPtDiffA < -0.05) {
+            diffBadgeClass = 'player-b';
+            diffNumText = `${r.avgPtDiffA.toFixed(1)}`;
+            diffDesc = `<strong>${escapeHtml(playerB)}</strong> outscores <strong>${escapeHtml(playerA)}</strong> by an average of <strong>+${Math.abs(r.avgPtDiffA).toFixed(1)} pts</strong> per match (${r.ptsB} pts vs ${r.ptsA} pts total across ${r.setsWonA + r.setsWonB} sets).`;
+          } else {
+            diffBadgeClass = 'even';
+            diffNumText = '0.0';
+            diffDesc = `Both players are dead even on points scored across their head-to-head encounters (${r.ptsA} pts each).`;
+          }
+        }
+
+        rivalryCard.innerHTML = `
+          <div class="h2h-card-title">
+            <span>&#9876;&#65039;</span> Direct Rivalry Stats (When Playing Against Each Other)
+          </div>
+
+          <!-- Dual Win Rate Progress Bar -->
+          <div class="h2h-wr-bar-container">
+            <div class="h2h-wr-bar-header">
+              <span style="color: #00f59b;">${escapeHtml(playerA)}: ${r.winRateA.toFixed(1)}%</span>
+              <span style="color: #38bdf8;">${escapeHtml(playerB)}: ${r.winRateB.toFixed(1)}%</span>
+            </div>
+            <div class="h2h-wr-bar-track">
+              <div class="h2h-wr-bar-fill-a" style="width: ${wrBarWidthA}%;">
+                ${r.winRateA >= 15 ? r.winRateA.toFixed(0) + '%' : ''}
+              </div>
+              <div class="h2h-wr-bar-fill-b" style="width: ${wrBarWidthB}%;">
+                ${r.winRateB >= 15 ? r.winRateB.toFixed(0) + '%' : ''}
+              </div>
+            </div>
+          </div>
+
+          <!-- 3 Stats Columns Grid -->
+          <div class="h2h-stats-grid">
+            <div class="h2h-stat-box">
+              <div class="h2h-stat-label">Matches Won</div>
+              <div class="h2h-stat-values">
+                <span style="color: #00f59b;">${r.winsA}</span>
+                <span style="color: var(--text-dim); font-size: 14px;">-</span>
+                <span style="color: #38bdf8;">${r.winsB}</span>
+              </div>
+            </div>
+
+            <div class="h2h-stat-box">
+              <div class="h2h-stat-label">Sets Won</div>
+              <div class="h2h-stat-values">
+                <span style="color: #00f59b;">${r.setsWonA}</span>
+                <span style="color: var(--text-dim); font-size: 14px;">-</span>
+                <span style="color: #38bdf8;">${r.setsWonB}</span>
+              </div>
+            </div>
+
+            <div class="h2h-stat-box">
+              <div class="h2h-stat-label">Total Points</div>
+              <div class="h2h-stat-values">
+                <span style="color: #00f59b;">${r.ptsA}</span>
+                <span style="color: var(--text-dim); font-size: 14px;">-</span>
+                <span style="color: #38bdf8;">${r.ptsB}</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Average Points Differential Box -->
+          <div class="h2h-point-diff-box">
+            <div class="h2h-point-diff-badge ${diffBadgeClass}">
+              <div class="h2h-point-diff-num">${diffNumText}</div>
+              <div class="h2h-point-diff-sub">Avg Point Diff</div>
+            </div>
+            <div class="h2h-point-diff-text">
+              <div style="font-weight: 700; color: var(--text-main); margin-bottom: 2px;">Average Points Differential per Match</div>
+              <div>${diffDesc}</div>
+            </div>
+          </div>
+        `;
+      }
+
+      // 3. PARTNERSHIP DYNAMICS & WHO CARRIED WHO CARD
+      if (partnershipCard) {
+        const p = h2h.partnership;
+
+        let verdictCardClass = 'rivals';
+        let verdictIcon = '&#9876;&#65039;';
+        let verdictTitle = '';
+        let verdictDesc = '';
+
+        if (p.carryVerdict === 'A_CARRIED_B') {
+          verdictCardClass = 'carry-a';
+          verdictIcon = '&#128092;';
+          verdictTitle = `<span>${escapeHtml(playerA)} Carried ${escapeHtml(playerB)}!</span> <span style="font-size: 12px; font-weight: 700; color: #00f59b; background: rgba(0, 245, 155, 0.15); padding: 2px 8px; border-radius: 9999px;">+${p.carryDelta.toFixed(1)}% Differential</span>`;
+          verdictDesc = `When teaming up in doubles, <strong>${escapeHtml(playerB)}</strong> experiences a massive <strong>+${p.deltaB.toFixed(1)}%</strong> win rate boost compared to their baseline without ${escapeHtml(playerA)} (jumping from ${p.bWithoutAWinRate.toFixed(1)}% to ${p.togetherWinRate.toFixed(1)}%), while <strong>${escapeHtml(playerA)}</strong> sees a <strong>+${p.deltaA.toFixed(1)}%</strong> lift. <strong>${escapeHtml(playerA)} did the heavy lifting in this tandem!</strong>`;
+        } else if (p.carryVerdict === 'B_CARRIED_A') {
+          verdictCardClass = 'carry-b';
+          verdictIcon = '&#128092;';
+          verdictTitle = `<span>${escapeHtml(playerB)} Carried ${escapeHtml(playerA)}!</span> <span style="font-size: 12px; font-weight: 700; color: #38bdf8; background: rgba(56, 189, 248, 0.15); padding: 2px 8px; border-radius: 9999px;">+${(-p.carryDelta).toFixed(1)}% Differential</span>`;
+          verdictDesc = `When teaming up in doubles, <strong>${escapeHtml(playerA)}</strong> experiences a massive <strong>+${p.deltaA.toFixed(1)}%</strong> win rate boost compared to their baseline without ${escapeHtml(playerB)} (jumping from ${p.aWithoutBWinRate.toFixed(1)}% to ${p.togetherWinRate.toFixed(1)}%), while <strong>${escapeHtml(playerB)}</strong> sees a <strong>+${p.deltaB.toFixed(1)}%</strong> lift. <strong>${escapeHtml(playerB)} did the heavy lifting in this tandem!</strong>`;
+        } else if (p.carryVerdict === 'EQUAL_PARTNERS') {
+          verdictCardClass = 'duo';
+          verdictIcon = '&#129309;';
+          verdictTitle = `<span>Dynamic Duo! (Equal Partners)</span> <span style="font-size: 12px; font-weight: 700; color: #ffd700; background: rgba(255, 215, 0, 0.15); padding: 2px 8px; border-radius: 9999px;">Balanced Partnership</span>`;
+          verdictDesc = `Both players complement each other and elevate their games equally (<strong>${p.deltaA >= 0 ? '+' : ''}${p.deltaA.toFixed(1)}%</strong> vs <strong>${p.deltaB >= 0 ? '+' : ''}${p.deltaB.toFixed(1)}%</strong> lift). Neither player carries the other - they share the load evenly!`;
+        } else {
+          verdictCardClass = 'rivals';
+          verdictIcon = '&#9876;&#65039;';
+          verdictTitle = `<span>Pure Rivals (Never Partnered in Doubles)</span>`;
+          verdictDesc = `These two fierce competitors have exclusively clashed on opposite sides of the net and have not yet played on the same doubles team.`;
+        }
+
+        const liftClassA = p.deltaA > 0.05 ? 'positive' : (p.deltaA < -0.05 ? 'negative' : 'neutral');
+        const liftClassB = p.deltaB > 0.05 ? 'positive' : (p.deltaB < -0.05 ? 'negative' : 'neutral');
+        const liftSignA = p.deltaA > 0.05 ? '+' : '';
+        const liftSignB = p.deltaB > 0.05 ? '+' : '';
+
+        partnershipCard.innerHTML = `
+          <div class="h2h-card-title">
+            <span>&#129309;</span> Doubles Partnership Dynamics &amp; "Who Carried Who"
+          </div>
+
+          <!-- Carry Verdict Banner -->
+          <div class="h2h-carry-verdict-card ${verdictCardClass}">
+            <div class="h2h-carry-icon">${verdictIcon}</div>
+            <div>
+              <div class="h2h-carry-title">${verdictTitle}</div>
+              <div class="h2h-carry-desc">${verdictDesc}</div>
+            </div>
+          </div>
+
+          <!-- Partnership Summary Strip -->
+          <div style="background: rgba(15, 23, 42, 0.6); border: 1px solid rgba(255, 255, 255, 0.08); border-radius: var(--radius-sm); padding: 12px 14px; margin-bottom: 14px; display: flex; justify-content: space-around; align-items: center; flex-wrap: wrap; gap: 10px; text-align: center;">
+            <div>
+              <div style="font-size: 11px; font-weight: 700; color: var(--text-muted); text-transform: uppercase;">Played Together</div>
+              <div style="font-size: 18px; font-weight: 900; color: var(--text-main); margin-top: 2px;">${p.togetherPlayed}</div>
+            </div>
+            <div>
+              <div style="font-size: 11px; font-weight: 700; color: var(--text-muted); text-transform: uppercase;">Won Together</div>
+              <div style="font-size: 18px; font-weight: 900; color: #00f59b; margin-top: 2px;">${p.togetherWon}</div>
+            </div>
+            <div>
+              <div style="font-size: 11px; font-weight: 700; color: var(--text-muted); text-transform: uppercase;">Lost Together</div>
+              <div style="font-size: 18px; font-weight: 900; color: #94a3b8; margin-top: 2px;">${p.togetherLost}</div>
+            </div>
+            <div>
+              <div style="font-size: 11px; font-weight: 700; color: var(--text-muted); text-transform: uppercase;">Partnership Win %</div>
+              <div style="font-size: 18px; font-weight: 900; color: #ffd700; margin-top: 2px;">${p.togetherPlayed > 0 ? p.togetherWinRate.toFixed(1) + '%' : '0.0%'}</div>
+            </div>
+          </div>
+
+          <!-- Synergy Lift Grid -->
+          <div class="h2h-synergy-grid">
+            <div class="h2h-synergy-card">
+              <div class="h2h-synergy-header">
+                <span>${escapeHtml(playerA)}'s Synergy</span>
+                ${p.togetherPlayed > 0 ? `<span class="h2h-synergy-lift ${liftClassA}">${liftSignA}${p.deltaA.toFixed(1)}% Lift</span>` : ''}
+              </div>
+              <div class="h2h-synergy-body">
+                ${p.togetherPlayed > 0 ? `With ${escapeHtml(playerB)}: <strong style="color: #00f59b;">${p.togetherWinRate.toFixed(1)}%</strong>` : 'No doubles matches together'}
+              </div>
+              <div class="h2h-synergy-sub">
+                Without ${escapeHtml(playerB)}: ${p.aWithoutBWinRate.toFixed(1)}% (${p.aWithoutBPlayed} matches)
+              </div>
+            </div>
+
+            <div class="h2h-synergy-card">
+              <div class="h2h-synergy-header">
+                <span>${escapeHtml(playerB)}'s Synergy</span>
+                ${p.togetherPlayed > 0 ? `<span class="h2h-synergy-lift ${liftClassB}">${liftSignB}${p.deltaB.toFixed(1)}% Lift</span>` : ''}
+              </div>
+              <div class="h2h-synergy-body">
+                ${p.togetherPlayed > 0 ? `With ${escapeHtml(playerA)}: <strong style="color: #38bdf8;">${p.togetherWinRate.toFixed(1)}%</strong>` : 'No doubles matches together'}
+              </div>
+              <div class="h2h-synergy-sub">
+                Without ${escapeHtml(playerA)}: ${p.bWithoutAWinRate.toFixed(1)}% (${p.bWithoutAPlayed} matches)
+              </div>
+            </div>
+          </div>
+        `;
+      }
+
+      // 4. RECENT DIRECT ENCOUNTERS LIST
+      if (encountersSection) {
+        const matchesAgainst = h2h.rivalry.matches;
+        if (matchesAgainst.length === 0) {
+          encountersSection.style.display = 'none';
+          encountersSection.innerHTML = '';
+        } else {
+          encountersSection.style.display = 'block';
+          encountersSection.innerHTML = `
+            <div class="h2h-card-title">
+              <span>&#128220;</span> Direct Head-to-Head Encounters (${matchesAgainst.length})
+            </div>
+            <div style="display: flex; flex-direction: column; gap: 8px;">
+              ${matchesAgainst.map(item => {
+                const aNames = (item.teamA || []).map(escapeHtml).join(' &amp; ');
+                const bNames = (item.teamB || []).map(escapeHtml).join(' &amp; ');
+
+                const winnerBadge = item.aWon
+                  ? `<span style="background: rgba(0, 245, 155, 0.15); color: #00f59b; border: 1px solid rgba(0, 245, 155, 0.3); font-size: 10px; font-weight: 800; padding: 2px 6px; border-radius: 4px;">${escapeHtml(playerA)} Won</span>`
+                  : `<span style="background: rgba(56, 189, 248, 0.15); color: #38bdf8; border: 1px solid rgba(56, 189, 248, 0.3); font-size: 10px; font-weight: 800; padding: 2px 6px; border-radius: 4px;">${escapeHtml(playerB)} Won</span>`;
+
+                const formattedSets = (item.sets || []).map(s => {
+                  return `<span style="color: ${s.t1 > s.t2 ? '#00f59b' : '#94a3b8'}; font-weight: 700;">${s.t1}</span>-<span style="color: ${s.t2 > s.t1 ? '#00f59b' : '#94a3b8'}; font-weight: 700;">${s.t2}</span>`;
+                }).join(', ');
+
+                return `
+                  <div class="h2h-match-item">
+                    <div class="h2h-match-teams">
+                      <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 4px;">
+                        ${winnerBadge}
+                        <span style="font-size: 12px; color: var(--text-dim);">${escapeHtml(item.date || 'Recent match')}</span>
+                        <span style="font-size: 11px; text-transform: uppercase; color: var(--text-muted);">${escapeHtml(item.format)}</span>
+                      </div>
+                      <div class="h2h-match-team-row ${item.aWon ? 'winner' : ''}">
+                        <span style="width: 14px; font-size: 11px; text-align: center;">${item.aWon ? '&#9654;' : ''}</span>
+                        <span>${aNames}</span>
+                      </div>
+                      <div class="h2h-match-team-row ${!item.aWon ? 'winner' : ''}">
+                        <span style="width: 14px; font-size: 11px; text-align: center;">${!item.aWon ? '&#9654;' : ''}</span>
+                        <span>${bNames}</span>
+                      </div>
+                    </div>
+                    <div class="h2h-match-score">
+                      ${formattedSets || (item.matchPtsA + '-' + item.matchPtsB)}
+                    </div>
+                  </div>
+                `;
+              }).join('')}
+            </div>
+          `;
+        }
+      }
+    }
+
+    function renderH2HEmptyState() {
+      const heroCard = document.getElementById('h2hHeroCard');
+      const rivalryCard = document.getElementById('h2hRivalryCard');
+      const partnershipCard = document.getElementById('h2hPartnershipCard');
+      const encountersSection = document.getElementById('h2hMatchesEncountersSection');
+
+      if (heroCard) {
+        heroCard.innerHTML = `
+          <div style="text-align: center; width: 100%; color: var(--text-dim); font-size: 14px; padding: 20px;">
+            Select two different players above to view Head-to-Head analytics.
+          </div>
+        `;
+      }
+      if (rivalryCard) rivalryCard.innerHTML = '';
+      if (partnershipCard) partnershipCard.innerHTML = '';
+      if (encountersSection) {
+        encountersSection.style.display = 'none';
+        encountersSection.innerHTML = '';
+      }
+    }
+
+    /* ==========================================================================
+       HEAD-TO-HEAD CANVAS IMAGE GENERATION & WHATSAPP SHARING
+       ========================================================================== */
+    function drawCanvasRoundRect(ctx, x, y, w, h, r, fillColor, strokeColor, strokeWidth) {
+      ctx.save();
+      ctx.beginPath();
+      if (ctx.roundRect) {
+        ctx.roundRect(x, y, w, h, r);
+      } else {
+        ctx.moveTo(x + r, y);
+        ctx.lineTo(x + w - r, y);
+        ctx.quadraticCurveTo(x + w, y, x + w, y + r);
+        ctx.lineTo(x + w, y + h - r);
+        ctx.quadraticCurveTo(x + w, y + h, x + w - r, y + h);
+        ctx.lineTo(x + r, y + h);
+        ctx.quadraticCurveTo(x, y + h, x, y + h - r);
+        ctx.lineTo(x, y + r);
+        ctx.quadraticCurveTo(x, y, x + r, y);
+      }
+      ctx.closePath();
+      if (fillColor) {
+        ctx.fillStyle = fillColor;
+        ctx.fill();
+      }
+      if (strokeColor) {
+        ctx.strokeStyle = strokeColor;
+        ctx.lineWidth = strokeWidth || 1;
+        ctx.stroke();
+      }
+      ctx.restore();
+    }
+
+    function loadSafeAvatarImage(url) {
+      return new Promise((resolve) => {
+        if (!url) return resolve(null);
+        const img = new Image();
+        img.crossOrigin = 'anonymous';
+        img.onload = () => resolve(img);
+        img.onerror = () => resolve(null);
+        img.src = url;
+        setTimeout(() => resolve(null), 1200);
+      });
+    }
+
+    async function shareH2HAsImage() {
+      const pASelect = document.getElementById('h2hPlayerASelect');
+      const pBSelect = document.getElementById('h2hPlayerBSelect');
+      if (!pASelect || !pBSelect) return;
+
+      const playerA = pASelect.value;
+      const playerB = pBSelect.value;
+      if (!playerA || !playerB || playerA === playerB) {
+        showToast("Please select two players!");
+        return;
+      }
+
+      const btn = document.getElementById('h2hShareBtn');
+      const origHtml = btn ? btn.innerHTML : '';
+      if (btn) {
+        btn.disabled = true;
+        btn.innerHTML = '<span>&#9203;</span> Generating Image...';
+      }
+
+      try {
+        const blob = await generateH2HImageBlob(playerA, playerB);
+        if (!blob) {
+          alert("Could not generate Head-to-Head image. Please try again.");
+          return;
+        }
+
+        const cleanA = playerA.replace(/[^a-zA-Z0-9]/g, '_');
+        const cleanB = playerB.replace(/[^a-zA-Z0-9]/g, '_');
+        const dateStr = new Date().toISOString().slice(0, 10);
+        const fileName = `TK_Baddy_H2H_${cleanA}_vs_${cleanB}_${dateStr}.png`;
+        const file = new File([blob], fileName, { type: 'image/png' });
+
+        // If Web Share API supports file sharing (Mobile WhatsApp, Telegram, etc.)
+        if (navigator.canShare && navigator.canShare({ files: [file] })) {
+          await navigator.share({
+            files: [file],
+            title: `Head-to-Head: ${playerA} vs ${playerB}`,
+            text: `Official Head-to-Head Showdown: ${playerA} vs ${playerB} | TK Baddy Championships \u{1F3F8}`
+          });
+          showToast("Head-to-Head card shared! \u2728");
+        } else {
+          // Direct download fallback for desktop browsers
+          const url = URL.createObjectURL(blob);
+          const a = document.createElement('a');
+          a.href = url;
+          a.download = fileName;
+          document.body.appendChild(a);
+          a.click();
+          document.body.removeChild(a);
+          setTimeout(() => URL.revokeObjectURL(url), 4000);
+          showToast("Head-to-Head image downloaded! \u2728");
+        }
+      } catch (err) {
+        if (err.name !== 'AbortError') {
+          console.error("Error sharing H2H:", err);
+          alert("Could not share image: " + err.message);
+        }
+      } finally {
+        if (btn) {
+          btn.disabled = false;
+          btn.innerHTML = origHtml;
+        }
+      }
+    }
+
+    function generateH2HImageBlob(playerA, playerB) {
+      return new Promise(async (resolve) => {
+        if (document.fonts && document.fonts.ready) {
+          try {
+            await document.fonts.ready;
+          } catch (e) {}
+        }
+
+        // Attempt 1: With photos
+        let blob = await renderH2HCanvas(playerA, playerB, true);
+        if (!blob) {
+          // Attempt 2: Fallback without external photos if CORS tainted
+          blob = await renderH2HCanvas(playerA, playerB, false);
+        }
+        resolve(blob);
+      });
+    }
+
+    async function renderH2HCanvas(playerA, playerB, includePhotos) {
+      try {
+        const standings = computeStandings();
+        const pAObj = appState.players.find(p => p.name === playerA) || { name: playerA };
+        const pBObj = appState.players.find(p => p.name === playerB) || { name: playerB };
+        const sAObj = standings.find(s => s.name === playerA) || { elo: 1200 };
+        const sBObj = standings.find(s => s.name === playerB) || { elo: 1200 };
+
+        const rankA = standings.findIndex(s => s.name === playerA) + 1;
+        const rankB = standings.findIndex(s => s.name === playerB) + 1;
+
+        const h2h = computeH2HData(playerA, playerB);
+
+        // Preload images safely
+        let imgA = null;
+        let imgB = null;
+        if (includePhotos) {
+          if (pAObj.photoUrl) imgA = await loadSafeAvatarImage(formatDirectPhotoUrl(pAObj.photoUrl));
+          if (pBObj.photoUrl) imgB = await loadSafeAvatarImage(formatDirectPhotoUrl(pBObj.photoUrl));
+        }
+
+        const canvasW = 1200;
+        const canvasH = 1400;
+        const canvas = document.createElement('canvas');
+        canvas.width = canvasW;
+        canvas.height = canvasH;
+        const ctx = canvas.getContext('2d');
+
+        ctx.imageSmoothingEnabled = true;
+        ctx.imageSmoothingQuality = 'high';
+
+        // 1. Dark Tournament Gradient Background
+        const bgGrad = ctx.createLinearGradient(0, 0, canvasW, canvasH);
+        bgGrad.addColorStop(0, '#0a101f');
+        bgGrad.addColorStop(0.5, '#070c18');
+        bgGrad.addColorStop(1, '#04070d');
+        ctx.fillStyle = bgGrad;
+        ctx.fillRect(0, 0, canvasW, canvasH);
+
+        // Subtle geometric grid pattern
+        ctx.strokeStyle = 'rgba(30, 41, 59, 0.35)';
+        ctx.lineWidth = 1;
+        for (let x = 60; x < canvasW; x += 60) {
+          ctx.beginPath();
+          ctx.moveTo(x, 0);
+          ctx.lineTo(x, canvasH);
+          ctx.stroke();
+        }
+        for (let y = 60; y < canvasH; y += 60) {
+          ctx.beginPath();
+          ctx.moveTo(0, y);
+          ctx.lineTo(canvasW, y);
+          ctx.stroke();
+        }
+
+        // Outer Glow Borders
+        ctx.strokeStyle = 'rgba(0, 245, 155, 0.4)';
+        ctx.lineWidth = 4;
+        ctx.strokeRect(12, 12, canvasW - 24, canvasH - 24);
+
+        ctx.strokeStyle = 'rgba(56, 189, 248, 0.25)';
+        ctx.lineWidth = 1.5;
+        ctx.strokeRect(18, 18, canvasW - 36, canvasH - 36);
+
+        // 2. Header
+        ctx.fillStyle = '#ffd700';
+        ctx.font = 'bold 18px system-ui, -apple-system, sans-serif';
+        ctx.textAlign = 'center';
+        ctx.fillText('\u{1F3F8} TK BADDY CHAMPIONSHIPS \u{1F3F8}', 600, 58);
+
+        ctx.fillStyle = '#ffffff';
+        ctx.font = '900 36px system-ui, -apple-system, sans-serif';
+        ctx.fillText('HEAD-TO-HEAD SHOWDOWN', 600, 102);
+
+        ctx.fillStyle = '#94a3b8';
+        ctx.font = '500 16px system-ui, -apple-system, sans-serif';
+        ctx.fillText('Official Rivalry & Doubles Carry Analytics', 600, 134);
+
+        // 3. Hero Showcase Card (y: 160, h: 290)
+        drawCanvasRoundRect(ctx, 40, 160, 1120, 290, 16, 'rgba(15, 23, 42, 0.85)', 'rgba(255, 255, 255, 0.1)', 1.5);
+
+        // Player A Avatar & Info
+        const centerAX = 240;
+        const centerAY = 275;
+        const radiusA = 70;
+
+        ctx.save();
+        ctx.beginPath();
+        ctx.arc(centerAX, centerAY, radiusA, 0, Math.PI * 2);
+        ctx.clip();
+        let drewPhotoA = false;
+        if (imgA) {
+          try {
+            ctx.drawImage(imgA, centerAX - radiusA, centerAY - radiusA, radiusA * 2, radiusA * 2);
+            drewPhotoA = true;
+          } catch (e) {
+            drewPhotoA = false;
+          }
+        }
+        if (!drewPhotoA) {
+          const gradA = ctx.createLinearGradient(centerAX - radiusA, centerAY - radiusA, centerAX + radiusA, centerAY + radiusA);
+          gradA.addColorStop(0, '#059669');
+          gradA.addColorStop(1, '#00f59b');
+          ctx.fillStyle = gradA;
+          ctx.fillRect(centerAX - radiusA, centerAY - radiusA, radiusA * 2, radiusA * 2);
+          ctx.fillStyle = '#052e16';
+          ctx.font = '900 50px system-ui, -apple-system, sans-serif';
+          ctx.textAlign = 'center';
+          ctx.textBaseline = 'middle';
+          ctx.fillText(getPlayerInitials(playerA), centerAX, centerAY + 2);
+        }
+        ctx.restore();
+
+        // Glowing Ring Player A
+        ctx.save();
+        ctx.beginPath();
+        ctx.arc(centerAX, centerAY, radiusA, 0, Math.PI * 2);
+        ctx.strokeStyle = '#00f59b';
+        ctx.lineWidth = 5;
+        ctx.shadowColor = 'rgba(0, 245, 155, 0.5)';
+        ctx.shadowBlur = 18;
+        ctx.stroke();
+        ctx.restore();
+
+        // Player A Labels
+        ctx.fillStyle = '#ffffff';
+        ctx.font = '900 28px system-ui, -apple-system, sans-serif';
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'alphabetic';
+        ctx.fillText(playerA, centerAX, 385);
+
+        ctx.fillStyle = '#00f59b';
+        ctx.font = 'bold 17px system-ui, -apple-system, sans-serif';
+        ctx.fillText(`#${rankA} \u2022 ${sAObj.elo || 1200} ELO`, centerAX, 415);
+
+        // Player B Avatar & Info
+        const centerBX = 960;
+        const centerBY = 275;
+        const radiusB = 70;
+
+        ctx.save();
+        ctx.beginPath();
+        ctx.arc(centerBX, centerBY, radiusB, 0, Math.PI * 2);
+        ctx.clip();
+        let drewPhotoB = false;
+        if (imgB) {
+          try {
+            ctx.drawImage(imgB, centerBX - radiusB, centerBY - radiusB, radiusB * 2, radiusB * 2);
+            drewPhotoB = true;
+          } catch (e) {
+            drewPhotoB = false;
+          }
+        }
+        if (!drewPhotoB) {
+          const gradB = ctx.createLinearGradient(centerBX - radiusB, centerBY - radiusB, centerBX + radiusB, centerBY + radiusB);
+          gradB.addColorStop(0, '#0284c7');
+          gradB.addColorStop(1, '#38bdf8');
+          ctx.fillStyle = gradB;
+          ctx.fillRect(centerBX - radiusB, centerBY - radiusB, radiusB * 2, radiusB * 2);
+          ctx.fillStyle = '#082f49';
+          ctx.font = '900 50px system-ui, -apple-system, sans-serif';
+          ctx.textAlign = 'center';
+          ctx.textBaseline = 'middle';
+          ctx.fillText(getPlayerInitials(playerB), centerBX, centerBY + 2);
+        }
+        ctx.restore();
+
+        // Glowing Ring Player B
+        ctx.save();
+        ctx.beginPath();
+        ctx.arc(centerBX, centerBY, radiusB, 0, Math.PI * 2);
+        ctx.strokeStyle = '#38bdf8';
+        ctx.lineWidth = 5;
+        ctx.shadowColor = 'rgba(56, 189, 248, 0.5)';
+        ctx.shadowBlur = 18;
+        ctx.stroke();
+        ctx.restore();
+
+        // Player B Labels
+        ctx.fillStyle = '#ffffff';
+        ctx.font = '900 28px system-ui, -apple-system, sans-serif';
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'alphabetic';
+        ctx.fillText(playerB, centerBX, 385);
+
+        ctx.fillStyle = '#38bdf8';
+        ctx.font = 'bold 17px system-ui, -apple-system, sans-serif';
+        ctx.fillText(`#${rankB} \u2022 ${sBObj.elo || 1200} ELO`, centerBX, 415);
+
+        // Center VS Badge & Score
+        ctx.save();
+        ctx.beginPath();
+        ctx.arc(600, 245, 30, 0, Math.PI * 2);
+        ctx.fillStyle = '#0f172a';
+        ctx.fill();
+        ctx.strokeStyle = '#ffd700';
+        ctx.lineWidth = 2.5;
+        ctx.shadowColor = 'rgba(255, 215, 0, 0.4)';
+        ctx.shadowBlur = 12;
+        ctx.stroke();
+        ctx.restore();
+
+        ctx.fillStyle = '#ffd700';
+        ctx.font = '900 18px system-ui, -apple-system, sans-serif';
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'middle';
+        ctx.fillText('VS', 600, 246);
+
+        // Athletic Head-to-Head Score
+        ctx.font = '900 52px system-ui, -apple-system, sans-serif';
+        ctx.textBaseline = 'alphabetic';
+        ctx.fillStyle = '#00f59b';
+        ctx.fillText(h2h.rivalry.winsA, 545, 332);
+        ctx.fillStyle = 'rgba(255, 255, 255, 0.35)';
+        ctx.fillText('-', 600, 332);
+        ctx.fillStyle = '#38bdf8';
+        ctx.fillText(h2h.rivalry.winsB, 655, 332);
+
+        ctx.fillStyle = '#94a3b8';
+        ctx.font = 'bold 14px system-ui, -apple-system, sans-serif';
+        ctx.fillText(`${h2h.rivalry.played} MATCHES FACED`, 600, 375);
+
+        // 4. Section: Direct Rivalry Stats (y: 475, h: 385)
+        drawCanvasRoundRect(ctx, 40, 475, 1120, 385, 16, 'rgba(15, 23, 42, 0.85)', 'rgba(255, 255, 255, 0.1)', 1.5);
+
+        ctx.fillStyle = '#ffd700';
+        ctx.font = 'bold 18px system-ui, -apple-system, sans-serif';
+        ctx.textAlign = 'left';
+        ctx.fillText('\u2694\uFE0F DIRECT RIVALRY STATS (HEAD-TO-HEAD)', 70, 515);
+
+        // Win Rate Progress Bar
+        const barX = 70;
+        const barY = 540;
+        const barW = 1060;
+        const barH = 32;
+
+        ctx.font = 'bold 15px system-ui, -apple-system, sans-serif';
+        ctx.fillStyle = '#00f59b';
+        ctx.fillText(`${playerA}: ${h2h.rivalry.winRateA.toFixed(1)}%`, barX, 532);
+
+        ctx.fillStyle = '#38bdf8';
+        ctx.textAlign = 'right';
+        ctx.fillText(`${playerB}: ${h2h.rivalry.winRateB.toFixed(1)}%`, barX + barW, 532);
+        ctx.textAlign = 'left';
+
+        drawCanvasRoundRect(ctx, barX, barY, barW, barH, 16, 'rgba(255, 255, 255, 0.08)', 'rgba(255, 255, 255, 0.1)', 1);
+
+        const r = h2h.rivalry;
+        const fillW_A = r.played > 0 ? (r.winRateA / 100) * barW : barW / 2;
+        if (fillW_A > 0) {
+          drawCanvasRoundRect(ctx, barX, barY, Math.min(barW, Math.max(16, fillW_A)), barH, 16, '#00f59b');
+        }
+        if (r.played > 0 && r.winRateB > 0) {
+          const fillW_B = (r.winRateB / 100) * barW;
+          drawCanvasRoundRect(ctx, barX + fillW_A, barY, Math.min(barW - fillW_A, fillW_B), barH, 16, '#38bdf8');
+        }
+
+        // 3 Stat Comparison Columns
+        const statCols = [
+          { label: 'MATCH WINS', valA: r.winsA, valB: r.winsB, sub: `${r.winRateA.toFixed(0)}% vs ${r.winRateB.toFixed(0)}%` },
+          { label: 'SETS RECORD', valA: r.setsWonA, valB: r.setsWonB, sub: `${r.setsWonA + r.setsWonB} Total Sets` },
+          { label: 'TOTAL POINTS', valA: r.ptsA, valB: r.ptsB, sub: `${r.ptsA + r.ptsB > 0 ? ((r.ptsA / (r.ptsA + r.ptsB)) * 100).toFixed(0) : 0}% vs ${r.ptsA + r.ptsB > 0 ? ((r.ptsB / (r.ptsA + r.ptsB)) * 100).toFixed(0) : 0}% Pts` }
+        ];
+
+        const boxW = 338;
+        const boxH = 95;
+        const gapCol = 23;
+        statCols.forEach((col, idx) => {
+          const cX = barX + idx * (boxW + gapCol);
+          const cY = 595;
+          drawCanvasRoundRect(ctx, cX, cY, boxW, boxH, 10, 'rgba(30, 41, 59, 0.55)', 'rgba(255, 255, 255, 0.08)', 1);
+
+          ctx.fillStyle = '#94a3b8';
+          ctx.font = 'bold 12px system-ui, -apple-system, sans-serif';
+          ctx.textAlign = 'center';
+          ctx.fillText(col.label, cX + boxW / 2, cY + 26);
+
+          ctx.font = '900 24px system-ui, -apple-system, sans-serif';
+          ctx.fillStyle = '#00f59b';
+          ctx.fillText(col.valA, cX + boxW / 2 - 28, cY + 58);
+
+          ctx.fillStyle = 'rgba(255, 255, 255, 0.35)';
+          ctx.fillText('-', cX + boxW / 2, cY + 58);
+
+          ctx.fillStyle = '#38bdf8';
+          ctx.fillText(col.valB, cX + boxW / 2 + 28, cY + 58);
+
+          ctx.fillStyle = '#64748b';
+          ctx.font = '600 12px system-ui, -apple-system, sans-serif';
+          ctx.fillText(col.sub, cX + boxW / 2, cY + 80);
+        });
+
+        // Avg Points Differential Highlight Box (y: 715, h: 120)
+        const diffBoxY = 715;
+        drawCanvasRoundRect(ctx, barX, diffBoxY, barW, 120, 12, 'rgba(30, 41, 59, 0.7)', 'rgba(255, 255, 255, 0.1)', 1);
+
+        const diffPillColor = r.avgPtDiffA > 0.05 ? '#00f59b' : (r.avgPtDiffA < -0.05 ? '#38bdf8' : '#94a3b8');
+        const diffPillBg = r.avgPtDiffA > 0.05 ? 'rgba(0, 245, 155, 0.15)' : (r.avgPtDiffA < -0.05 ? 'rgba(56, 189, 248, 0.15)' : 'rgba(148, 163, 184, 0.15)');
+        const diffNumStr = r.avgPtDiffA > 0.05 ? `+${r.avgPtDiffA.toFixed(1)}` : (r.avgPtDiffA < -0.05 ? `${r.avgPtDiffA.toFixed(1)}` : '0.0');
+
+        drawCanvasRoundRect(ctx, barX + 18, diffBoxY + 18, 130, 84, 10, diffPillBg, diffPillColor, 1.5);
+        ctx.fillStyle = diffPillColor;
+        ctx.font = '900 28px system-ui, -apple-system, sans-serif';
+        ctx.textAlign = 'center';
+        ctx.fillText(diffNumStr, barX + 18 + 65, diffBoxY + 58);
+        ctx.font = 'bold 11px system-ui, -apple-system, sans-serif';
+        ctx.fillText('AVG PT DIFF', barX + 18 + 65, diffBoxY + 82);
+
+        ctx.textAlign = 'left';
+        ctx.fillStyle = '#ffffff';
+        ctx.font = 'bold 16px system-ui, -apple-system, sans-serif';
+        ctx.fillText('Average Points Differential per Match', barX + 170, diffBoxY + 44);
+
+        ctx.fillStyle = '#94a3b8';
+        ctx.font = '500 14px system-ui, -apple-system, sans-serif';
+        let diffExplanation = '';
+        if (r.played > 0) {
+          if (r.avgPtDiffA > 0.05) {
+            diffExplanation = `${playerA}'s team outscores ${playerB}'s team by an average of +${r.avgPtDiffA.toFixed(1)} points per head-to-head encounter (${r.ptsA} pts vs ${r.ptsB} pts total).`;
+          } else if (r.avgPtDiffA < -0.05) {
+            diffExplanation = `${playerB}'s team outscores ${playerA}'s team by an average of +${Math.abs(r.avgPtDiffA).toFixed(1)} points per head-to-head encounter (${r.ptsB} pts vs ${r.ptsA} pts total).`;
+          } else {
+            diffExplanation = `Both players are completely level on points scored across their direct encounters (${r.ptsA} pts each).`;
+          }
+        } else {
+          diffExplanation = 'No direct head-to-head matches on record between these two players.';
+        }
+        ctx.fillText(diffExplanation, barX + 170, diffBoxY + 74);
+
+        // 5. Section: Doubles Partnership Dynamics & Carry Analysis (y: 885, h: 440)
+        drawCanvasRoundRect(ctx, 40, 885, 1120, 440, 16, 'rgba(15, 23, 42, 0.85)', 'rgba(255, 255, 255, 0.1)', 1.5);
+
+        ctx.fillStyle = '#ffd700';
+        ctx.font = 'bold 18px system-ui, -apple-system, sans-serif';
+        ctx.textAlign = 'left';
+        ctx.fillText('\u{1F91D} DOUBLES PARTNERSHIP & CARRY ANALYSIS', 70, 925);
+
+        const p = h2h.partnership;
+        ctx.fillStyle = '#94a3b8';
+        ctx.font = 'bold 14px system-ui, -apple-system, sans-serif';
+        ctx.fillText(`Played Together: ${p.togetherPlayed}  \u2022  Won: ${p.togetherWon}  \u2022  Lost: ${p.togetherLost}  \u2022  Win Rate: ${p.togetherPlayed > 0 ? p.togetherWinRate.toFixed(1) + '%' : '0.0%'}`, 70, 955);
+
+        // Carry Verdict Callout Box (y: 975, h: 155)
+        const verdictY = 975;
+        let vBorderColor = 'rgba(148, 163, 184, 0.4)';
+        let vBgColor = 'rgba(148, 163, 184, 0.1)';
+        let vTitle = 'Pure Rivals (Never Partnered in Doubles)';
+        let vDesc = 'These two fierce competitors have exclusively clashed on opposite sides of the net and have not yet played on the same doubles team.';
+
+        if (p.carryVerdict === 'A_CARRIED_B') {
+          vBorderColor = 'rgba(0, 245, 155, 0.45)';
+          vBgColor = 'rgba(0, 245, 155, 0.1)';
+          vTitle = `\u{1F392} ${playerA} Carried ${playerB}! (+${p.carryDelta.toFixed(1)}% Differential)`;
+          vDesc = `${playerB} gains a substantial +${p.deltaB.toFixed(1)}% win rate boost teaming with ${playerA} (from ${p.bWithoutAWinRate.toFixed(1)}% to ${p.togetherWinRate.toFixed(1)}%), while ${playerA} sees a +${p.deltaA.toFixed(1)}% lift. ${playerA} carries the bulk of this partnership's success!`;
+        } else if (p.carryVerdict === 'B_CARRIED_A') {
+          vBorderColor = 'rgba(56, 189, 248, 0.45)';
+          vBgColor = 'rgba(56, 189, 248, 0.1)';
+          vTitle = `\u{1F392} ${playerB} Carried ${playerA}! (+${(-p.carryDelta).toFixed(1)}% Differential)`;
+          vDesc = `${playerA} gains a substantial +${p.deltaA.toFixed(1)}% win rate boost teaming with ${playerB} (from ${p.aWithoutBWinRate.toFixed(1)}% to ${p.togetherWinRate.toFixed(1)}%), while ${playerB} sees a +${p.deltaB.toFixed(1)}% lift. ${playerB} carries the bulk of this partnership's success!`;
+        } else if (p.carryVerdict === 'EQUAL_PARTNERS') {
+          vBorderColor = 'rgba(255, 215, 0, 0.45)';
+          vBgColor = 'rgba(255, 215, 0, 0.1)';
+          vTitle = `\u{1F91D} Dynamic Duo! (Equal Partners - Balanced Synergy)`;
+          vDesc = `Both players complement each other equally (+${p.deltaA.toFixed(1)}% vs +${p.deltaB.toFixed(1)}% lift). Neither player carries the other - they share the load as true equals!`;
+        }
+
+        drawCanvasRoundRect(ctx, barX, verdictY, barW, 140, 12, vBgColor, vBorderColor, 1.5);
+
+        ctx.fillStyle = '#ffffff';
+        ctx.font = '900 18px system-ui, -apple-system, sans-serif';
+        ctx.fillText(vTitle, barX + 24, verdictY + 40);
+
+        ctx.fillStyle = '#cbd5e1';
+        ctx.font = '500 14px system-ui, -apple-system, sans-serif';
+        // Wrap verdict text if needed
+        const words = vDesc.split(' ');
+        let line = '';
+        let textY = verdictY + 72;
+        words.forEach(w => {
+          const testLine = line + w + ' ';
+          if (ctx.measureText(testLine).width > barW - 50) {
+            ctx.fillText(line, barX + 24, textY);
+            line = w + ' ';
+            textY += 24;
+          } else {
+            line = testLine;
+          }
+        });
+        if (line) ctx.fillText(line, barX + 24, textY);
+
+        // Synergy Lift Comparison Grid (y: 1135, h: 160)
+        const synY = 1135;
+        const synW = (barW - gapCol) / 2;
+
+        // Player A Synergy Box
+        drawCanvasRoundRect(ctx, barX, synY, synW, 160, 10, 'rgba(30, 41, 59, 0.6)', 'rgba(255, 255, 255, 0.08)', 1);
+        ctx.fillStyle = '#00f59b';
+        ctx.font = 'bold 15px system-ui, -apple-system, sans-serif';
+        ctx.fillText(`${playerA}'s Synergy with ${playerB}`, barX + 18, synY + 34);
+
+        ctx.fillStyle = '#ffffff';
+        ctx.font = '900 20px system-ui, -apple-system, sans-serif';
+        ctx.fillText(p.togetherPlayed > 0 ? `${p.togetherWinRate.toFixed(1)}% Win Rate` : 'No matches together', barX + 18, synY + 72);
+
+        ctx.fillStyle = '#94a3b8';
+        ctx.font = '500 13.5px system-ui, -apple-system, sans-serif';
+        ctx.fillText(`Baseline without ${playerB}: ${p.aWithoutBWinRate.toFixed(1)}% (${p.aWithoutBPlayed} matches)`, barX + 18, synY + 102);
+
+        const signA = p.deltaA >= 0 ? '+' : '';
+        ctx.fillStyle = p.deltaA >= 0 ? '#00f59b' : '#f43f5e';
+        ctx.font = 'bold 14px system-ui, -apple-system, sans-serif';
+        ctx.fillText(`Net Synergy Lift: ${signA}${p.deltaA.toFixed(1)}%`, barX + 18, synY + 132);
+
+        // Player B Synergy Box
+        drawCanvasRoundRect(ctx, barX + synW + gapCol, synY, synW, 160, 10, 'rgba(30, 41, 59, 0.6)', 'rgba(255, 255, 255, 0.08)', 1);
+        ctx.fillStyle = '#38bdf8';
+        ctx.font = 'bold 15px system-ui, -apple-system, sans-serif';
+        ctx.fillText(`${playerB}'s Synergy with ${playerA}`, barX + synW + gapCol + 18, synY + 34);
+
+        ctx.fillStyle = '#ffffff';
+        ctx.font = '900 20px system-ui, -apple-system, sans-serif';
+        ctx.fillText(p.togetherPlayed > 0 ? `${p.togetherWinRate.toFixed(1)}% Win Rate` : 'No matches together', barX + synW + gapCol + 18, synY + 72);
+
+        ctx.fillStyle = '#94a3b8';
+        ctx.font = '500 13.5px system-ui, -apple-system, sans-serif';
+        ctx.fillText(`Baseline without ${playerA}: ${p.bWithoutAWinRate.toFixed(1)}% (${p.bWithoutAPlayed} matches)`, barX + synW + gapCol + 18, synY + 102);
+
+        const signB = p.deltaB >= 0 ? '+' : '';
+        ctx.fillStyle = p.deltaB >= 0 ? '#00f59b' : '#f43f5e';
+        ctx.font = 'bold 14px system-ui, -apple-system, sans-serif';
+        ctx.fillText(`Net Synergy Lift: ${signB}${p.deltaB.toFixed(1)}%`, barX + synW + gapCol + 18, synY + 132);
+
+        // 6. Footer (y: 1355)
+        ctx.fillStyle = '#64748b';
+        ctx.font = 'bold 14px system-ui, -apple-system, sans-serif';
+        ctx.textAlign = 'center';
+        ctx.fillText('TK BADDY CHAMPIONSHIPS \u2022 OFFICIAL ANALYTICS \u2022 HTTPS://SNITINSRINIVAS0211.GITHUB.IO/TK-BADDY/', 600, 1355);
+
+        return new Promise((res) => {
+          canvas.toBlob((blob) => {
+            res(blob);
+          }, 'image/png');
+        });
+      } catch (err) {
+        console.error("Canvas render error:", err);
+        return null;
+      }
+    }
+
 
     /* ==========================================================================
        DOUBLES LEADERBOARD COMPUTATION & RENDERING

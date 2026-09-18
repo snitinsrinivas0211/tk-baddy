@@ -9108,6 +9108,46 @@
       }).join('');
     }
 
+    function buildPairHistoryMap() {
+      const pairMap = {};
+      const matches = appState.matches || [];
+      matches.forEach(m => {
+        const t1 = Array.isArray(m.team1) ? m.team1.map(p => (p || '').trim()).filter(Boolean) : [];
+        const t2 = Array.isArray(m.team2) ? m.team2.map(p => (p || '').trim()).filter(Boolean) : [];
+        for (let i = 0; i < t1.length; i++) {
+          for (let j = i + 1; j < t1.length; j++) {
+            const u = t1[i], v = t1[j];
+            if (!pairMap[u]) pairMap[u] = {};
+            if (!pairMap[v]) pairMap[v] = {};
+            pairMap[u][v] = (pairMap[u][v] || 0) + 1;
+            pairMap[v][u] = (pairMap[v][u] || 0) + 1;
+          }
+        }
+        for (let i = 0; i < t2.length; i++) {
+          for (let j = i + 1; j < t2.length; j++) {
+            const u = t2[i], v = t2[j];
+            if (!pairMap[u]) pairMap[u] = {};
+            if (!pairMap[v]) pairMap[v] = {};
+            pairMap[u][v] = (pairMap[u][v] || 0) + 1;
+            pairMap[v][u] = (pairMap[v][u] || 0) + 1;
+          }
+        }
+      });
+      return pairMap;
+    }
+
+    function getTeamPastMatchesCount(team, pairMap) {
+      let total = 0;
+      for (let i = 0; i < team.length; i++) {
+        for (let j = i + 1; j < team.length; j++) {
+          const u = team[i].name;
+          const v = team[j].name;
+          total += (pairMap[u] && pairMap[u][v]) ? pairMap[u][v] : 0;
+        }
+      }
+      return total;
+    }
+
     function generateBalancedTeams() {
       if (!appState.isAdmin) {
         pendingAdminAction = 'teams';
@@ -9124,12 +9164,14 @@
       const T = K / S;
       const standings = computeStandings();
       const selectedList = standings.filter(p => teamGenState.selectedPlayers.has(p.name));
+      const pairHistoryMap = buildPairHistoryMap();
 
       const females = selectedList.filter(p => (p.gender || '').toLowerCase() === 'female');
       const males = selectedList.filter(p => (p.gender || '').toLowerCase() !== 'female');
       const F = females.length;
-      const M = males.length;
 
+      // Hard constraint for Mixed Doubles / Gender Distribution:
+      // Each team gets between kMin and kMax women (when F <= T, kMax = 1, strictly preventing 2 women on any team)
       const kMin = Math.floor(F / T);
       const kMax = Math.ceil(F / T);
 
@@ -9140,7 +9182,7 @@
       const teams = Array.from({ length: T }, () => []);
       const teamsWithKMax = F - kMin * T;
 
-      // Distribute females
+      // Distribute females strictly across teams
       let fIdx = 0;
       for (let t = 0; t < T; t++) {
         const quota = t < teamsWithKMax ? kMax : kMin;
@@ -9181,21 +9223,59 @@
           variance += (avgs[i] - mean) * (avgs[i] - mean);
         }
         variance /= avgs.length;
-        return variance * 10 + (maxE - minE) * 60;
+
+        // Primary objective: ELO balance
+        const eloCost = variance * 3.5 + (maxE - minE) * 45;
+
+        // Secondary objective: Minimize past pairings (quadratic penalty leans towards least-played pairs)
+        let pairPenalty = 0;
+        for (let tIdx = 0; tIdx < currentTeams.length; tIdx++) {
+          const team = currentTeams[tIdx];
+          for (let i = 0; i < team.length; i++) {
+            for (let j = i + 1; j < team.length; j++) {
+              const u = team[i].name;
+              const v = team[j].name;
+              const c = (pairHistoryMap[u] && pairHistoryMap[u][v]) ? pairHistoryMap[u][v] : 0;
+              pairPenalty += (c * c + c * 2) * 220;
+            }
+          }
+        }
+
+        return eloCost + pairPenalty;
       }
 
       let bestTeams = teams.map(t => [...t]);
       let bestCost = getCost(bestTeams);
 
-      // Multi-start Simulated Annealing local search
-      const restarts = 20;
-      const iters = 1200;
+      // Multi-start Simulated Annealing local search with gender-preserving random perturbations
+      const restarts = 35;
+      const iters = 1500;
 
       for (let r = 0; r < restarts; r++) {
-        let curTeams = bestTeams.map(t => [...t]);
+        let curTeams = teams.map(t => [...t]);
+
+        // For restarts > 0, apply valid gender-preserving random swaps to explore diverse pairings
+        if (r > 0 && T > 1) {
+          for (let sStep = 0; sStep < T * 3; sStep++) {
+            const rt1 = Math.floor(Math.random() * T);
+            let rt2 = Math.floor(Math.random() * T);
+            while (rt2 === rt1) rt2 = Math.floor(Math.random() * T);
+            const idx1 = Math.floor(Math.random() * curTeams[rt1].length);
+            const idx2 = Math.floor(Math.random() * curTeams[rt2].length);
+            const cand1 = curTeams[rt1][idx1];
+            const cand2 = curTeams[rt2][idx2];
+            const c1F = (cand1.gender || '').toLowerCase() === 'female' ? 1 : 0;
+            const c2F = (cand2.gender || '').toLowerCase() === 'female' ? 1 : 0;
+            if (c1F === c2F) {
+              curTeams[rt1][idx1] = cand2;
+              curTeams[rt2][idx2] = cand1;
+            }
+          }
+        }
+
         let curCost = getCost(curTeams);
-        let temp = 35.0;
-        const cool = 0.985;
+        let temp = 80.0;
+        const cool = 0.986;
 
         for (let it = 0; it < iters; it++) {
           const t1 = Math.floor(Math.random() * T);
@@ -9308,6 +9388,11 @@
         subtitle.innerHTML = `Generated ${teams.length} teams (${totalPlayers} players) &bull; Max ELO spread: <strong>${spread} pts</strong>`;
       }
 
+      const pairMapForDisplay = buildPairHistoryMap();
+      const teamPastCounts = teams.map(t => getTeamPastMatchesCount(t, pairMapForDisplay));
+      const freshTeamsCount = teamPastCounts.filter(c => c === 0).length;
+      const totalPastMatches = teamPastCounts.reduce((a, b) => a + b, 0);
+
       summaryStrip.innerHTML = `
         <div class="team-gen-stat-chip">
           <span>&#127942;</span>
@@ -9325,11 +9410,19 @@
           <span>&#128107;</span>
           <span>Gender Split: <strong>${genderBreakdownText}</strong></span>
         </div>
+        <div class="team-gen-stat-chip">
+          <span>&#10024;</span>
+          <span>Fresh Pairings: <strong>${freshTeamsCount}/${teams.length}</strong> (${totalPastMatches} past matches total)</span>
+        </div>
       `;
 
       teamsGrid.innerHTML = teams.map((team, idx) => {
         const blendedElo = teamAvgs[idx];
         const tier = getPlayerSkillTier(blendedElo);
+        const pastMatchesCount = teamPastCounts[idx];
+        const historyLabelHtml = pastMatchesCount === 0
+          ? `<span style="color: #00f59b; font-size: 11px; font-weight: 700;">&#10024; First-time pair (0 past matches)</span>`
+          : `<span style="color: #94a3b8; font-size: 11px; font-weight: 600;">&#129309; ${pastMatchesCount} past match${pastMatchesCount === 1 ? '' : 'es'} together</span>`;
 
         const females = team.filter(p => (p.gender || '').toLowerCase() === 'female').length;
         const males = team.length - females;
@@ -9355,9 +9448,12 @@
         return `
           <div class="team-gen-team-card">
             <div class="team-gen-team-header">
-              <div class="team-gen-team-title">
-                <span>Team ${idx + 1}</span>
-                <span style="font-size: 11px; font-weight: 600; color: #94a3b8;">(${genderLabel})</span>
+              <div class="team-gen-team-title" style="flex-direction: column; align-items: flex-start; gap: 2px;">
+                <div style="display: flex; align-items: center; gap: 6px;">
+                  <span>Team ${idx + 1}</span>
+                  <span style="font-size: 11px; font-weight: 600; color: #94a3b8;">(${genderLabel})</span>
+                </div>
+                <div>${historyLabelHtml}</div>
               </div>
               <div class="team-gen-blended-pill" style="color: ${tier.color}; background: ${tier.bg}; border-color: ${tier.border};">
                 <span>${tier.icon}</span>

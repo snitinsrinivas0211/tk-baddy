@@ -5886,22 +5886,42 @@
           markRemoteFailure(err);
         });
 
-        // Listen to Matches (with dual-channel support for editions to ensure sync even without rule updates)
-        firestoreDb.collection("badminton_matches").orderBy("date", "desc").onSnapshot((snapshot) => {
+        // Listen to Matches (with dual-channel support for editions and non-destructive merge for unsynced local matches)
+        firestoreDb.collection("badminton_matches").onSnapshot((snapshot) => {
           markRemoteSuccess();
+          const deletedIds = appState.deletedMatchIds || new Set();
           if (!snapshot.empty) {
-            const matches = [];
+            const remoteMatches = [];
+            const remoteIds = new Set();
             const syncedEditions = [];
             snapshot.forEach(doc => {
               const data = doc.data();
               if (data.isChampionshipEdition || doc.id.startsWith("edition_")) {
                 const edId = data.id || doc.id.replace(/^edition_/, '');
                 syncedEditions.push({ ...data, id: edId });
-              } else {
-                matches.push({ ...data, id: doc.id });
+              } else if (!deletedIds.has(doc.id)) {
+                remoteMatches.push({ ...data, id: doc.id });
+                remoteIds.add(doc.id);
               }
             });
-            appState.matches = matches;
+
+            // Preserve any locally logged matches that have not yet finished syncing to Firestore
+            const unsyncedLocal = (appState.matches || []).filter(m =>
+              m && m.id && !remoteIds.has(m.id) && !deletedIds.has(m.id) && !m.isChampionshipEdition && !String(m.id).startsWith("edition_")
+            );
+            const mergedMatches = [...unsyncedLocal, ...remoteMatches];
+            mergedMatches.sort((a, b) => {
+              const da = a.date || '';
+              const db = b.date || '';
+              if (da !== db) return db.localeCompare(da);
+              return (b.createdAt || '').localeCompare(a.createdAt || '');
+            });
+            appState.matches = mergedMatches;
+
+            if (unsyncedLocal.length > 0) {
+              syncLocalMatchesToRemote();
+            }
+
             if (syncedEditions.length > 0) {
               syncedEditions.forEach(ed => {
                 const existingIdx = (appState.editions || []).findIndex(e => e.id === ed.id);
@@ -5913,7 +5933,7 @@
               });
               appState.editions.sort((a, b) => (b.date || '').localeCompare(a.date || ''));
             }
-          } else {
+          } else if (!appState.matches || appState.matches.length === 0) {
             appState.matches = [];
           }
           saveLocalData();
@@ -5944,11 +5964,24 @@
           console.warn("badminton_editions sync listener notice:", err.message);
         });
 
-        // Auto-sync any locally cached editions to remote cloud storage
+        // Auto-sync any locally cached matches and editions to remote cloud storage
+        syncLocalMatchesToRemote();
         syncLocalEditionsToRemote();
       } else {
         fallbackToLocalStorage();
       }
+    }
+
+    function syncLocalMatchesToRemote() {
+      if (!isFirestoreActive || !firestoreDb || !appState.matches || appState.matches.length === 0) return;
+      const deletedIds = appState.deletedMatchIds || new Set();
+      appState.matches.forEach(m => {
+        if (!m || m.isChampionshipEdition || String(m.id || '').startsWith("edition_")) return;
+        const mId = m.id || ("m_" + Date.now() + "_" + Math.random().toString(36).substring(2, 6));
+        if (deletedIds.has(mId)) return;
+        m.id = mId;
+        firestoreDb.collection("badminton_matches").doc(mId).set(m, { merge: true }).catch(() => {});
+      });
     }
 
     function syncLocalEditionsToRemote() {
@@ -6011,11 +6044,15 @@
       // Clean slate: auto-seeding disabled
     }
 
-    async function persistMatch(matchObj, isEdit = false) {
-      const matchId = matchObj.id || ("m_" + Date.now());
+    function persistMatch(matchObj, isEdit = false) {
+      const matchId = matchObj.id || ("m_" + Date.now() + "_" + Math.random().toString(36).substring(2, 6));
       matchObj.id = matchId;
 
-      // Optimistically update local state immediately
+      if (appState.deletedMatchIds) {
+        appState.deletedMatchIds.delete(matchId);
+      }
+
+      // 1. Immediately update local state so data is NEVER lost and modal never hangs
       const idx = appState.matches.findIndex(m => m.id === matchId);
       if (idx !== -1) {
         appState.matches[idx] = matchObj;
@@ -6025,20 +6062,25 @@
       saveLocalData();
       updateUI();
 
+      // 2. Sync to Firestore asynchronously without blocking the UI modal
       if (isFirestoreActive && firestoreDb) {
-        try {
-          await firestoreDb.collection("badminton_matches").doc(matchId).set(matchObj, { merge: true });
-          showToast("Match saved to Firestore! \u{1F3F8}");
-        } catch (e) {
-          console.warn("Firestore write failed, saved locally:", e);
-          showToast("Saved locally (Firestore: " + e.message + ")", true);
-        }
+        firestoreDb.collection("badminton_matches").doc(matchId).set(matchObj, { merge: true })
+          .then(() => {
+            showToast("Match saved to Firestore! \u{1F3F8}");
+          })
+          .catch((e) => {
+            console.warn("Firestore write failed, saved locally:", e);
+            showToast("Saved locally (Firestore: " + e.message + ")", true);
+          });
       } else {
         showToast("Match saved locally");
       }
     }
 
     async function deleteMatchById(matchId) {
+      if (!appState.deletedMatchIds) appState.deletedMatchIds = new Set();
+      appState.deletedMatchIds.add(matchId);
+
       // 1. Optimistically remove from local state immediately
       appState.matches = (appState.matches || []).filter(m => m.id !== matchId);
       saveLocalData();
@@ -7629,6 +7671,20 @@
     /* ==========================================================================
        9. LOG & EDIT MATCH MODAL
        ========================================================================== */
+    function getLatestSeasonNumber() {
+      if (appState.lastLoggedSeason) return String(appState.lastLoggedSeason);
+      let maxSeason = 1;
+      (appState.matches || []).forEach(m => {
+        const s = parseInt(m.season || m.weekNumber) || 0;
+        if (s > maxSeason && s <= 30) maxSeason = s;
+      });
+      (appState.editions || []).forEach(ed => {
+        const s = parseInt(ed.season) || 0;
+        if (s > maxSeason && s <= 30) maxSeason = s;
+      });
+      return String(maxSeason);
+    }
+
     function openLogMatchModal() {
       if (!appState.isAdmin) {
         openPinModal();
@@ -7638,7 +7694,7 @@
       document.getElementById('editMatchId').value = '';
       document.getElementById('matchModalTitle').innerHTML = '<span>\u{1F3F8}</span> Log New Match';
       document.getElementById('matchDateInput').value = new Date().toISOString().split('T')[0];
-      document.getElementById('matchSeasonSelect').value = "1";
+      document.getElementById('matchSeasonSelect').value = getLatestSeasonNumber();
       document.getElementById('modalFormatSelect').value = "doubles";
       setModalFormat("doubles");
       document.getElementById('matchSetsCountSelect').value = "1";
@@ -7698,6 +7754,7 @@
     }
 
     function closeMatchModal() {
+      document.getElementById('editMatchId').value = '';
       document.getElementById('matchModal').classList.remove('show');
     }
 
@@ -7827,7 +7884,7 @@
       }
     }
 
-    async function handleMatchFormSubmit(e) {
+    function handleMatchFormSubmit(e) {
       e.preventDefault();
 
       const winner = calculateLiveMatchWinner();
@@ -7872,9 +7929,10 @@
       const editId = document.getElementById('editMatchId').value;
       const isEdit = !!editId;
       const seasonVal = parseInt(document.getElementById('matchSeasonSelect').value) || 1;
+      appState.lastLoggedSeason = seasonVal;
 
       const matchData = {
-        id: editId || ("m_" + Date.now()),
+        id: editId || ("m_" + Date.now() + "_" + Math.random().toString(36).substring(2, 6)),
         date: document.getElementById('matchDateInput').value,
         season: seasonVal,
         weekNumber: seasonVal,
@@ -7888,8 +7946,10 @@
         createdAt: isEdit ? (appState.matches.find(m => m.id === editId)?.createdAt || new Date().toISOString()) : new Date().toISOString()
       };
 
-      await persistMatch(matchData, isEdit);
+      // Immediately clear editMatchId and close modal BEFORE network persistence
+      document.getElementById('editMatchId').value = '';
       closeMatchModal();
+      persistMatch(matchData, isEdit);
       triggerMiniConfetti();
     }
 

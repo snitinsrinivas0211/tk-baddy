@@ -4362,6 +4362,317 @@
       }
     }
 
+    /* ==========================================================================
+       SEASON SUMMARY TAB & SHAREABLE CARD STYLES
+       ========================================================================== */
+    .ss-container {
+      max-width: 900px;
+      margin: 0 auto 32px auto;
+    }
+    .ss-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 16px;
+      margin-bottom: 18px;
+      flex-wrap: wrap;
+    }
+    .ss-header-actions {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+    .ss-selector-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-md);
+      padding: 16px 18px;
+      margin-bottom: 20px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      flex-wrap: wrap;
+    }
+    .ss-selector-group {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      flex: 1;
+      min-width: 220px;
+    }
+    .ss-selector-label {
+      font-size: 13px;
+      font-weight: 800;
+      color: #ffd700;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      white-space: nowrap;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .ss-season-pills {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      flex-wrap: wrap;
+    }
+    .ss-season-pill {
+      background: rgba(15, 23, 42, 0.7);
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      color: var(--text-dim);
+      font-size: 12px;
+      font-weight: 700;
+      padding: 5px 11px;
+      border-radius: 9999px;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+    .ss-season-pill:hover {
+      border-color: rgba(0, 245, 155, 0.4);
+      color: #fff;
+    }
+    .ss-season-pill.active {
+      background: rgba(0, 245, 155, 0.16);
+      border-color: #00f59b;
+      color: #00f59b;
+      box-shadow: 0 0 10px rgba(0, 245, 155, 0.2);
+    }
+
+    /* Shareable Summary Card */
+    .ss-share-card {
+      background: linear-gradient(165deg, rgba(15, 23, 42, 0.96) 0%, rgba(7, 12, 24, 0.98) 100%);
+      border: 2px solid rgba(0, 245, 155, 0.35);
+      border-radius: var(--radius-lg);
+      padding: 24px 22px;
+      box-shadow: 0 16px 40px rgba(0, 0, 0, 0.55), 0 0 24px rgba(0, 245, 155, 0.08);
+      position: relative;
+      overflow: hidden;
+    }
+    .ss-card-top-banner {
+      text-align: center;
+      margin-bottom: 20px;
+      padding-bottom: 16px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+    }
+    .ss-card-brand {
+      font-size: 11.5px;
+      font-weight: 800;
+      color: #ffd700;
+      text-transform: uppercase;
+      letter-spacing: 1.5px;
+      margin-bottom: 4px;
+    }
+    .ss-card-title {
+      font-family: var(--font-display);
+      font-size: clamp(22px, 5vw, 30px);
+      font-weight: 900;
+      color: #ffffff;
+      letter-spacing: -0.5px;
+      line-height: 1.15;
+    }
+    .ss-card-meta {
+      font-size: 12.5px;
+      color: var(--text-dim);
+      margin-top: 6px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+    .ss-meta-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      padding: 3px 10px;
+      border-radius: 9999px;
+      background: rgba(255, 255, 255, 0.06);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      font-size: 11.5px;
+      font-weight: 700;
+      color: #cbd5e1;
+    }
+
+    /* Podium / Champions & Runners-up Section */
+    .ss-podium-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 14px;
+      margin-bottom: 22px;
+    }
+    .ss-podium-box {
+      border-radius: var(--radius-md);
+      padding: 16px 18px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      position: relative;
+      overflow: hidden;
+    }
+    .ss-podium-box.champions {
+      background: linear-gradient(135deg, rgba(245, 158, 11, 0.16) 0%, rgba(255, 215, 0, 0.06) 100%);
+      border: 1.5px solid rgba(255, 215, 0, 0.45);
+      box-shadow: 0 0 20px rgba(255, 215, 0, 0.12);
+    }
+    .ss-podium-box.runners {
+      background: linear-gradient(135deg, rgba(56, 189, 248, 0.14) 0%, rgba(148, 163, 184, 0.06) 100%);
+      border: 1.5px solid rgba(56, 189, 248, 0.4);
+      box-shadow: 0 0 18px rgba(56, 189, 248, 0.1);
+    }
+    .ss-podium-label {
+      font-size: 11px;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.8px;
+      margin-bottom: 6px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .ss-podium-box.champions .ss-podium-label {
+      color: #ffd700;
+    }
+    .ss-podium-box.runners .ss-podium-label {
+      color: #38bdf8;
+    }
+    .ss-podium-team {
+      font-family: var(--font-display);
+      font-size: clamp(17px, 4vw, 22px);
+      font-weight: 900;
+      color: #ffffff;
+      line-height: 1.25;
+      word-break: break-word;
+    }
+    .ss-podium-sub {
+      font-size: 11.5px;
+      color: var(--text-dim);
+      margin-top: 4px;
+      font-weight: 600;
+    }
+
+    /* Finals Yet To Happen Callout */
+    .ss-finals-pending-box {
+      background: linear-gradient(135deg, rgba(245, 158, 11, 0.12) 0%, rgba(30, 41, 59, 0.7) 100%);
+      border: 1.5px dashed rgba(255, 215, 0, 0.45);
+      border-radius: var(--radius-md);
+      padding: 18px 20px;
+      margin-bottom: 22px;
+      text-align: center;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 6px;
+    }
+    .ss-finals-pending-title {
+      font-family: var(--font-display);
+      font-size: 18px;
+      font-weight: 900;
+      color: #ffd700;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .ss-finals-pending-sub {
+      font-size: 12.5px;
+      color: var(--text-dim);
+    }
+
+    /* Season Points Table Section */
+    .ss-table-section-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      margin-bottom: 12px;
+      flex-wrap: wrap;
+    }
+    .ss-table-section-title {
+      font-size: 14px;
+      font-weight: 800;
+      color: var(--text-main);
+      text-transform: uppercase;
+      letter-spacing: 0.6px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .ss-live-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      font-size: 11px;
+      font-weight: 700;
+      color: #00f59b;
+      background: rgba(0, 245, 155, 0.12);
+      border: 1px solid rgba(0, 245, 155, 0.3);
+      padding: 2px 8px;
+      border-radius: 9999px;
+    }
+    .ss-diff-pill {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 3px 9px;
+      border-radius: 9999px;
+      font-weight: 800;
+      font-size: 12.5px;
+      min-width: 44px;
+    }
+    .ss-diff-pill.pos {
+      background: rgba(0, 245, 155, 0.15);
+      color: #00f59b;
+      border: 1px solid rgba(0, 245, 155, 0.35);
+    }
+    .ss-diff-pill.neg {
+      background: rgba(244, 63, 94, 0.15);
+      color: #f43f5e;
+      border: 1px solid rgba(244, 63, 94, 0.35);
+    }
+    .ss-diff-pill.zero {
+      background: rgba(148, 163, 184, 0.15);
+      color: #94a3b8;
+      border: 1px solid rgba(148, 163, 184, 0.3);
+    }
+
+    @media (max-width: 640px) {
+      .ss-header-actions {
+        width: 100%;
+        justify-content: space-between;
+      }
+      .ss-header-actions .btn {
+        flex: 1;
+        justify-content: center;
+      }
+      .ss-selector-card {
+        padding: 12px;
+        gap: 10px;
+      }
+      .ss-share-card {
+        padding: 16px 10px;
+      }
+      .ss-podium-grid {
+        grid-template-columns: 1fr;
+        gap: 10px;
+        margin-bottom: 16px;
+      }
+      .ss-podium-box {
+        padding: 12px 14px;
+      }
+      .ss-points-table th,
+      .ss-points-table td {
+        padding: 8px 5px !important;
+        font-size: 12px !important;
+      }
+      .ss-diff-pill {
+        padding: 2px 6px;
+        font-size: 11.5px;
+        min-width: 36px;
+      }
+    }
+
   </style>
 </head>
 <body>
@@ -4397,6 +4708,13 @@
             <span class="burger-bar"></span>
           </button>
           <div class="burger-dropdown" id="burgerDropdown">
+            <div class="burger-menu-item" onclick="openSeasonSummaryTab()">
+              <span class="burger-item-icon">&#127942;</span>
+              <div class="burger-item-content">
+                <div class="burger-item-title">Season Summary</div>
+                <div class="burger-item-subtitle">Champions, runners-up &amp; season points table</div>
+              </div>
+            </div>
             <div class="burger-menu-item" onclick="openEloTrendsTab()">
               <span class="burger-item-icon">&#128200;</span>
               <div class="burger-item-content">
@@ -5123,6 +5441,49 @@
           <!-- Populated dynamically -->
         </div>
 
+      </div>
+    </div>
+
+    <!-- =========================================================================
+         TAB: SEASON SUMMARY (Loaded via Burger Menu)
+         ========================================================================= -->
+    <div id="seasonSummaryTabContent" style="display: none;">
+      <div class="ss-container">
+        <!-- Header -->
+        <div class="ss-header">
+          <div>
+            <h2 class="section-title"><span>&#127942;</span> Season Summary</h2>
+            <div class="section-subtitle">Season Champions, Runners-Up &amp; live tournament points table</div>
+          </div>
+          <div class="ss-header-actions">
+            <button class="btn btn-primary" id="seasonSummaryShareBtn" onclick="shareSeasonSummaryAsImage()" style="font-size: 13px; padding: 7px 14px; gap: 6px; box-shadow: 0 0 15px rgba(0, 245, 155, 0.25);">
+              <span>&#128247;</span> Share on WhatsApp
+            </button>
+            <button class="btn btn-outline" style="font-size: 12px; padding: 6px 12px;" onclick="switchMainTab('leaderboard')">
+              <span>&#8592;</span> Back to Leaderboard
+            </button>
+          </div>
+        </div>
+
+        <!-- Season Selection Bar -->
+        <div class="ss-selector-card">
+          <div class="ss-selector-group">
+            <label for="seasonSummarySelect" class="ss-selector-label">
+              <span>&#128197;</span> Select Season:
+            </label>
+            <select id="seasonSummarySelect" class="form-select" style="max-width: 260px;" onchange="handleSeasonSummaryChange()">
+              <!-- Populated dynamically -->
+            </select>
+          </div>
+          <div id="seasonSummaryQuickPills" class="ss-season-pills">
+            <!-- Quick season pills populated dynamically -->
+          </div>
+        </div>
+
+        <!-- Shareable Season Summary Card -->
+        <div id="seasonSummaryCardWrap" class="ss-share-card">
+          <!-- Populated dynamically -->
+        </div>
       </div>
     </div>
 
@@ -6416,6 +6777,10 @@
         updateTeamGenValidation();
       } else if (appState.activeMainTab === 'netcontribution') {
         renderNetContributionDifferential();
+      } else if (appState.activeMainTab === 'h2h') {
+        renderH2HShowcase();
+      } else if (appState.activeMainTab === 'seasonsummary') {
+        initSeasonSummaryView(true);
       }
     }
 
@@ -9960,6 +10325,7 @@
       const generateTeamsContent = document.getElementById('generateTeamsTabContent');
       const netContributionContent = document.getElementById('netContributionTabContent');
       const h2hContent = document.getElementById('h2hTabContent');
+      const seasonSummaryContent = document.getElementById('seasonSummaryTabContent');
 
       const tabBtnLeaderboard = document.getElementById('tabBtnLeaderboard');
       const tabBtnBadges = document.getElementById('tabBtnBadges');
@@ -9972,12 +10338,16 @@
       if (generateTeamsContent) generateTeamsContent.style.display = 'none';
       if (netContributionContent) netContributionContent.style.display = 'none';
       if (h2hContent) h2hContent.style.display = 'none';
+      if (seasonSummaryContent) seasonSummaryContent.style.display = 'none';
 
       if (tabBtnLeaderboard) tabBtnLeaderboard.classList.remove('active');
       if (tabBtnBadges) tabBtnBadges.classList.remove('active');
       if (tabBtnHistory) tabBtnHistory.classList.remove('active');
 
-      if (tabName === 'h2h') {
+      if (tabName === 'seasonsummary') {
+        if (seasonSummaryContent) seasonSummaryContent.style.display = 'block';
+        initSeasonSummaryView(false);
+      } else if (tabName === 'h2h') {
         if (h2hContent) h2hContent.style.display = 'block';
         initH2HView();
       } else if (tabName === 'netcontribution') {
@@ -12938,6 +13308,772 @@
           });
         }
       }
+    }
+
+    /* ==========================================================================
+       SEASON SUMMARY TAB, LIVE POINTS TABLE & WHATSAPP IMAGE SHARING
+       ========================================================================== */
+    let seasonSummarySortCol = 'default';
+    let seasonSummarySortAsc = false;
+
+    function openSeasonSummaryTab() {
+      closeBurgerMenu();
+      switchMainTab('seasonsummary');
+    }
+
+    function extractSeasonNumFromEdition(ed) {
+      if (!ed) return 0;
+      const direct = parseInt(ed.season, 10);
+      if (!isNaN(direct) && direct > 0) return direct;
+      const match = String(ed.edition || '').match(/\d+/);
+      return match ? (parseInt(match[0], 10) || 0) : 0;
+    }
+
+    function getAvailableSeasonsList() {
+      const seasonSet = new Set();
+      let maxActive = 1;
+
+      (appState.editions || []).forEach(ed => {
+        const s = extractSeasonNumFromEdition(ed);
+        if (s > 0 && s <= 50) {
+          seasonSet.add(s);
+          if (s > maxActive) maxActive = s;
+        }
+      });
+
+      (appState.matches || []).forEach(m => {
+        if (!m || m.isChampionshipEdition || String(m.id || '').startsWith('edition_')) return;
+        const s = parseInt(m.season || m.weekNumber, 10) || 0;
+        if (s > 0 && s <= 50) {
+          seasonSet.add(s);
+          if (s > maxActive) maxActive = s;
+        }
+      });
+
+      // Ensure all seasons 1..maxActive plus the next upcoming season (maxActive + 1) are selectable
+      const totalToShow = Math.min(30, Math.max(7, maxActive + 1));
+      const list = [];
+      for (let i = 1; i <= totalToShow; i++) {
+        list.push({
+          season: i,
+          hasActivity: seasonSet.has(i)
+        });
+      }
+      return { list, maxActive };
+    }
+
+    function initSeasonSummaryView(preserveSelection = false) {
+      const selectEl = document.getElementById('seasonSummarySelect');
+      const pillsEl = document.getElementById('seasonSummaryQuickPills');
+      if (!selectEl) return;
+
+      const { list, maxActive } = getAvailableSeasonsList();
+      const prevVal = parseInt(selectEl.value, 10);
+
+      let targetSeason = maxActive;
+      if (preserveSelection && !isNaN(prevVal) && prevVal >= 1) {
+        targetSeason = prevVal;
+      } else if (appState.selectedSummarySeason && appState.selectedSummarySeason >= 1) {
+        targetSeason = appState.selectedSummarySeason;
+      }
+
+      selectEl.innerHTML = '';
+      list.forEach(item => {
+        const sNum = item.season;
+        const ed = (appState.editions || []).find(e => extractSeasonNumFromEdition(e) === sNum);
+        const matchCount = (appState.matches || []).filter(m =>
+          m && !m.isChampionshipEdition && !String(m.id || '').startsWith('edition_') &&
+          (parseInt(m.season || m.weekNumber, 10) || 1) === sNum
+        ).length;
+
+        let label = 'Season ' + sNum;
+        if (ed && ed.date) {
+          label += ' (' + ed.date + ')';
+        } else if (matchCount > 0) {
+          label += ' (' + matchCount + ' matches)';
+        } else if (sNum > maxActive) {
+          label += ' (Upcoming)';
+        }
+
+        const opt = document.createElement('option');
+        opt.value = String(sNum);
+        opt.textContent = label;
+        selectEl.appendChild(opt);
+      });
+
+      selectEl.value = String(targetSeason);
+      appState.selectedSummarySeason = targetSeason;
+
+      if (pillsEl) {
+        const pillSeasons = list.filter(x => x.season <= Math.max(maxActive + 1, targetSeason));
+        pillsEl.innerHTML = pillSeasons.map(x => {
+          const isActive = x.season === targetSeason;
+          return '<button type="button" class="ss-season-pill ' + (isActive ? 'active' : '') + '" onclick="selectSeasonSummaryPill(' + x.season + ')">S' + x.season + '</button>';
+        }).join('');
+      }
+
+      renderSeasonSummaryView();
+    }
+
+    function selectSeasonSummaryPill(seasonNum) {
+      const selectEl = document.getElementById('seasonSummarySelect');
+      if (selectEl) {
+        selectEl.value = String(seasonNum);
+      }
+      appState.selectedSummarySeason = seasonNum;
+      seasonSummarySortCol = 'default';
+      seasonSummarySortAsc = false;
+      initSeasonSummaryView(true);
+    }
+
+    function handleSeasonSummaryChange() {
+      const selectEl = document.getElementById('seasonSummarySelect');
+      if (!selectEl) return;
+      const seasonNum = parseInt(selectEl.value, 10) || 1;
+      appState.selectedSummarySeason = seasonNum;
+      seasonSummarySortCol = 'default';
+      seasonSummarySortAsc = false;
+      initSeasonSummaryView(true);
+    }
+
+    function sortSeasonSummaryTable(col) {
+      if (seasonSummarySortCol === col) {
+        seasonSummarySortAsc = !seasonSummarySortAsc;
+      } else {
+        seasonSummarySortCol = col;
+        seasonSummarySortAsc = (col === 'team');
+      }
+      renderSeasonSummaryView();
+    }
+
+    function computeSeasonSummaryData(seasonNum) {
+      const sNum = parseInt(seasonNum, 10) || 1;
+
+      // 1. Find edition (Champions & Runners-Up)
+      const editionObj = (appState.editions || []).find(ed => extractSeasonNumFromEdition(ed) === sNum) || null;
+      const champions = editionObj && Array.isArray(editionObj.champions)
+        ? editionObj.champions.map(p => (p || '').trim()).filter(Boolean)
+        : [];
+      const runnersUp = editionObj && Array.isArray(editionObj.runnersUp)
+        ? editionObj.runnersUp.map(p => (p || '').trim()).filter(Boolean)
+        : [];
+
+      const hasChampions = champions.length > 0;
+      const hasRunnersUp = runnersUp.length > 0;
+      const finalsDeclared = hasChampions || hasRunnersUp;
+
+      const champCanonical = [...champions].sort((a, b) => a.localeCompare(b)).join(' - ');
+      const runnerCanonical = [...runnersUp].sort((a, b) => a.localeCompare(b)).join(' - ');
+
+      // 2. Filter matches for this season
+      const seasonMatches = (appState.matches || []).filter(m => {
+        if (!m || m.isChampionshipEdition || String(m.id || '').startsWith('edition_')) return false;
+        const mSeason = parseInt(m.season || m.weekNumber, 10) || 1;
+        return mSeason === sNum;
+      });
+
+      // Determine season date
+      let seasonDate = editionObj && editionObj.date ? editionObj.date : '';
+      if (!seasonDate && seasonMatches.length > 0) {
+        const dates = seasonMatches.map(m => m.date).filter(Boolean).sort();
+        if (dates.length > 0) seasonDate = dates[dates.length - 1];
+      }
+
+      // 3. Aggregate Points Table by canonical team pairing
+      const teamsMap = {};
+
+      function getOrCreateTeamEntry(rawPlayers) {
+        const cleaned = (rawPlayers || []).map(p => (p || '').trim()).filter(Boolean);
+        if (cleaned.length === 0) return null;
+        const canonicalKey = [...cleaned].sort((a, b) => a.localeCompare(b)).join(' - ');
+        if (!teamsMap[canonicalKey]) {
+          let displayTeam = cleaned.join(' - ');
+          if (canonicalKey === champCanonical && champions.length > 0) {
+            displayTeam = champions.join(' - ');
+          } else if (canonicalKey === runnerCanonical && runnersUp.length > 0) {
+            displayTeam = runnersUp.join(' - ');
+          }
+          teamsMap[canonicalKey] = {
+            key: canonicalKey,
+            team: displayTeam,
+            players: cleaned,
+            matches: 0,
+            won: 0,
+            lost: 0,
+            ptsFor: 0,
+            ptsAgainst: 0,
+            diff: 0,
+            winRate: 0,
+            isChampion: canonicalKey === champCanonical && hasChampions,
+            isRunnerUp: canonicalKey === runnerCanonical && hasRunnersUp
+          };
+        }
+        return teamsMap[canonicalKey];
+      }
+
+      seasonMatches.forEach(m => {
+        const t1Entry = getOrCreateTeamEntry(m.team1);
+        const t2Entry = getOrCreateTeamEntry(m.team2);
+        if (!t1Entry || !t2Entry) return;
+
+        let t1Pts = 0;
+        let t2Pts = 0;
+        let t1Sets = 0;
+        let t2Sets = 0;
+
+        if (Array.isArray(m.sets) && m.sets.length > 0) {
+          m.sets.forEach(s => {
+            const s1 = parseInt(s.t1, 10) || 0;
+            const s2 = parseInt(s.t2, 10) || 0;
+            t1Pts += s1;
+            t2Pts += s2;
+            if (s1 > s2) t1Sets++;
+            else if (s2 > s1) t2Sets++;
+          });
+        }
+
+        const isT1Winner = m.winner === 1 || (m.winner !== 2 && t1Sets > t2Sets);
+        const isT2Winner = m.winner === 2 || (m.winner !== 1 && t2Sets > t1Sets);
+
+        t1Entry.matches += 1;
+        t2Entry.matches += 1;
+
+        if (isT1Winner) {
+          t1Entry.won += 1;
+          t2Entry.lost += 1;
+        } else if (isT2Winner) {
+          t2Entry.won += 1;
+          t1Entry.lost += 1;
+        }
+
+        t1Entry.ptsFor += t1Pts;
+        t1Entry.ptsAgainst += t2Pts;
+        t1Entry.diff = t1Entry.ptsFor - t1Entry.ptsAgainst;
+
+        t2Entry.ptsFor += t2Pts;
+        t2Entry.ptsAgainst += t1Pts;
+        t2Entry.diff = t2Entry.ptsFor - t2Entry.ptsAgainst;
+      });
+
+      const tableRows = Object.values(teamsMap).map(row => {
+        row.winRate = row.matches > 0 ? (row.won / row.matches) * 100 : 0;
+        return row;
+      });
+
+      // Default tournament standings sort: Won (desc) -> Points Difference (desc) -> Win Rate (desc) -> Matches (desc) -> Team Name (asc)
+      tableRows.sort((a, b) => {
+        if (b.won !== a.won) return b.won - a.won;
+        if (b.diff !== a.diff) return b.diff - a.diff;
+        if (b.winRate !== a.winRate) return b.winRate - a.winRate;
+        if (b.matches !== a.matches) return b.matches - a.matches;
+        return a.team.localeCompare(b.team);
+      });
+
+      return {
+        season: sNum,
+        seasonTitle: 'Season ' + sNum,
+        date: seasonDate,
+        totalMatches: seasonMatches.length,
+        finalsDeclared,
+        hasChampions,
+        hasRunnersUp,
+        champions,
+        runnersUp,
+        championsDisplay: hasChampions ? champions.join(' - ') : 'Finals yet to happen',
+        runnersUpDisplay: hasRunnersUp ? runnersUp.join(' - ') : 'Finals yet to happen',
+        notes: (editionObj && editionObj.notes) ? editionObj.notes : '',
+        tableRows
+      };
+    }
+
+    function renderSeasonSummaryView() {
+      const wrap = document.getElementById('seasonSummaryCardWrap');
+      const selectEl = document.getElementById('seasonSummarySelect');
+      if (!wrap) return;
+
+      const seasonNum = selectEl ? (parseInt(selectEl.value, 10) || 1) : (appState.selectedSummarySeason || 1);
+      const data = computeSeasonSummaryData(seasonNum);
+
+      // Apply interactive column sort if user clicked a column header
+      const rows = [...data.tableRows];
+      if (seasonSummarySortCol !== 'default') {
+        rows.sort((a, b) => {
+          if (seasonSummarySortCol === 'team') {
+            return seasonSummarySortAsc ? a.team.localeCompare(b.team) : b.team.localeCompare(a.team);
+          }
+          const valA = a[seasonSummarySortCol];
+          const valB = b[seasonSummarySortCol];
+          if (valA !== valB) {
+            return seasonSummarySortAsc ? valA - valB : valB - valA;
+          }
+          if (b.won !== a.won) return b.won - a.won;
+          if (b.diff !== a.diff) return b.diff - a.diff;
+          return a.team.localeCompare(b.team);
+        });
+      }
+
+      const sortArrow = (col) => {
+        if (seasonSummarySortCol !== col) return '<span class="sort-arrow" style="opacity:0.35;">&#8597;</span>';
+        return '<span class="sort-arrow" style="opacity:1;color:#00f59b;">' + (seasonSummarySortAsc ? '&#8593;' : '&#8595;') + '</span>';
+      };
+
+      // Top Honors / Finals Section HTML
+      let honorsSectionHtml = '';
+      if (data.finalsDeclared) {
+        honorsSectionHtml =
+          '<div class="ss-podium-grid">' +
+            '<div class="ss-podium-box champions">' +
+              '<div class="ss-podium-label"><span>\u{1F3C6}</span> Season Champions</div>' +
+              '<div class="ss-podium-team">' + escapeHtml(data.championsDisplay) + '</div>' +
+              '<div class="ss-podium-sub">' + (data.hasChampions ? 'Title Winning Team \u2022 ' + escapeHtml(data.seasonTitle) : 'Yet to be crowned') + '</div>' +
+            '</div>' +
+            '<div class="ss-podium-box runners">' +
+              '<div class="ss-podium-label"><span>\u{1F948}</span> Runners-Up</div>' +
+              '<div class="ss-podium-team">' + escapeHtml(data.runnersUpDisplay) + '</div>' +
+              '<div class="ss-podium-sub">' + (data.hasRunnersUp ? 'Championship Finalists \u2022 ' + escapeHtml(data.seasonTitle) : 'Yet to be declared') + '</div>' +
+            '</div>' +
+          '</div>';
+      } else {
+        honorsSectionHtml =
+          '<div class="ss-finals-pending-box">' +
+            '<div class="ss-finals-pending-title"><span>\u23F3</span> Finals yet to happen</div>' +
+            '<div class="ss-finals-pending-sub">Season Champions &amp; Runners-Up have not been declared yet. The points table below reflects the latest live standings.</div>' +
+          '</div>';
+      }
+
+      // Points Table Rows HTML
+      let tbodyHtml = '';
+      if (rows.length === 0) {
+        tbodyHtml =
+          '<tr>' +
+            '<td colspan="6" class="empty-state" style="padding: 32px 16px; text-align: center; color: var(--text-muted);">' +
+              '<div style="font-size: 26px; margin-bottom: 6px;">\u{1F3F8}</div>' +
+              '<div style="font-size: 14px; font-weight: 700; color: var(--text-main);">No match scores logged for ' + escapeHtml(data.seasonTitle) + ' yet</div>' +
+              '<div style="font-size: 12px; margin-top: 4px;">As soon as matches are logged for ' + escapeHtml(data.seasonTitle) + ', team standings and point differentials will update here live.</div>' +
+            '</td>' +
+          '</tr>';
+      } else {
+        tbodyHtml = rows.map((r, idx) => {
+          const rank = idx + 1;
+          let rankBadge = '<span class="rank-badge ' + (rank === 1 ? 'crown' : (rank === 2 ? 'silver' : (rank === 3 ? 'bronze' : ''))) + '">#' + rank + '</span>';
+          if (rank === 1) {
+            rankBadge = '<span class="rank-badge crown" title="#1 Standing">\u{1F451}</span>';
+          }
+
+          const diffClass = r.diff > 0 ? 'pos' : (r.diff < 0 ? 'neg' : 'zero');
+          const diffStr = r.diff > 0 ? ('+' + r.diff) : String(r.diff);
+
+          let teamBadges = '';
+          if (r.isChampion) {
+            teamBadges += ' <span title="Season Champions" style="font-size: 13px;">\u{1F3C6}</span>';
+          } else if (r.isRunnerUp) {
+            teamBadges += ' <span title="Season Runners-Up" style="font-size: 13px;">\u{1F948}</span>';
+          }
+
+          return (
+            '<tr>' +
+              '<td class="rank-cell ' + (rank <= 3 ? 'top-rank' : '') + '">' + rankBadge + '</td>' +
+              '<td class="player-col-cell">' +
+                '<div class="player-cell">' +
+                  '<div class="player-name-wrapper">' +
+                    '<span class="player-name">' +
+                      '<span class="player-display-name" style="font-weight: 700; color: #f8fafc;">' + escapeHtml(r.team) + '</span>' +
+                      teamBadges +
+                    '</span>' +
+                  '</div>' +
+                '</div>' +
+              '</td>' +
+              '<td style="text-align: center; font-weight: 600; color: var(--text-main);">' + r.matches + '</td>' +
+              '<td style="text-align: center; font-weight: 700; color: #00f59b;">' + r.won + '</td>' +
+              '<td style="text-align: center; font-weight: 600; color: #94a3b8;">' + r.lost + '</td>' +
+              '<td style="text-align: center;">' +
+                '<span class="ss-diff-pill ' + diffClass + '">' + diffStr + '</span>' +
+              '</td>' +
+            '</tr>'
+          );
+        }).join('');
+      }
+
+      const datePillHtml = data.date
+        ? '<span class="ss-meta-pill"><span>\u{1F4C5}</span> ' + escapeHtml(data.date) + '</span>'
+        : '';
+      const matchesPillHtml = '<span class="ss-meta-pill"><span>\u{1F3F8}</span> ' + data.totalMatches + (data.totalMatches === 1 ? ' Match' : ' Matches') + ' Played</span>';
+      const teamsPillHtml = '<span class="ss-meta-pill"><span>\u{1F91D}</span> ' + data.tableRows.length + (data.tableRows.length === 1 ? ' Team' : ' Teams') + '</span>';
+
+      wrap.innerHTML =
+        '<div class="ss-card-top-banner">' +
+          '<div class="ss-card-brand">\u{1F3F8} TK BADDY CHAMPIONSHIPS \u{1F3F8}</div>' +
+          '<div class="ss-card-title">' + escapeHtml(data.seasonTitle.toUpperCase()) + ' SUMMARY</div>' +
+          '<div class="ss-card-meta">' +
+            datePillHtml +
+            matchesPillHtml +
+            teamsPillHtml +
+          '</div>' +
+        '</div>' +
+        honorsSectionHtml +
+        '<div class="ss-table-section-header">' +
+          '<div class="ss-table-section-title">' +
+            '<span>\u{1F4CA}</span> ' + escapeHtml(data.seasonTitle) + ' Points Table' +
+          '</div>' +
+          '<span class="ss-live-badge">\u25CF Live Standings</span>' +
+        '</div>' +
+        '<div class="leaderboard-card" style="margin-bottom: 0;">' +
+          '<div class="table-container">' +
+            '<table class="standings-table ss-points-table">' +
+              '<thead>' +
+                '<tr>' +
+                  '<th class="rank-cell">#</th>' +
+                  '<th class="sortable th-player" onclick="sortSeasonSummaryTable(\'team\')">' +
+                    '<span class="desktop-lbl">Team ' + sortArrow('team') + '</span>' +
+                    '<span class="mobile-lbl">Team</span>' +
+                  '</th>' +
+                  '<th class="sortable" onclick="sortSeasonSummaryTable(\'matches\')" style="text-align: center;">' +
+                    '<span class="desktop-lbl">Matches ' + sortArrow('matches') + '</span>' +
+                    '<span class="mobile-lbl">M</span>' +
+                  '</th>' +
+                  '<th class="sortable" onclick="sortSeasonSummaryTable(\'won\')" style="text-align: center;">' +
+                    '<span class="desktop-lbl">Won ' + sortArrow('won') + '</span>' +
+                    '<span class="mobile-lbl">W</span>' +
+                  '</th>' +
+                  '<th class="sortable" onclick="sortSeasonSummaryTable(\'lost\')" style="text-align: center;">' +
+                    '<span class="desktop-lbl">Lost ' + sortArrow('lost') + '</span>' +
+                    '<span class="mobile-lbl">L</span>' +
+                  '</th>' +
+                  '<th class="sortable" onclick="sortSeasonSummaryTable(\'diff\')" style="text-align: center;">' +
+                    '<span class="desktop-lbl">Points Difference ' + sortArrow('diff') + '</span>' +
+                    '<span class="mobile-lbl">Pts Diff</span>' +
+                  '</th>' +
+                '</tr>' +
+              '</thead>' +
+              '<tbody>' +
+                tbodyHtml +
+              '</tbody>' +
+            '</table>' +
+          '</div>' +
+        '</div>';
+    }
+
+    async function shareSeasonSummaryAsImage() {
+      const selectEl = document.getElementById('seasonSummarySelect');
+      const seasonNum = selectEl ? (parseInt(selectEl.value, 10) || 1) : (appState.selectedSummarySeason || 1);
+
+      const btn = document.getElementById('seasonSummaryShareBtn');
+      const origHtml = btn ? btn.innerHTML : '';
+      if (btn) {
+        btn.disabled = true;
+        btn.innerHTML = '<span>&#9203;</span> Generating Image...';
+      }
+
+      try {
+        if (document.fonts && document.fonts.ready) {
+          try {
+            await document.fonts.ready;
+          } catch (e) {}
+        }
+
+        const blob = await renderSeasonSummaryCanvas(seasonNum);
+        if (!blob) {
+          alert("Could not generate Season Summary image. Please try again.");
+          return;
+        }
+
+        const dateStr = new Date().toISOString().slice(0, 10);
+        const fileName = 'TK_Baddy_Season_' + seasonNum + '_Summary_' + dateStr + '.png';
+        const file = new File([blob], fileName, { type: 'image/png' });
+
+        if (navigator.canShare && navigator.canShare({ files: [file] })) {
+          await navigator.share({
+            files: [file],
+            title: 'Season ' + seasonNum + ' Summary | TK Baddy Championships',
+            text: 'Official Season ' + seasonNum + ' Summary & Points Table | TK Baddy Championships \u{1F3F8}'
+          });
+          showToast("Season Summary shared! \u2728");
+        } else {
+          const url = URL.createObjectURL(blob);
+          const a = document.createElement('a');
+          a.href = url;
+          a.download = fileName;
+          document.body.appendChild(a);
+          a.click();
+          document.body.removeChild(a);
+          setTimeout(() => URL.revokeObjectURL(url), 4000);
+          showToast("Season Summary image downloaded! \u2728");
+        }
+      } catch (err) {
+        if (err && err.name !== 'AbortError') {
+          console.error("Error sharing Season Summary:", err);
+          alert("Could not share image: " + err.message);
+        }
+      } finally {
+        if (btn) {
+          btn.disabled = false;
+          btn.innerHTML = origHtml;
+        }
+      }
+    }
+
+    function renderSeasonSummaryCanvas(seasonNum) {
+      return new Promise((resolve) => {
+        try {
+          const data = computeSeasonSummaryData(seasonNum);
+          const rows = data.tableRows || [];
+
+          const canvasW = 1200;
+          const padX = 48;
+          const contentW = canvasW - padX * 2;
+
+          const headerH = 155;
+          const podiumH = data.finalsDeclared ? 150 : 120;
+          const tableTitleH = 52;
+          const tableHeaderH = 54;
+          const rowH = 62;
+          const emptyRowH = 110;
+          const tableBodyH = rows.length > 0 ? (rows.length * rowH) : emptyRowH;
+          const footerH = 75;
+
+          const canvasH = headerH + podiumH + 28 + tableTitleH + tableHeaderH + tableBodyH + footerH + 30;
+
+          const canvas = document.createElement('canvas');
+          canvas.width = canvasW;
+          canvas.height = canvasH;
+          const ctx = canvas.getContext('2d');
+
+          ctx.imageSmoothingEnabled = true;
+          ctx.imageSmoothingQuality = 'high';
+
+          // 1. Stadium Dark Gradient Background
+          const bgGrad = ctx.createLinearGradient(0, 0, canvasW, canvasH);
+          bgGrad.addColorStop(0, '#0a101f');
+          bgGrad.addColorStop(0.5, '#070c18');
+          bgGrad.addColorStop(1, '#04070d');
+          ctx.fillStyle = bgGrad;
+          ctx.fillRect(0, 0, canvasW, canvasH);
+
+          // Subtle geometric court grid
+          ctx.strokeStyle = 'rgba(30, 41, 59, 0.35)';
+          ctx.lineWidth = 1;
+          for (let x = 60; x < canvasW; x += 60) {
+            ctx.beginPath();
+            ctx.moveTo(x, 0);
+            ctx.lineTo(x, canvasH);
+            ctx.stroke();
+          }
+          for (let y = 60; y < canvasH; y += 60) {
+            ctx.beginPath();
+            ctx.moveTo(0, y);
+            ctx.lineTo(canvasW, y);
+            ctx.stroke();
+          }
+
+          // Outer Glow Borders
+          ctx.strokeStyle = 'rgba(0, 245, 155, 0.45)';
+          ctx.lineWidth = 4;
+          ctx.strokeRect(12, 12, canvasW - 24, canvasH - 24);
+
+          ctx.strokeStyle = 'rgba(255, 215, 0, 0.25)';
+          ctx.lineWidth = 1.5;
+          ctx.strokeRect(18, 18, canvasW - 36, canvasH - 36);
+
+          // 2. Top Banner Header
+          ctx.textAlign = 'center';
+          ctx.fillStyle = '#ffd700';
+          ctx.font = 'bold 18px system-ui, -apple-system, sans-serif';
+          ctx.fillText('\u{1F3F8} TK BADDY CHAMPIONSHIPS \u{1F3F8}', canvasW / 2, 56);
+
+          ctx.fillStyle = '#ffffff';
+          ctx.font = '900 38px system-ui, -apple-system, sans-serif';
+          ctx.fillText('SEASON ' + data.season + ' SUMMARY', canvasW / 2, 102);
+
+          const metaParts = [];
+          if (data.date) metaParts.push('\u{1F4C5} ' + data.date);
+          metaParts.push('\u{1F3F8} ' + data.totalMatches + (data.totalMatches === 1 ? ' Match' : ' Matches'));
+          metaParts.push('\u{1F91D} ' + rows.length + (rows.length === 1 ? ' Team' : ' Teams'));
+
+          ctx.fillStyle = '#94a3b8';
+          ctx.font = 'bold 16px system-ui, -apple-system, sans-serif';
+          ctx.fillText(metaParts.join('    \u2022    '), canvasW / 2, 134);
+
+          // 3. Podium / Honors Section (Champions & Runners-Up OR "Finals yet to happen")
+          const podiumY = 160;
+          if (data.finalsDeclared) {
+            const gap = 24;
+            const boxW = (contentW - gap) / 2;
+
+            // Champions Box (Left)
+            drawCanvasRoundRect(ctx, padX, podiumY, boxW, podiumH, 16, 'rgba(245, 158, 11, 0.14)', 'rgba(255, 215, 0, 0.55)', 2);
+            ctx.textAlign = 'left';
+            ctx.fillStyle = '#ffd700';
+            ctx.font = 'bold 15px system-ui, -apple-system, sans-serif';
+            ctx.fillText('\u{1F3C6} SEASON CHAMPIONS', padX + 24, podiumY + 38);
+
+            ctx.fillStyle = '#ffffff';
+            ctx.font = '900 30px system-ui, -apple-system, sans-serif';
+            ctx.fillText(data.championsDisplay, padX + 24, podiumY + 84);
+
+            ctx.fillStyle = '#cbd5e1';
+            ctx.font = '600 14px system-ui, -apple-system, sans-serif';
+            ctx.fillText(data.hasChampions ? ('Title Winning Team \u2022 Season ' + data.season) : 'Yet to be crowned', padX + 24, podiumY + 118);
+
+            // Runners-Up Box (Right)
+            const rightX = padX + boxW + gap;
+            drawCanvasRoundRect(ctx, rightX, podiumY, boxW, podiumH, 16, 'rgba(56, 189, 248, 0.12)', 'rgba(56, 189, 248, 0.5)', 2);
+            ctx.fillStyle = '#38bdf8';
+            ctx.font = 'bold 15px system-ui, -apple-system, sans-serif';
+            ctx.fillText('\u{1F948} RUNNERS-UP', rightX + 24, podiumY + 38);
+
+            ctx.fillStyle = '#ffffff';
+            ctx.font = '900 30px system-ui, -apple-system, sans-serif';
+            ctx.fillText(data.runnersUpDisplay, rightX + 24, podiumY + 84);
+
+            ctx.fillStyle = '#cbd5e1';
+            ctx.font = '600 14px system-ui, -apple-system, sans-serif';
+            ctx.fillText(data.hasRunnersUp ? ('Championship Finalists \u2022 Season ' + data.season) : 'Yet to be declared', rightX + 24, podiumY + 118);
+          } else {
+            // Finals yet to happen callout box
+            drawCanvasRoundRect(ctx, padX, podiumY, contentW, podiumH, 16, 'rgba(245, 158, 11, 0.12)', 'rgba(255, 215, 0, 0.5)', 2);
+            ctx.textAlign = 'center';
+            ctx.fillStyle = '#ffd700';
+            ctx.font = '900 26px system-ui, -apple-system, sans-serif';
+            ctx.fillText('\u23F3 Finals yet to happen', canvasW / 2, podiumY + 52);
+
+            ctx.fillStyle = '#cbd5e1';
+            ctx.font = '500 16px system-ui, -apple-system, sans-serif';
+            ctx.fillText('Season Champions & Runners-Up have not been declared yet. Live points table below.', canvasW / 2, podiumY + 88);
+          }
+
+          // 4. Points Table Section Header
+          const sectionTitleY = podiumY + podiumH + 46;
+          ctx.textAlign = 'left';
+          ctx.fillStyle = '#ffd700';
+          ctx.font = '900 20px system-ui, -apple-system, sans-serif';
+          ctx.fillText('\u{1F4CA} SEASON ' + data.season + ' POINTS TABLE', padX, sectionTitleY);
+
+          ctx.textAlign = 'right';
+          ctx.fillStyle = '#00f59b';
+          ctx.font = 'bold 14px system-ui, -apple-system, sans-serif';
+          ctx.fillText('\u25CF LIVE STANDINGS', canvasW - padX, sectionTitleY);
+
+          // 5. Points Table Container
+          const tableTopY = sectionTitleY + 18;
+          const totalTableH = tableHeaderH + tableBodyH;
+          drawCanvasRoundRect(ctx, padX, tableTopY, contentW, totalTableH, 14, 'rgba(15, 23, 42, 0.9)', 'rgba(255, 255, 255, 0.12)', 1.5);
+
+          // Table Header Background
+          drawCanvasRoundRect(ctx, padX, tableTopY, contentW, tableHeaderH, 14, 'rgba(30, 41, 59, 0.85)', null, 0);
+
+          // Column X positions
+          const colRankX = padX + 42;
+          const colTeamX = padX + 95;
+          const colMatchesX = padX + 650;
+          const colWonX = padX + 780;
+          const colLostX = padX + 900;
+          const colDiffX = padX + 1030;
+
+          const headerTextY = tableTopY + 33;
+          ctx.fillStyle = '#94a3b8';
+          ctx.font = 'bold 14px system-ui, -apple-system, sans-serif';
+          ctx.textAlign = 'center';
+          ctx.fillText('#', colRankX, headerTextY);
+          ctx.textAlign = 'left';
+          ctx.fillText('TEAM', colTeamX, headerTextY);
+          ctx.textAlign = 'center';
+          ctx.fillText('MATCHES', colMatchesX, headerTextY);
+          ctx.fillText('WON', colWonX, headerTextY);
+          ctx.fillText('LOST', colLostX, headerTextY);
+          ctx.fillText('POINTS DIFF', colDiffX, headerTextY);
+
+          // Table Rows
+          if (rows.length === 0) {
+            ctx.textAlign = 'center';
+            ctx.fillStyle = '#94a3b8';
+            ctx.font = 'bold 18px system-ui, -apple-system, sans-serif';
+            ctx.fillText('No match scores logged for Season ' + data.season + ' yet.', canvasW / 2, tableTopY + tableHeaderH + 62);
+          } else {
+            rows.forEach((r, idx) => {
+              const rY = tableTopY + tableHeaderH + idx * rowH;
+              if (idx % 2 === 1) {
+                ctx.fillStyle = 'rgba(255, 255, 255, 0.025)';
+                ctx.fillRect(padX + 2, rY, contentW - 4, rowH);
+              }
+              // Row divider
+              ctx.strokeStyle = 'rgba(255, 255, 255, 0.06)';
+              ctx.lineWidth = 1;
+              ctx.beginPath();
+              ctx.moveTo(padX + 12, rY);
+              ctx.lineTo(padX + contentW - 12, rY);
+              ctx.stroke();
+
+              const midY = rY + 38;
+              const rank = idx + 1;
+
+              // Rank
+              ctx.textAlign = 'center';
+              if (rank === 1) {
+                ctx.fillStyle = '#ffd700';
+                ctx.font = '900 18px system-ui, -apple-system, sans-serif';
+                ctx.fillText('\u{1F451}', colRankX, midY);
+              } else {
+                ctx.fillStyle = rank <= 3 ? '#e2e8f0' : '#64748b';
+                ctx.font = 'bold 16px system-ui, -apple-system, sans-serif';
+                ctx.fillText('#' + rank, colRankX, midY);
+              }
+
+              // Team Name ("Partner A - Partner B")
+              ctx.textAlign = 'left';
+              ctx.fillStyle = '#f8fafc';
+              ctx.font = 'bold 19px system-ui, -apple-system, sans-serif';
+              let teamLabel = r.team;
+              if (r.isChampion) teamLabel += ' \u{1F3C6}';
+              else if (r.isRunnerUp) teamLabel += ' \u{1F948}';
+              ctx.fillText(teamLabel, colTeamX, midY);
+
+              // Matches
+              ctx.textAlign = 'center';
+              ctx.fillStyle = '#e2e8f0';
+              ctx.font = 'bold 18px system-ui, -apple-system, sans-serif';
+              ctx.fillText(String(r.matches), colMatchesX, midY);
+
+              // Won
+              ctx.fillStyle = '#00f59b';
+              ctx.font = '900 19px system-ui, -apple-system, sans-serif';
+              ctx.fillText(String(r.won), colWonX, midY);
+
+              // Lost
+              ctx.fillStyle = '#94a3b8';
+              ctx.font = 'bold 18px system-ui, -apple-system, sans-serif';
+              ctx.fillText(String(r.lost), colLostX, midY);
+
+              // Points Difference Pill
+              const diffStr = r.diff > 0 ? ('+' + r.diff) : String(r.diff);
+              const pillBg = r.diff > 0 ? 'rgba(0, 245, 155, 0.16)' : (r.diff < 0 ? 'rgba(244, 63, 94, 0.16)' : 'rgba(148, 163, 184, 0.16)');
+              const pillBorder = r.diff > 0 ? 'rgba(0, 245, 155, 0.45)' : (r.diff < 0 ? 'rgba(244, 63, 94, 0.45)' : 'rgba(148, 163, 184, 0.35)');
+              const pillText = r.diff > 0 ? '#00f59b' : (r.diff < 0 ? '#f43f5e' : '#94a3b8');
+
+              const pillW = 76;
+              const pillH = 34;
+              drawCanvasRoundRect(ctx, colDiffX - pillW / 2, rY + (rowH - pillH) / 2, pillW, pillH, 17, pillBg, pillBorder, 1.5);
+
+              ctx.fillStyle = pillText;
+              ctx.font = '900 17px system-ui, -apple-system, sans-serif';
+              ctx.fillText(diffStr, colDiffX, midY - 1);
+            });
+          }
+
+          // 6. Footer
+          const footerY = tableTopY + totalTableH + 46;
+          ctx.textAlign = 'center';
+          ctx.fillStyle = '#64748b';
+          ctx.font = 'bold 14px system-ui, -apple-system, sans-serif';
+          ctx.fillText('TK BADDY CHAMPIONSHIPS \u2022 OFFICIAL SEASON SUMMARY \u2022 HTTPS://SNITINSRINIVAS0211.GITHUB.IO/TK-BADDY/', canvasW / 2, footerY);
+
+          canvas.toBlob((blob) => {
+            resolve(blob);
+          }, 'image/png');
+        } catch (err) {
+          console.error("Season Summary canvas error:", err);
+          resolve(null);
+        }
+      });
     }
 
     function showBeautyDaStamp() {

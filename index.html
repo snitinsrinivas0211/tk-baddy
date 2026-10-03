@@ -4701,7 +4701,11 @@
           <div class="shuttle-logo">&#127992;</div>
           <h1 class="brand-title">TK Baddy Championships</h1>
         </div>
-        <div class="header-menu-wrap">
+        <div class="header-menu-wrap" style="display: flex; align-items: center; gap: 8px;">
+          <button type="button" class="btn btn-outline" id="headerSyncNowBtn" onclick="syncNowWithCloud(true)" title="Sync matches &amp; standings between Web and Mobile" style="padding: 6px 11px; font-size: 12px; font-weight: 700; border-radius: 10px; display: inline-flex; align-items: center; gap: 5px; border-color: rgba(0, 245, 155, 0.35); color: var(--court-emerald-neon); background: rgba(0, 245, 155, 0.08);">
+            <span id="headerSyncIcon">&#128260;</span>
+            <span id="headerSyncLabel">Sync</span>
+          </button>
           <button class="burger-menu-btn" id="burgerMenuBtn" onclick="toggleBurgerMenu(event)" aria-label="Menu" title="Menu">
             <span class="burger-bar"></span>
             <span class="burger-bar"></span>
@@ -6064,20 +6068,41 @@
     <div class="modal-window">
       <div class="modal-header">
         <div class="modal-title">
-          <span>&#9881;&#65039;</span> Database & Sync Engine
+          <span>&#9881;&#65039;</span> Database &amp; Sync Engine
         </div>
         <button class="modal-close-btn" onclick="closeDatabaseSettingsModal()">&#215;</button>
       </div>
       <div class="modal-body">
         <div style="font-size: 13px; color: var(--text-muted); line-height: 1.5;">
-          <strong>TK Baddy Championships</strong> is connected to Google Cloud Firestore with real-time listeners across collections:
-          <code style="color: var(--court-emerald-neon); background: rgba(0,0,0,0.4); padding: 2px 6px; border-radius: 4px;">badminton_matches</code> and 
-          <code style="color: var(--court-emerald-neon); background: rgba(0,0,0,0.4); padding: 2px 6px; border-radius: 4px;">badminton_players</code>, and <code style="color: var(--court-emerald-neon); background: rgba(0,0,0,0.4); padding: 2px 6px; border-radius: 4px;">badminton_editions</code>.
+          <strong>TK Baddy Championships</strong> uses Dual-Engine Cloud Sync (Firebase SDK + Direct Firestore REST API) across:
+          <code style="color: var(--court-emerald-neon); background: rgba(0,0,0,0.4); padding: 2px 6px; border-radius: 4px;">badminton_matches</code>,
+          <code style="color: var(--court-emerald-neon); background: rgba(0,0,0,0.4); padding: 2px 6px; border-radius: 4px;">badminton_players</code>, and
+          <code style="color: var(--court-emerald-neon); background: rgba(0,0,0,0.4); padding: 2px 6px; border-radius: 4px;">badminton_editions</code>.
         </div>
 
-        <div class="form-group" style="margin-top: 8px;">
+        <!-- Live Cloud Sync Status & Recovery Controls -->
+        <div id="cloudSyncDiagnosticsBox" style="margin-top: 12px; padding: 12px 14px; border-radius: 10px; background: rgba(0, 245, 155, 0.06); border: 1px solid rgba(0, 245, 155, 0.25); font-size: 12.5px; color: var(--text-main); line-height: 1.6;">
+          Checking local &amp; cloud match synchronization status...
+        </div>
+
+        <div style="display: flex; gap: 8px; flex-wrap: wrap; align-items: center; margin-top: 10px;">
+          <button type="button" class="btn btn-emerald" onclick="syncNowWithCloud(true)" style="font-size: 12.5px; padding: 8px 14px;">
+            <span>&#9729;&#65039;</span> Push Local Matches to Cloud Now
+          </button>
+          <button type="button" class="btn btn-outline" onclick="forcePullFromCloud()" style="font-size: 12.5px; padding: 8px 14px;">
+            <span>&#128259;</span> Pull Latest from Cloud
+          </button>
+          <button type="button" class="btn btn-outline" onclick="copyLocalDataBackupToClipboard()" style="font-size: 12px; padding: 7px 12px;">
+            <span>&#128203;</span> Copy Local Backup JSON
+          </button>
+          <button type="button" class="btn btn-outline" onclick="promptRestoreDataFromBackup()" style="font-size: 12px; padding: 7px 12px;">
+            <span>&#128229;</span> Restore Backup JSON
+          </button>
+        </div>
+
+        <div class="form-group" style="margin-top: 14px;">
           <label class="form-label">Firebase Config JSON (Stored in index.html / browser)</label>
-          <textarea id="firebaseConfigTextarea" class="form-textarea" rows="7" style="font-family: monospace; font-size: 12px;"></textarea>
+          <textarea id="firebaseConfigTextarea" class="form-textarea" rows="5" style="font-family: monospace; font-size: 12px;"></textarea>
         </div>
 
         <div style="display: flex; gap: 8px; flex-wrap: wrap; align-items: center; margin-top: 12px;">
@@ -6173,13 +6198,167 @@
     };
 
     /* ==========================================================================
-       4. DATA PERSISTENCE LAYER (Firestore + LocalStorage Fallback)
+       4. DATA PERSISTENCE LAYER (Dual-Engine: Firestore SDK + Direct REST + LocalStorage)
        ========================================================================== */
+    const syncedRemoteMatchIds = new Set();
+    const syncedRemoteEditionIds = new Set();
+    const lastMatchSyncAttempt = {};
+    const lastEditionSyncAttempt = {};
+    let isCloudSyncInProgress = false;
+    let lastAutoRestSyncTime = 0;
+
+    function sanitizeForFirestore(obj) {
+      try {
+        return JSON.parse(JSON.stringify(obj));
+      } catch (e) {
+        return obj;
+      }
+    }
+
+    function getFirestoreRestBaseUrl() {
+      const projId = (activeFirebaseConfig && activeFirebaseConfig.projectId) ? activeFirebaseConfig.projectId : "tk-baddy-championships";
+      return "https://firestore.googleapis.com/v1/projects/" + encodeURIComponent(projId) + "/databases/(default)/documents";
+    }
+
+    function toFirestoreRestValue(val) {
+      if (val === null || val === undefined) {
+        return { nullValue: null };
+      }
+      if (typeof val === "boolean") {
+        return { booleanValue: val };
+      }
+      if (typeof val === "number") {
+        if (!isFinite(val)) return { integerValue: "0" };
+        if (Number.isInteger(val)) return { integerValue: String(val) };
+        return { doubleValue: val };
+      }
+      if (typeof val === "string") {
+        return { stringValue: val };
+      }
+      if (Array.isArray(val)) {
+        return {
+          arrayValue: {
+            values: val.map(item => toFirestoreRestValue(item))
+          }
+        };
+      }
+      if (typeof val === "object") {
+        return {
+          mapValue: {
+            fields: toFirestoreRestFields(val)
+          }
+        };
+      }
+      return { stringValue: String(val) };
+    }
+
+    function toFirestoreRestFields(obj) {
+      const fields = {};
+      if (!obj || typeof obj !== "object") return fields;
+      Object.keys(obj).forEach(k => {
+        const v = obj[k];
+        if (v !== undefined) {
+          fields[k] = toFirestoreRestValue(v);
+        }
+      });
+      return fields;
+    }
+
+    function fromFirestoreRestValue(valObj) {
+      if (!valObj || typeof valObj !== "object") return null;
+      if ("stringValue" in valObj) return valObj.stringValue;
+      if ("integerValue" in valObj) return parseInt(valObj.integerValue, 10);
+      if ("doubleValue" in valObj) return parseFloat(valObj.doubleValue);
+      if ("booleanValue" in valObj) return Boolean(valObj.booleanValue);
+      if ("nullValue" in valObj) return null;
+      if ("timestampValue" in valObj) return valObj.timestampValue;
+      if ("arrayValue" in valObj) {
+        const vals = (valObj.arrayValue && valObj.arrayValue.values) || [];
+        return vals.map(fromFirestoreRestValue);
+      }
+      if ("mapValue" in valObj) {
+        const f = (valObj.mapValue && valObj.mapValue.fields) || {};
+        const out = {};
+        Object.keys(f).forEach(k => {
+          out[k] = fromFirestoreRestValue(f[k]);
+        });
+        return out;
+      }
+      return null;
+    }
+
+    function fromFirestoreRestDoc(doc) {
+      if (!doc || !doc.name) return null;
+      const parts = doc.name.split("/");
+      const docId = parts[parts.length - 1];
+      const fields = doc.fields || {};
+      const obj = { id: docId };
+      Object.keys(fields).forEach(k => {
+        obj[k] = fromFirestoreRestValue(fields[k]);
+      });
+      if (!obj.id) obj.id = docId;
+      return obj;
+    }
+
+    async function firestoreRestUpsert(collectionName, docId, dataObj) {
+      if (!collectionName || !docId || !dataObj) return false;
+      const cleanObj = sanitizeForFirestore({ ...dataObj, id: docId });
+      const url = getFirestoreRestBaseUrl() + "/" + encodeURIComponent(collectionName) + "/" + encodeURIComponent(docId);
+      const body = JSON.stringify({ fields: toFirestoreRestFields(cleanObj) });
+      const resp = await fetch(url, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: body,
+        cache: "no-store"
+      });
+      if (!resp.ok) {
+        const errText = await resp.text().catch(() => "");
+        throw new Error("HTTP " + resp.status + (errText ? ": " + errText.substring(0, 120) : ""));
+      }
+      return true;
+    }
+
+    async function firestoreRestDelete(collectionName, docId) {
+      if (!collectionName || !docId) return false;
+      const url = getFirestoreRestBaseUrl() + "/" + encodeURIComponent(collectionName) + "/" + encodeURIComponent(docId);
+      const resp = await fetch(url, {
+        method: "DELETE",
+        cache: "no-store"
+      });
+      return resp.ok;
+    }
+
+    async function firestoreRestListCollection(collectionName) {
+      const results = [];
+      let pageToken = "";
+      const baseUrl = getFirestoreRestBaseUrl() + "/" + encodeURIComponent(collectionName);
+      for (let page = 0; page < 10; page++) {
+        const url = baseUrl + "?pageSize=300" + (pageToken ? ("&pageToken=" + encodeURIComponent(pageToken)) : "") + "&_t=" + Date.now();
+        const resp = await fetch(url, { method: "GET", cache: "no-store" });
+        if (!resp.ok) {
+          throw new Error("REST GET " + collectionName + " HTTP " + resp.status);
+        }
+        const json = await resp.json();
+        const docs = json.documents || [];
+        docs.forEach(d => {
+          const parsed = fromFirestoreRestDoc(d);
+          if (parsed) results.push(parsed);
+        });
+        if (json.nextPageToken) {
+          pageToken = json.nextPageToken;
+        } else {
+          break;
+        }
+      }
+      return results;
+    }
+
     function loadLocalData() {
       try {
         const storedPlayers = localStorage.getItem('tk_baddy_players');
         const storedMatches = localStorage.getItem('tk_baddy_matches');
         const storedEditions = localStorage.getItem('tk_baddy_editions');
+        const storedDeletedIds = localStorage.getItem('tk_baddy_deleted_match_ids');
         if (storedPlayers) {
           try { appState.players = JSON.parse(storedPlayers) || []; } catch (e) {}
         }
@@ -6188,6 +6367,16 @@
         }
         if (storedEditions) {
           try { appState.editions = JSON.parse(storedEditions) || []; } catch (e) {}
+        }
+        if (storedDeletedIds) {
+          try {
+            const arr = JSON.parse(storedDeletedIds) || [];
+            appState.deletedMatchIds = new Set(arr);
+          } catch (e) {
+            appState.deletedMatchIds = new Set();
+          }
+        } else if (!appState.deletedMatchIds) {
+          appState.deletedMatchIds = new Set();
         }
         return true;
       } catch (e) {
@@ -6201,8 +6390,80 @@
         localStorage.setItem('tk_baddy_players', JSON.stringify(appState.players || []));
         localStorage.setItem('tk_baddy_matches', JSON.stringify(appState.matches || []));
         localStorage.setItem('tk_baddy_editions', JSON.stringify(appState.editions || []));
+        if (appState.deletedMatchIds && appState.deletedMatchIds.size > 0) {
+          localStorage.setItem('tk_baddy_deleted_match_ids', JSON.stringify(Array.from(appState.deletedMatchIds)));
+        }
       } catch (e) {
         console.error("Local data save error", e);
+      }
+      updateCloudSyncDiagnosticsUI();
+    }
+
+    function updateHeaderSyncButtonState(state, labelText) {
+      const btn = document.getElementById('headerSyncNowBtn');
+      const icon = document.getElementById('headerSyncIcon');
+      const lbl = document.getElementById('headerSyncLabel');
+      if (!btn || !icon || !lbl) return;
+      if (state === 'syncing') {
+        icon.innerHTML = '&#9203;';
+        lbl.textContent = labelText || 'Syncing...';
+        btn.style.borderColor = 'rgba(56, 189, 248, 0.5)';
+        btn.style.color = '#38bdf8';
+      } else if (state === 'warning') {
+        icon.innerHTML = '&#9888;&#65039;';
+        lbl.textContent = labelText || 'Retry Sync';
+        btn.style.borderColor = 'rgba(245, 158, 11, 0.5)';
+        btn.style.color = '#fbbf24';
+      } else {
+        icon.innerHTML = '&#128260;';
+        lbl.textContent = labelText || 'Sync';
+        btn.style.borderColor = 'rgba(0, 245, 155, 0.35)';
+        btn.style.color = 'var(--court-emerald-neon)';
+      }
+    }
+
+    function updateCloudSyncDiagnosticsUI() {
+      const box = document.getElementById('cloudSyncDiagnosticsBox');
+      if (!box) return;
+      const deletedIds = appState.deletedMatchIds || new Set();
+      const validLocalMatches = (appState.matches || []).filter(m =>
+        m && m.id && !deletedIds.has(m.id) && !m.isChampionshipEdition && !String(m.id).startsWith("edition_")
+      );
+      const unsyncedMatches = validLocalMatches.filter(m => !syncedRemoteMatchIds.has(m.id));
+      const seasonCounts = {};
+      validLocalMatches.forEach(m => {
+        const s = parseInt(m.season || m.weekNumber, 10) || 1;
+        seasonCounts[s] = (seasonCounts[s] || 0) + 1;
+      });
+      const seasonSummaryStr = Object.keys(seasonCounts)
+        .map(Number)
+        .sort((a, b) => b - a)
+        .map(s => "S" + s + ": " + seasonCounts[s])
+        .join(" | ");
+
+      if (unsyncedMatches.length > 0) {
+        box.style.background = "rgba(245, 158, 11, 0.1)";
+        box.style.borderColor = "rgba(245, 158, 11, 0.4)";
+        box.innerHTML =
+          "<div><strong>&#9888;&#65039; Pending Cloud Upload:</strong> <span style='color:#fbbf24;font-weight:800;'>" +
+          unsyncedMatches.length +
+          " local match(es)</span> waiting to sync to Cloud.</div>" +
+          "<div style='margin-top:4px;color:var(--text-muted);'>Total in this browser: <strong>" +
+          validLocalMatches.length +
+          " matches</strong> (" + (seasonSummaryStr || "None") + ")</div>" +
+          "<div style='margin-top:4px;color:#00f59b;'>Click <strong>Push Local Matches to Cloud Now</strong> below or <strong>Sync</strong> in the header to push them to Mobile immediately.</div>";
+      } else {
+        box.style.background = "rgba(0, 245, 155, 0.06)";
+        box.style.borderColor = "rgba(0, 245, 155, 0.25)";
+        box.innerHTML =
+          "<div><strong>&#9989; Cloud &amp; Mobile Synced:</strong> All <strong>" +
+          validLocalMatches.length +
+          " matches</strong> and <strong>" +
+          (appState.editions || []).length +
+          " season editions</strong> are in sync.</div>" +
+          "<div style='margin-top:4px;color:var(--text-muted);'>Matches by Season: " +
+          (seasonSummaryStr || "None") +
+          "</div>";
       }
     }
 
@@ -6216,6 +6477,21 @@
         unlockAdminMode(false);
       }
 
+      // 2. Always kick off Direct REST Cloud Sync immediately (works even if Firebase WebChannel hangs or is cached)
+      performDirectRestCloudSync(false);
+
+      // 3. Re-sync automatically when user switches back to tab on mobile or desktop
+      document.addEventListener('visibilitychange', () => {
+        if (document.visibilityState === 'visible' && (Date.now() - lastAutoRestSyncTime > 12000)) {
+          performDirectRestCloudSync(false);
+        }
+      });
+      window.addEventListener('focus', () => {
+        if (Date.now() - lastAutoRestSyncTime > 15000) {
+          performDirectRestCloudSync(false);
+        }
+      });
+
       if (isFirestoreActive && firestoreDb) {
         let hasActiveRemote = false;
 
@@ -6227,7 +6503,7 @@
         const markRemoteFailure = (err) => {
           console.warn("Firestore connection/sync issue:", err);
           if (!hasActiveRemote) {
-            updateSyncBadge(false, err.message);
+            updateSyncBadge(false, err ? err.message : "");
           }
         };
 
@@ -6238,8 +6514,6 @@
             const players = [];
             snapshot.forEach(doc => players.push({ ...doc.data(), id: doc.id }));
             appState.players = players;
-          } else {
-            appState.players = [];
           }
           saveLocalData();
           updateUI();
@@ -6247,7 +6521,7 @@
           markRemoteFailure(err);
         });
 
-        // Listen to Matches (with dual-channel support for editions and non-destructive merge for unsynced local matches)
+        // Listen to Matches (with delta-only non-destructive merge -- NO recursive full-table write storm!)
         firestoreDb.collection("badminton_matches").onSnapshot((snapshot) => {
           markRemoteSuccess();
           const deletedIds = appState.deletedMatchIds || new Set();
@@ -6259,8 +6533,10 @@
               const data = doc.data();
               if (data.isChampionshipEdition || doc.id.startsWith("edition_")) {
                 const edId = data.id || doc.id.replace(/^edition_/, '');
+                syncedRemoteEditionIds.add(edId);
                 syncedEditions.push({ ...data, id: edId });
               } else if (!deletedIds.has(doc.id)) {
+                syncedRemoteMatchIds.add(doc.id);
                 remoteMatches.push({ ...data, id: doc.id });
                 remoteIds.add(doc.id);
               }
@@ -6279,8 +6555,9 @@
             });
             appState.matches = mergedMatches;
 
+            // IMPORTANT: Only sync the unsynced delta (with per-match cooldown), never re-upload already synced matches!
             if (unsyncedLocal.length > 0) {
-              syncLocalMatchesToRemote();
+              syncLocalMatchesToRemote(unsyncedLocal, false);
             }
 
             if (syncedEditions.length > 0) {
@@ -6294,8 +6571,6 @@
               });
               appState.editions.sort((a, b) => (b.date || '').localeCompare(a.date || ''));
             }
-          } else if (!appState.matches || appState.matches.length === 0) {
-            appState.matches = [];
           }
           saveLocalData();
           updateUI();
@@ -6308,7 +6583,10 @@
           markRemoteSuccess();
           if (!snapshot.empty) {
             const editions = [];
-            snapshot.forEach(doc => editions.push({ ...doc.data(), id: doc.id }));
+            snapshot.forEach(doc => {
+              syncedRemoteEditionIds.add(doc.id);
+              editions.push({ ...doc.data(), id: doc.id });
+            });
             editions.forEach(ed => {
               const existingIdx = (appState.editions || []).findIndex(e => e.id === ed.id);
               if (existingIdx >= 0) {
@@ -6319,45 +6597,285 @@
             });
             appState.editions.sort((a, b) => (b.date || '').localeCompare(a.date || ''));
           }
+          const unsyncedEditions = (appState.editions || []).filter(ed => ed && ed.id && !syncedRemoteEditionIds.has(ed.id));
+          if (unsyncedEditions.length > 0) {
+            syncLocalEditionsToRemote(unsyncedEditions, false);
+          }
           saveLocalData();
           updateUI();
         }, (err) => {
           console.warn("badminton_editions sync listener notice:", err.message);
         });
-
-        // Auto-sync any locally cached matches and editions to remote cloud storage
-        syncLocalMatchesToRemote();
-        syncLocalEditionsToRemote();
       } else {
         fallbackToLocalStorage();
       }
     }
 
-    function syncLocalMatchesToRemote() {
-      if (!isFirestoreActive || !firestoreDb || !appState.matches || appState.matches.length === 0) return;
+    async function syncLocalMatchesToRemote(matchesSubset = null, force = false) {
       const deletedIds = appState.deletedMatchIds || new Set();
-      appState.matches.forEach(m => {
-        if (!m || m.isChampionshipEdition || String(m.id || '').startsWith("edition_")) return;
+      const sourceList = Array.isArray(matchesSubset) ? matchesSubset : (appState.matches || []);
+      const now = Date.now();
+      let uploadedCount = 0;
+
+      for (const m of sourceList) {
+        if (!m || m.isChampionshipEdition || String(m.id || '').startsWith("edition_")) continue;
         const mId = m.id || ("m_" + Date.now() + "_" + Math.random().toString(36).substring(2, 6));
-        if (deletedIds.has(mId)) return;
         m.id = mId;
-        firestoreDb.collection("badminton_matches").doc(mId).set(m, { merge: true }).catch(() => {});
-      });
+        if (deletedIds.has(mId)) continue;
+        if (!force && syncedRemoteMatchIds.has(mId)) continue;
+        if (!force && lastMatchSyncAttempt[mId] && (now - lastMatchSyncAttempt[mId] < 45000)) continue;
+
+        lastMatchSyncAttempt[mId] = now;
+        const cleanMatch = sanitizeForFirestore(m);
+
+        try {
+          await firestoreRestUpsert("badminton_matches", mId, cleanMatch);
+          syncedRemoteMatchIds.add(mId);
+          uploadedCount++;
+        } catch (restErr) {
+          console.warn("REST match sync warning for " + mId + ":", restErr.message);
+          if (isFirestoreActive && firestoreDb) {
+            try {
+              await firestoreDb.collection("badminton_matches").doc(mId).set(cleanMatch, { merge: true });
+              syncedRemoteMatchIds.add(mId);
+              uploadedCount++;
+            } catch (sdkErr) {
+              console.warn("SDK match sync warning for " + mId + ":", sdkErr.message);
+            }
+          }
+        }
+      }
+      if (uploadedCount > 0) {
+        updateCloudSyncDiagnosticsUI();
+      }
+      return uploadedCount;
     }
 
-    function syncLocalEditionsToRemote() {
-      if (!isFirestoreActive || !firestoreDb || !appState.editions || appState.editions.length === 0) return;
-      appState.editions.forEach(ed => {
+    async function syncLocalEditionsToRemote(editionsSubset = null, force = false) {
+      const sourceList = Array.isArray(editionsSubset) ? editionsSubset : (appState.editions || []);
+      const now = Date.now();
+      let uploadedCount = 0;
+
+      for (const ed of sourceList) {
+        if (!ed) continue;
         const edId = ed.id || ("ed_" + Date.now());
         ed.id = edId;
-        firestoreDb.collection("badminton_editions").doc(edId).set(ed, { merge: true }).catch(() => {});
-        const backupData = {
-          ...ed,
+        if (!force && syncedRemoteEditionIds.has(edId)) continue;
+        if (!force && lastEditionSyncAttempt[edId] && (now - lastEditionSyncAttempt[edId] < 45000)) continue;
+
+        lastEditionSyncAttempt[edId] = now;
+        const cleanEd = sanitizeForFirestore(ed);
+        const backupData = sanitizeForFirestore({
+          ...cleanEd,
           isChampionshipEdition: true,
-          date: ed.date || new Date().toISOString().split('T')[0]
-        };
-        firestoreDb.collection("badminton_matches").doc("edition_" + edId).set(backupData, { merge: true }).catch(() => {});
-      });
+          date: cleanEd.date || new Date().toISOString().split('T')[0]
+        });
+
+        try {
+          await firestoreRestUpsert("badminton_editions", edId, cleanEd);
+          await firestoreRestUpsert("badminton_matches", "edition_" + edId, backupData);
+          syncedRemoteEditionIds.add(edId);
+          uploadedCount++;
+        } catch (restErr) {
+          console.warn("REST edition sync warning for " + edId + ":", restErr.message);
+          if (isFirestoreActive && firestoreDb) {
+            try {
+              await firestoreDb.collection("badminton_editions").doc(edId).set(cleanEd, { merge: true });
+              await firestoreDb.collection("badminton_matches").doc("edition_" + edId).set(backupData, { merge: true });
+              syncedRemoteEditionIds.add(edId);
+              uploadedCount++;
+            } catch (sdkErr) {}
+          }
+        }
+      }
+      if (uploadedCount > 0) {
+        updateCloudSyncDiagnosticsUI();
+      }
+      return uploadedCount;
+    }
+
+    async function performDirectRestCloudSync(isManual = false) {
+      if (isCloudSyncInProgress) return;
+      isCloudSyncInProgress = true;
+      lastAutoRestSyncTime = Date.now();
+      updateHeaderSyncButtonState('syncing', isManual ? 'Syncing...' : 'Sync');
+
+      try {
+        const [rawMatchesDocs, rawEditionsDocs, rawPlayersDocs] = await Promise.all([
+          firestoreRestListCollection("badminton_matches"),
+          firestoreRestListCollection("badminton_editions").catch(() => []),
+          firestoreRestListCollection("badminton_players").catch(() => [])
+        ]);
+
+        const deletedIds = appState.deletedMatchIds || new Set();
+        const remoteMatches = [];
+        const remoteMatchIds = new Set();
+        const remoteEditionsMap = {};
+
+        rawEditionsDocs.forEach(ed => {
+          if (ed && ed.id) {
+            syncedRemoteEditionIds.add(ed.id);
+            remoteEditionsMap[ed.id] = ed;
+          }
+        });
+
+        rawMatchesDocs.forEach(doc => {
+          if (!doc || !doc.id) return;
+          if (doc.isChampionshipEdition || String(doc.id).startsWith("edition_")) {
+            const edId = doc.id.replace(/^edition_/, '');
+            const cleanEd = { ...doc, id: edId };
+            delete cleanEd.isChampionshipEdition;
+            syncedRemoteEditionIds.add(edId);
+            if (!remoteEditionsMap[edId]) {
+              remoteEditionsMap[edId] = cleanEd;
+            }
+          } else if (!deletedIds.has(doc.id)) {
+            syncedRemoteMatchIds.add(doc.id);
+            remoteMatchIds.add(doc.id);
+            remoteMatches.push(doc);
+          }
+        });
+
+        if (rawPlayersDocs && rawPlayersDocs.length > 0) {
+          const remotePlayerIds = new Set(rawPlayersDocs.map(p => p.id));
+          const unsyncedPlayers = (appState.players || []).filter(p => p && p.id && !remotePlayerIds.has(p.id));
+          for (const p of unsyncedPlayers) {
+            try {
+              await firestoreRestUpsert("badminton_players", p.id, p);
+            } catch (e) {}
+          }
+          const mergedPlayers = [...rawPlayersDocs, ...unsyncedPlayers];
+          appState.players = mergedPlayers;
+        }
+
+        // Find any locally stored matches (e.g. Season 8 matches in desktop localStorage) that are not yet in Cloud Firestore
+        const unsyncedLocalMatches = (appState.matches || []).filter(m =>
+          m && m.id && !remoteMatchIds.has(m.id) && !deletedIds.has(m.id) && !m.isChampionshipEdition && !String(m.id).startsWith("edition_")
+        );
+
+        let pushedMatchCount = 0;
+        if (unsyncedLocalMatches.length > 0) {
+          pushedMatchCount = await syncLocalMatchesToRemote(unsyncedLocalMatches, true);
+        }
+
+        const mergedMatches = [...unsyncedLocalMatches, ...remoteMatches];
+        mergedMatches.sort((a, b) => {
+          const da = a.date || '';
+          const db = b.date || '';
+          if (da !== db) return db.localeCompare(da);
+          return (b.createdAt || '').localeCompare(a.createdAt || '');
+        });
+
+        const prevMatchCount = (appState.matches || []).length;
+        appState.matches = mergedMatches;
+
+        // Merge editions
+        const unsyncedLocalEditions = (appState.editions || []).filter(ed =>
+          ed && ed.id && !remoteEditionsMap[ed.id]
+        );
+        let pushedEditionCount = 0;
+        if (unsyncedLocalEditions.length > 0) {
+          pushedEditionCount = await syncLocalEditionsToRemote(unsyncedLocalEditions, true);
+        }
+
+        const mergedEditions = [...Object.values(remoteEditionsMap), ...unsyncedLocalEditions];
+        mergedEditions.sort((a, b) => (b.date || '').localeCompare(a.date || ''));
+        appState.editions = mergedEditions;
+
+        saveLocalData();
+        updateSyncBadge(true);
+        updateUI();
+        updateHeaderSyncButtonState('ready', 'Synced');
+        setTimeout(() => updateHeaderSyncButtonState('ready', 'Sync'), 2500);
+
+        if (pushedMatchCount > 0 || pushedEditionCount > 0) {
+          showToast("Synced " + pushedMatchCount + " local match(es) to Cloud! Ready on Mobile.");
+        } else if (isManual) {
+          showToast("Cloud Sync complete! (" + mergedMatches.length + " matches live)");
+        } else if (mergedMatches.length > prevMatchCount && prevMatchCount > 0) {
+          showToast("Loaded " + (mergedMatches.length - prevMatchCount) + " new match(es) from Cloud!");
+        }
+      } catch (err) {
+        console.warn("Direct REST cloud sync notice:", err);
+        updateHeaderSyncButtonState('warning', 'Sync');
+        if (isManual) {
+          showToast("Sync notice: " + err.message, true);
+        }
+      } finally {
+        isCloudSyncInProgress = false;
+        updateCloudSyncDiagnosticsUI();
+      }
+    }
+
+    async function syncNowWithCloud(isManual = true) {
+      await performDirectRestCloudSync(isManual);
+    }
+
+    async function forcePullFromCloud() {
+      await performDirectRestCloudSync(true);
+    }
+
+    function copyLocalDataBackupToClipboard() {
+      const payload = {
+        exportedAt: new Date().toISOString(),
+        matches: appState.matches || [],
+        editions: appState.editions || [],
+        players: appState.players || []
+      };
+      const jsonStr = JSON.stringify(payload);
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(jsonStr).then(() => {
+          showToast("Copied " + (appState.matches || []).length + " matches backup JSON to clipboard!");
+        }).catch(() => {
+          prompt("Copy your backup JSON below:", jsonStr);
+        });
+      } else {
+        prompt("Copy your backup JSON below:", jsonStr);
+      }
+    }
+
+    async function promptRestoreDataFromBackup() {
+      const raw = prompt("Paste the Backup JSON copied from your other browser/device:");
+      if (!raw || !raw.trim()) return;
+      try {
+        const parsed = JSON.parse(raw.trim());
+        const incomingMatches = Array.isArray(parsed) ? parsed : (parsed.matches || []);
+        const incomingEditions = Array.isArray(parsed.editions) ? parsed.editions : [];
+        const incomingPlayers = Array.isArray(parsed.players) ? parsed.players : [];
+
+        let addedMatches = 0;
+        const existingIds = new Set((appState.matches || []).map(m => m.id));
+        incomingMatches.forEach(m => {
+          if (m && m.id && !existingIds.has(m.id)) {
+            appState.matches.push(m);
+            existingIds.add(m.id);
+            addedMatches++;
+          }
+        });
+
+        const existingEdIds = new Set((appState.editions || []).map(e => e.id));
+        incomingEditions.forEach(ed => {
+          if (ed && ed.id && !existingEdIds.has(ed.id)) {
+            appState.editions.push(ed);
+            existingEdIds.add(ed.id);
+          }
+        });
+
+        const existingPlayerIds = new Set((appState.players || []).map(p => p.id));
+        incomingPlayers.forEach(p => {
+          if (p && p.id && !existingPlayerIds.has(p.id)) {
+            appState.players.push(p);
+            existingPlayerIds.add(p.id);
+          }
+        });
+
+        saveLocalData();
+        updateUI();
+        showToast("Restored " + addedMatches + " new match(es)! Syncing to Cloud...");
+        await performDirectRestCloudSync(true);
+      } catch (e) {
+        alert("Invalid Backup JSON. Please use 'Copy Local Backup JSON' and paste the exact text.");
+      }
     }
 
     function fallbackToLocalStorage() {
@@ -6408,6 +6926,7 @@
     function persistMatch(matchObj, isEdit = false) {
       const matchId = matchObj.id || ("m_" + Date.now() + "_" + Math.random().toString(36).substring(2, 6));
       matchObj.id = matchId;
+      const cleanMatch = sanitizeForFirestore(matchObj);
 
       if (appState.deletedMatchIds) {
         appState.deletedMatchIds.delete(matchId);
@@ -6416,38 +6935,62 @@
       // 1. Immediately update local state so data is NEVER lost and modal never hangs
       const idx = appState.matches.findIndex(m => m.id === matchId);
       if (idx !== -1) {
-        appState.matches[idx] = matchObj;
+        appState.matches[idx] = cleanMatch;
       } else {
-        appState.matches.unshift(matchObj);
+        appState.matches.unshift(cleanMatch);
       }
       saveLocalData();
       updateUI();
 
-      // 2. Sync to Firestore asynchronously without blocking the UI modal
+      // 2. Dual-Engine Sync: Write via Direct Firestore REST API + Firebase SDK
+      lastMatchSyncAttempt[matchId] = Date.now();
+      firestoreRestUpsert("badminton_matches", matchId, cleanMatch)
+        .then(() => {
+          syncedRemoteMatchIds.add(matchId);
+          updateCloudSyncDiagnosticsUI();
+          showToast("Match synced to Cloud & Mobile! \u{1F3F8}");
+        })
+        .catch((restErr) => {
+          console.warn("Direct REST write fallback to SDK:", restErr);
+          if (isFirestoreActive && firestoreDb) {
+            firestoreDb.collection("badminton_matches").doc(matchId).set(cleanMatch, { merge: true })
+              .then(() => {
+                syncedRemoteMatchIds.add(matchId);
+                updateCloudSyncDiagnosticsUI();
+                showToast("Match saved to Firestore! \u{1F3F8}");
+              })
+              .catch((e) => {
+                console.warn("Firestore write failed, saved locally:", e);
+                showToast("Saved locally (Tap Sync to retry: " + e.message + ")", true);
+              });
+          } else {
+            showToast("Match saved locally (Tap Sync when online)");
+          }
+        });
+
       if (isFirestoreActive && firestoreDb) {
-        firestoreDb.collection("badminton_matches").doc(matchId).set(matchObj, { merge: true })
-          .then(() => {
-            showToast("Match saved to Firestore! \u{1F3F8}");
-          })
-          .catch((e) => {
-            console.warn("Firestore write failed, saved locally:", e);
-            showToast("Saved locally (Firestore: " + e.message + ")", true);
-          });
-      } else {
-        showToast("Match saved locally");
+        firestoreDb.collection("badminton_matches").doc(matchId).set(cleanMatch, { merge: true })
+          .then(() => { syncedRemoteMatchIds.add(matchId); })
+          .catch(() => {});
       }
     }
 
     async function deleteMatchById(matchId) {
       if (!appState.deletedMatchIds) appState.deletedMatchIds = new Set();
       appState.deletedMatchIds.add(matchId);
+      syncedRemoteMatchIds.delete(matchId);
 
       // 1. Optimistically remove from local state immediately
       appState.matches = (appState.matches || []).filter(m => m.id !== matchId);
       saveLocalData();
       updateUI();
 
-      // 2. Delete from Firestore if connected
+      // 2. Delete from Firestore via both Direct REST and SDK
+      let deletedRemote = false;
+      try {
+        deletedRemote = await firestoreRestDelete("badminton_matches", matchId);
+      } catch (e) {}
+
       if (isFirestoreActive && firestoreDb) {
         try {
           await firestoreDb.collection("badminton_matches").doc(matchId).delete();
@@ -6457,39 +7000,44 @@
             querySnap.forEach(doc => batch.delete(doc.ref));
             await batch.commit();
           }
-          showToast("Match deleted successfully");
+          deletedRemote = true;
         } catch (e) {
           console.warn("Firestore delete failed:", e);
-          showToast("Deleted locally (Firestore: " + e.message + ")", true);
         }
-      } else {
-        showToast("Match deleted locally");
       }
+      showToast(deletedRemote ? "Match deleted across all devices" : "Match deleted locally");
     }
 
     async function persistPlayer(playerObj) {
       const docId = playerObj.id || ("p_" + Date.now());
       playerObj.id = docId;
+      const cleanPlayer = sanitizeForFirestore(playerObj);
 
       const idx = appState.players.findIndex(p => p.id === docId);
       if (idx !== -1) {
-        appState.players[idx] = playerObj;
+        appState.players[idx] = cleanPlayer;
       } else {
-        appState.players.push(playerObj);
+        appState.players.push(cleanPlayer);
       }
       saveLocalData();
       updateUI();
 
-      if (isFirestoreActive && firestoreDb) {
-        try {
-          await firestoreDb.collection("badminton_players").doc(docId).set(playerObj, { merge: true });
-          showToast("Player added to Firestore!");
-        } catch (e) {
-          console.warn("Firestore add player failed, saved locally:", e);
-          showToast("Saved locally (Firestore: " + e.message + ")", true);
+      try {
+        await firestoreRestUpsert("badminton_players", docId, cleanPlayer);
+        if (isFirestoreActive && firestoreDb) {
+          firestoreDb.collection("badminton_players").doc(docId).set(cleanPlayer, { merge: true }).catch(() => {});
         }
-      } else {
-        showToast("Player added locally");
+        showToast("Player synced to Cloud!");
+      } catch (e) {
+        if (isFirestoreActive && firestoreDb) {
+          try {
+            await firestoreDb.collection("badminton_players").doc(docId).set(cleanPlayer, { merge: true });
+            showToast("Player added to Firestore!");
+            return;
+          } catch (sdkErr) {}
+        }
+        console.warn("Firestore add player failed, saved locally:", e);
+        showToast("Saved locally (Firestore: " + e.message + ")", true);
       }
     }
 
@@ -6497,6 +7045,10 @@
       appState.players = (appState.players || []).filter(p => p.id !== playerId);
       saveLocalData();
       updateUI();
+
+      try {
+        await firestoreRestDelete("badminton_players", playerId);
+      } catch (e) {}
 
       if (isFirestoreActive && firestoreDb) {
         try {
@@ -9199,6 +9751,7 @@
        ========================================================================== */
     function openDatabaseSettingsModal() {
       document.getElementById('firebaseConfigTextarea').value = JSON.stringify(activeFirebaseConfig, null, 2);
+      updateCloudSyncDiagnosticsUI();
       document.getElementById('databaseModal').classList.add('show');
     }
 
@@ -11038,34 +11591,38 @@
         editionData.createdAt = new Date().toISOString();
       }
       editionData.updatedAt = new Date().toISOString();
+      const cleanEdition = sanitizeForFirestore(editionData);
 
       // 1. Immediately save locally so data is NEVER lost even on page refresh
-      saveEditionLocally(editionData);
+      saveEditionLocally(cleanEdition);
 
-      // 2. Sync to Firestore if active
+      // 2. Dual-Engine Sync: Direct Firestore REST API + Firebase SDK
+      const matchEditionBackup = sanitizeForFirestore({
+        ...cleanEdition,
+        isChampionshipEdition: true,
+        date: cleanEdition.date || new Date().toISOString().split('T')[0]
+      });
+
+      lastEditionSyncAttempt[targetId] = Date.now();
+      Promise.all([
+        firestoreRestUpsert("badminton_editions", targetId, cleanEdition),
+        firestoreRestUpsert("badminton_matches", "edition_" + targetId, matchEditionBackup)
+      ]).then(() => {
+        syncedRemoteEditionIds.add(targetId);
+        updateCloudSyncDiagnosticsUI();
+        showToast("Synced " + cleanEdition.edition + " across all devices! \u{1F3C6}");
+      }).catch(err => {
+        console.warn("REST edition sync fallback note:", err.message);
+      });
+
       if (isFirestoreActive && firestoreDb) {
-        // Channel A: badminton_editions
-        firestoreDb.collection("badminton_editions").doc(targetId).set(editionData, { merge: true })
-          .then(() => {
-            showToast("Synced " + editionData.edition + " to Firestore! \u{1F3C6}");
-          })
-          .catch(err => {
-            console.warn("badminton_editions write note:", err.message);
-          });
+        firestoreDb.collection("badminton_editions").doc(targetId).set(cleanEdition, { merge: true })
+          .then(() => { syncedRemoteEditionIds.add(targetId); })
+          .catch(err => { console.warn("badminton_editions write note:", err.message); });
 
-        // Channel B: badminton_matches backup (always allowed under existing rules)
-        const matchEditionBackup = {
-          ...editionData,
-          isChampionshipEdition: true,
-          date: editionData.date || new Date().toISOString().split('T')[0]
-        };
         firestoreDb.collection("badminton_matches").doc("edition_" + targetId).set(matchEditionBackup, { merge: true })
-          .then(() => {
-            showToast("Synced " + editionData.edition + " across all devices! \u{1F3C6}");
-          })
-          .catch(err => {
-            console.warn("Backup sync note:", err.message);
-          });
+          .then(() => { syncedRemoteEditionIds.add(targetId); })
+          .catch(err => { console.warn("Backup sync note:", err.message); });
       }
     }
 
@@ -11092,7 +11649,11 @@
         return;
       }
 
+      syncedRemoteEditionIds.delete(editionId);
       deleteEditionLocally(editionId);
+
+      firestoreRestDelete("badminton_editions", editionId).catch(() => {});
+      firestoreRestDelete("badminton_matches", "edition_" + editionId).catch(() => {});
 
       if (isFirestoreActive && firestoreDb) {
         firestoreDb.collection("badminton_editions").doc(editionId).delete().catch(() => {});
@@ -13318,6 +13879,8 @@
 
     function openSeasonSummaryTab() {
       closeBurgerMenu();
+      appState.userManuallyPickedSeason = false;
+      appState.selectedSummarySeason = null;
       switchMainTab('seasonsummary');
     }
 
@@ -13371,9 +13934,9 @@
       const prevVal = parseInt(selectEl.value, 10);
 
       let targetSeason = maxActive;
-      if (preserveSelection && !isNaN(prevVal) && prevVal >= 1) {
+      if (preserveSelection && appState.userManuallyPickedSeason && !isNaN(prevVal) && prevVal >= 1) {
         targetSeason = prevVal;
-      } else if (appState.selectedSummarySeason && appState.selectedSummarySeason >= 1) {
+      } else if (appState.userManuallyPickedSeason && appState.selectedSummarySeason && appState.selectedSummarySeason >= 1) {
         targetSeason = appState.selectedSummarySeason;
       }
 
@@ -13420,6 +13983,7 @@
       if (selectEl) {
         selectEl.value = String(seasonNum);
       }
+      appState.userManuallyPickedSeason = true;
       appState.selectedSummarySeason = seasonNum;
       seasonSummarySortCol = 'default';
       seasonSummarySortAsc = false;
@@ -13430,6 +13994,7 @@
       const selectEl = document.getElementById('seasonSummarySelect');
       if (!selectEl) return;
       const seasonNum = parseInt(selectEl.value, 10) || 1;
+      appState.userManuallyPickedSeason = true;
       appState.selectedSummarySeason = seasonNum;
       seasonSummarySortCol = 'default';
       seasonSummarySortAsc = false;

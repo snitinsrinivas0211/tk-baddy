@@ -10153,31 +10153,61 @@
       const kMin = Math.floor(F / T);
       const kMax = Math.ceil(F / T);
 
-      // Sort descending by ELO
-      females.sort((a, b) => (b.elo || 1200) - (a.elo || 1200));
+      // Sort women ascending (lowest ELO first) so lower-ELO women get matched to the best balancing male partner first
+      females.sort((a, b) => (a.elo || 1200) - (b.elo || 1200));
       males.sort((a, b) => (b.elo || 1200) - (a.elo || 1200));
 
-      const teams = Array.from({ length: T }, () => []);
+      const overallMeanElo = selectedList.reduce((acc, p) => acc + (p.elo || 1200), 0) / selectedList.length;
+
+      // Build smart initial balanced seed (High-Low target-mean matching):
+      // 1) Place women across teams (kMin..kMax per team)
+      // 2) For teams that already have women, pick the male partner that brings the team average closest to overallMeanElo
+      // 3) For remaining empty slots, fold highest-ELO remaining male with lowest-ELO remaining male
+      const seedTeams = Array.from({ length: T }, () => []);
       const teamsWithKMax = F - kMin * T;
 
-      // Distribute females strictly across teams
       let fIdx = 0;
       for (let t = 0; t < T; t++) {
         const quota = t < teamsWithKMax ? kMax : kMin;
         for (let q = 0; q < quota; q++) {
           if (fIdx < females.length) {
-            teams[t].push(females[fIdx++]);
+            seedTeams[t].push(females[fIdx++]);
           }
         }
       }
 
-      // Fill remaining slots with males in serpentine order
-      let mIdx = 0;
+      const availMales = [...males];
+      // First complete any team that already has at least 1 player so mixed teams hit overallMeanElo
+      for (let t = 0; t < T; t++) {
+        while (seedTeams[t].length > 0 && seedTeams[t].length < S && availMales.length > 0) {
+          const curSum = seedTeams[t].reduce((acc, p) => acc + (p.elo || 1200), 0);
+          const slotsLeft = S - seedTeams[t].length;
+          const idealNextElo = (overallMeanElo * (seedTeams[t].length + 1)) - curSum;
+          let bestMIdx = 0;
+          let bestDiff = Infinity;
+          for (let m = 0; m < availMales.length; m++) {
+            const diff = Math.abs((availMales[m].elo || 1200) - idealNextElo);
+            if (diff < bestDiff) {
+              bestDiff = diff;
+              bestMIdx = m;
+            }
+          }
+          seedTeams[t].push(availMales.splice(bestMIdx, 1)[0]);
+        }
+      }
+
+      // Now fill remaining empty teams using High-Low folding (highest + lowest remaining males)
+      availMales.sort((a, b) => (b.elo || 1200) - (a.elo || 1200));
+      let highPtr = 0;
+      let lowPtr = availMales.length - 1;
       for (let slot = 0; slot < S; slot++) {
-        const order = (slot % 2 === 0) ? [...Array(T).keys()] : [...Array(T).keys()].reverse();
-        for (const t of order) {
-          if (teams[t].length < S && mIdx < males.length) {
-            teams[t].push(males[mIdx++]);
+        for (let t = 0; t < T; t++) {
+          if (seedTeams[t].length <= slot && seedTeams[t].length < S && highPtr <= lowPtr) {
+            if (slot % 2 === 0) {
+              seedTeams[t].push(availMales[highPtr++]);
+            } else {
+              seedTeams[t].push(availMales[lowPtr--]);
+            }
           }
         }
       }
@@ -10187,7 +10217,7 @@
         return sum / team.length;
       }
 
-      function getCost(currentTeams) {
+      function getEloMetrics(currentTeams) {
         const avgs = currentTeams.map(getTeamAvg);
         let minE = avgs[0], maxE = avgs[0], sumE = 0;
         for (let i = 0; i < avgs.length; i++) {
@@ -10201,12 +10231,14 @@
           variance += (avgs[i] - mean) * (avgs[i] - mean);
         }
         variance /= avgs.length;
+        const stdDev = Math.sqrt(variance);
+        const spread = maxE - minE;
+        const pureEloScore = spread * 100 + stdDev * 180 + variance * 2.0;
+        return { spread, stdDev, variance, pureEloScore };
+      }
 
-        // Primary objective: ELO balance
-        const eloCost = variance * 3.5 + (maxE - minE) * 45;
-
-        // Secondary objective: Minimize past pairings (quadratic penalty leans towards least-played pairs)
-        let pairPenalty = 0;
+      function getPairPenalty(currentTeams) {
+        let penalty = 0;
         for (let tIdx = 0; tIdx < currentTeams.length; tIdx++) {
           const team = currentTeams[tIdx];
           for (let i = 0; i < team.length; i++) {
@@ -10214,86 +10246,183 @@
               const u = team[i].name;
               const v = team[j].name;
               const c = (pairHistoryMap[u] && pairHistoryMap[u][v]) ? pairHistoryMap[u][v] : 0;
-              pairPenalty += (c * c + c * 2) * 220;
+              if (c > 0) {
+                // Capped sub-quadratic penalty so long-time players don't blow up the scale
+                const effC = Math.min(c, 12);
+                penalty += (effC * 18 + effC * effC * 4);
+              }
             }
           }
         }
-
-        return eloCost + pairPenalty;
+        return penalty;
       }
 
-      let bestTeams = teams.map(t => [...t]);
-      let bestCost = getCost(bestTeams);
+      function canSwapPreserveGenderRule(team1, team2, p1, p2) {
+        const p1IsF = (p1.gender || '').toLowerCase() === 'female' ? 1 : 0;
+        const p2IsF = (p2.gender || '').toLowerCase() === 'female' ? 1 : 0;
+        if (p1IsF === p2IsF) return true;
+        const t1F = team1.reduce((acc, p) => acc + ((p.gender || '').toLowerCase() === 'female' ? 1 : 0), 0);
+        const t2F = team2.reduce((acc, p) => acc + ((p.gender || '').toLowerCase() === 'female' ? 1 : 0), 0);
+        const newT1F = t1F - p1IsF + p2IsF;
+        const newT2F = t2F - p2IsF + p1IsF;
+        return (newT1F >= kMin && newT1F <= kMax && newT2F >= kMin && newT2F <= kMax);
+      }
 
-      // Multi-start Simulated Annealing local search with gender-preserving random perturbations
-      const restarts = 35;
-      const iters = 1500;
-
-      for (let r = 0; r < restarts; r++) {
-        let curTeams = teams.map(t => [...t]);
-
-        // For restarts > 0, apply valid gender-preserving random swaps to explore diverse pairings
-        if (r > 0 && T > 1) {
-          for (let sStep = 0; sStep < T * 3; sStep++) {
-            const rt1 = Math.floor(Math.random() * T);
-            let rt2 = Math.floor(Math.random() * T);
-            while (rt2 === rt1) rt2 = Math.floor(Math.random() * T);
-            const idx1 = Math.floor(Math.random() * curTeams[rt1].length);
-            const idx2 = Math.floor(Math.random() * curTeams[rt2].length);
-            const cand1 = curTeams[rt1][idx1];
-            const cand2 = curTeams[rt2][idx2];
-            const c1F = (cand1.gender || '').toLowerCase() === 'female' ? 1 : 0;
-            const c2F = (cand2.gender || '').toLowerCase() === 'female' ? 1 : 0;
-            if (c1F === c2F) {
-              curTeams[rt1][idx1] = cand2;
-              curTeams[rt2][idx2] = cand1;
-            }
+      function randomizeGenderValidLineup(baseTeams, steps) {
+        const copy = baseTeams.map(t => [...t]);
+        if (T <= 1) return copy;
+        for (let sStep = 0; sStep < steps; sStep++) {
+          const rt1 = Math.floor(Math.random() * T);
+          let rt2 = Math.floor(Math.random() * T);
+          while (rt2 === rt1) rt2 = Math.floor(Math.random() * T);
+          const idx1 = Math.floor(Math.random() * copy[rt1].length);
+          const idx2 = Math.floor(Math.random() * copy[rt2].length);
+          const cand1 = copy[rt1][idx1];
+          const cand2 = copy[rt2][idx2];
+          if (canSwapPreserveGenderRule(copy[rt1], copy[rt2], cand1, cand2)) {
+            copy[rt1][idx1] = cand2;
+            copy[rt2][idx2] = cand1;
           }
         }
+        return copy;
+      }
 
-        let curCost = getCost(curTeams);
-        let temp = 80.0;
-        const cool = 0.986;
+      // =========================================================================
+      // STAGE 1: Find the tightest achievable ELO balance (Pure ELO Optimization)
+      // =========================================================================
+      let bestPureEloTeams = seedTeams.map(t => [...t]);
+      let bestPureMetrics = getEloMetrics(bestPureEloTeams);
 
-        for (let it = 0; it < iters; it++) {
+      const stage1Restarts = 25;
+      const stage1Iters = 1200;
+
+      for (let r = 0; r < stage1Restarts; r++) {
+        let curTeams = (r === 0) ? seedTeams.map(t => [...t]) : randomizeGenderValidLineup(seedTeams, T * 4);
+        let curScore = getEloMetrics(curTeams).pureEloScore;
+        let temp = 400.0;
+        const cool = 0.992;
+
+        for (let it = 0; it < stage1Iters; it++) {
+          if (T <= 1) break;
           const t1 = Math.floor(Math.random() * T);
           let t2 = Math.floor(Math.random() * T);
-          while (t2 === t1 && T > 1) t2 = Math.floor(Math.random() * T);
+          while (t2 === t1) t2 = Math.floor(Math.random() * T);
 
           const team1 = curTeams[t1];
           const team2 = curTeams[t2];
-
           const p1Idx = Math.floor(Math.random() * team1.length);
           const p2Idx = Math.floor(Math.random() * team2.length);
-
           const p1 = team1[p1Idx];
           const p2 = team2[p2Idx];
 
-          const p1IsF = (p1.gender || '').toLowerCase() === 'female' ? 1 : 0;
-          const p2IsF = (p2.gender || '').toLowerCase() === 'female' ? 1 : 0;
-
-          let valid = false;
-          if (p1IsF === p2IsF) {
-            valid = true;
-          } else {
-            const t1F = team1.reduce((acc, p) => acc + ((p.gender || '').toLowerCase() === 'female' ? 1 : 0), 0);
-            const t2F = team2.reduce((acc, p) => acc + ((p.gender || '').toLowerCase() === 'female' ? 1 : 0), 0);
-
-            const newT1F = t1F - p1IsF + p2IsF;
-            const newT2F = t2F - p2IsF + p1IsF;
-
-            if (newT1F >= kMin && newT1F <= kMax && newT2F >= kMin && newT2F <= kMax) {
-              valid = true;
-            }
-          }
-
-          if (valid) {
+          if (canSwapPreserveGenderRule(team1, team2, p1, p2)) {
             team1[p1Idx] = p2;
             team2[p2Idx] = p1;
 
-            const newCost = getCost(curTeams);
+            const m = getEloMetrics(curTeams);
+            const delta = m.pureEloScore - curScore;
+            if (delta <= 0 || Math.exp(-delta / Math.max(temp, 0.1)) > Math.random()) {
+              curScore = m.pureEloScore;
+              if (m.pureEloScore < bestPureMetrics.pureEloScore) {
+                bestPureMetrics = m;
+                bestPureEloTeams = curTeams.map(t => [...t]);
+              }
+            } else {
+              team1[p1Idx] = p1;
+              team2[p2Idx] = p2;
+            }
+          }
+          temp *= cool;
+        }
+      }
+
+      // Deterministic 2-opt polish on Stage 1 so bestPureMetrics is guaranteed locally optimal
+      let pureImproved = true;
+      while (pureImproved && T > 1) {
+        pureImproved = false;
+        for (let t1 = 0; t1 < T; t1++) {
+          for (let t2 = t1 + 1; t2 < T; t2++) {
+            for (let i = 0; i < bestPureEloTeams[t1].length; i++) {
+              for (let j = 0; j < bestPureEloTeams[t2].length; j++) {
+                const p1 = bestPureEloTeams[t1][i];
+                const p2 = bestPureEloTeams[t2][j];
+                if (canSwapPreserveGenderRule(bestPureEloTeams[t1], bestPureEloTeams[t2], p1, p2)) {
+                  bestPureEloTeams[t1][i] = p2;
+                  bestPureEloTeams[t2][j] = p1;
+                  const m = getEloMetrics(bestPureEloTeams);
+                  if (m.pureEloScore < bestPureMetrics.pureEloScore - 1e-6) {
+                    bestPureMetrics = m;
+                    pureImproved = true;
+                  } else {
+                    bestPureEloTeams[t1][i] = p1;
+                    bestPureEloTeams[t2][j] = p2;
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+
+      // =========================================================================
+      // STAGE 2: Minimize Repeat Pairings STRICTLY Within Tight ELO Guardrails
+      // Never allow repeat-partner avoidance to push ELO spread more than +15 pts
+      // (or stdDev more than +8 pts) above the mathematical optimum from Stage 1.
+      // =========================================================================
+      const maxAllowedSpread = bestPureMetrics.spread + 15;
+      const maxAllowedStdDev = bestPureMetrics.stdDev + 8;
+
+      function getLexicographicCost(currentTeams) {
+        const m = getEloMetrics(currentTeams);
+        const pairPen = getPairPenalty(currentTeams);
+
+        // Hard guardrail penalty if a swap violates the tight ELO balance band
+        let guardrailViolation = 0;
+        if (m.spread > maxAllowedSpread) {
+          guardrailViolation += (m.spread - maxAllowedSpread) * 50000;
+        }
+        if (m.stdDev > maxAllowedStdDev) {
+          guardrailViolation += (m.stdDev - maxAllowedStdDev) * 80000;
+        }
+
+        // Primary: ELO tightness; Secondary: Repeat partner avoidance (only breaks ties among well-balanced teams)
+        return guardrailViolation + m.pureEloScore * 1.5 + pairPen;
+      }
+
+      let bestTeams = bestPureEloTeams.map(t => [...t]);
+      let bestCost = getLexicographicCost(bestTeams);
+
+      const stage2Restarts = 35;
+      const stage2Iters = 1500;
+
+      for (let r = 0; r < stage2Restarts; r++) {
+        // Start half of the runs from the optimal ELO lineup, half from diverse gender-valid permutations
+        const base = (r % 2 === 0) ? bestPureEloTeams : seedTeams;
+        let curTeams = (r === 0) ? bestPureEloTeams.map(t => [...t]) : randomizeGenderValidLineup(base, T * 3);
+        let curCost = getLexicographicCost(curTeams);
+        let temp = 300.0;
+        const cool = 0.993;
+
+        for (let it = 0; it < stage2Iters; it++) {
+          if (T <= 1) break;
+          const t1 = Math.floor(Math.random() * T);
+          let t2 = Math.floor(Math.random() * T);
+          while (t2 === t1) t2 = Math.floor(Math.random() * T);
+
+          const team1 = curTeams[t1];
+          const team2 = curTeams[t2];
+          const p1Idx = Math.floor(Math.random() * team1.length);
+          const p2Idx = Math.floor(Math.random() * team2.length);
+          const p1 = team1[p1Idx];
+          const p2 = team2[p2Idx];
+
+          if (canSwapPreserveGenderRule(team1, team2, p1, p2)) {
+            team1[p1Idx] = p2;
+            team2[p2Idx] = p1;
+
+            const newCost = getLexicographicCost(curTeams);
             const delta = newCost - curCost;
-            if (delta < 0 || Math.exp(-delta / Math.max(temp, 0.01)) > Math.random()) {
+            if (delta <= 0 || Math.exp(-delta / Math.max(temp, 0.1)) > Math.random()) {
               curCost = newCost;
               if (curCost < bestCost) {
                 bestCost = curCost;
@@ -10305,6 +10434,34 @@
             }
           }
           temp *= cool;
+        }
+      }
+
+      // Deterministic polish pass: check all pairwise 2-player swaps to ensure local optimum
+      let improved = true;
+      while (improved && T > 1) {
+        improved = false;
+        for (let t1 = 0; t1 < T; t1++) {
+          for (let t2 = t1 + 1; t2 < T; t2++) {
+            for (let i = 0; i < bestTeams[t1].length; i++) {
+              for (let j = 0; j < bestTeams[t2].length; j++) {
+                const p1 = bestTeams[t1][i];
+                const p2 = bestTeams[t2][j];
+                if (canSwapPreserveGenderRule(bestTeams[t1], bestTeams[t2], p1, p2)) {
+                  bestTeams[t1][i] = p2;
+                  bestTeams[t2][j] = p1;
+                  const c = getLexicographicCost(bestTeams);
+                  if (c < bestCost - 1e-6) {
+                    bestCost = c;
+                    improved = true;
+                  } else {
+                    bestTeams[t1][i] = p1;
+                    bestTeams[t2][j] = p2;
+                  }
+                }
+              }
+            }
+          }
         }
       }
 

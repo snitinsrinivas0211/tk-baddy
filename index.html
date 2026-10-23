@@ -6300,9 +6300,35 @@
       return obj;
     }
 
+    function normalizeEditionId(rawId) {
+      return String(rawId || '').replace(/^(edition_)+/, '');
+    }
+
+    function deduplicateEditionsList(editionsList) {
+      if (!Array.isArray(editionsList)) return [];
+      const bySeason = {};
+      editionsList.forEach(ed => {
+        if (!ed || typeof ed !== 'object') return;
+        const cleanId = normalizeEditionId(ed.id);
+        if (!cleanId) return;
+        const normalizedEd = { ...ed, id: cleanId };
+        delete normalizedEd.isChampionshipEdition;
+        const seasonMatch = String(normalizedEd.season || normalizedEd.edition || '').match(/\d+/);
+        const seasonKey = seasonMatch ? ('S' + seasonMatch[0]) : ('ID_' + cleanId);
+        const prev = bySeason[seasonKey];
+        if (!prev || String(normalizedEd.updatedAt || '') >= String(prev.updatedAt || '')) {
+          bySeason[seasonKey] = normalizedEd;
+        }
+      });
+      const unique = Object.values(bySeason);
+      unique.sort((a, b) => (b.date || '').localeCompare(a.date || ''));
+      return unique;
+    }
+
     async function firestoreRestUpsert(collectionName, docId, dataObj) {
       if (!collectionName || !docId || !dataObj) return false;
-      const cleanObj = sanitizeForFirestore({ ...dataObj, id: docId });
+      const innerId = String(docId).startsWith("edition_") ? normalizeEditionId(dataObj.id || docId) : (dataObj.id || docId);
+      const cleanObj = sanitizeForFirestore({ ...dataObj, id: innerId });
       const url = getFirestoreRestBaseUrl() + "/" + encodeURIComponent(collectionName) + "/" + encodeURIComponent(docId);
       const body = JSON.stringify({ fields: toFirestoreRestFields(cleanObj) });
       const resp = await fetch(url, {
@@ -6366,7 +6392,9 @@
           try { appState.matches = JSON.parse(storedMatches) || []; } catch (e) {}
         }
         if (storedEditions) {
-          try { appState.editions = JSON.parse(storedEditions) || []; } catch (e) {}
+          try {
+            appState.editions = deduplicateEditionsList(JSON.parse(storedEditions) || []);
+          } catch (e) {}
         }
         if (storedDeletedIds) {
           try {
@@ -6387,6 +6415,7 @@
 
     function saveLocalData() {
       try {
+        appState.editions = deduplicateEditionsList(appState.editions || []);
         localStorage.setItem('tk_baddy_players', JSON.stringify(appState.players || []));
         localStorage.setItem('tk_baddy_matches', JSON.stringify(appState.matches || []));
         localStorage.setItem('tk_baddy_editions', JSON.stringify(appState.editions || []));
@@ -6532,7 +6561,7 @@
             snapshot.forEach(doc => {
               const data = doc.data();
               if (data.isChampionshipEdition || doc.id.startsWith("edition_")) {
-                const edId = data.id || doc.id.replace(/^edition_/, '');
+                const edId = normalizeEditionId(data.id || doc.id);
                 syncedRemoteEditionIds.add(edId);
                 syncedEditions.push({ ...data, id: edId });
               } else if (!deletedIds.has(doc.id)) {
@@ -6561,15 +6590,7 @@
             }
 
             if (syncedEditions.length > 0) {
-              syncedEditions.forEach(ed => {
-                const existingIdx = (appState.editions || []).findIndex(e => e.id === ed.id);
-                if (existingIdx >= 0) {
-                  appState.editions[existingIdx] = ed;
-                } else {
-                  appState.editions.push(ed);
-                }
-              });
-              appState.editions.sort((a, b) => (b.date || '').localeCompare(a.date || ''));
+              appState.editions = deduplicateEditionsList([...(appState.editions || []), ...syncedEditions]);
             }
           }
           saveLocalData();
@@ -6584,20 +6605,13 @@
           if (!snapshot.empty) {
             const editions = [];
             snapshot.forEach(doc => {
-              syncedRemoteEditionIds.add(doc.id);
-              editions.push({ ...doc.data(), id: doc.id });
+              const edId = normalizeEditionId(doc.id);
+              syncedRemoteEditionIds.add(edId);
+              editions.push({ ...doc.data(), id: edId });
             });
-            editions.forEach(ed => {
-              const existingIdx = (appState.editions || []).findIndex(e => e.id === ed.id);
-              if (existingIdx >= 0) {
-                appState.editions[existingIdx] = ed;
-              } else {
-                appState.editions.push(ed);
-              }
-            });
-            appState.editions.sort((a, b) => (b.date || '').localeCompare(a.date || ''));
+            appState.editions = deduplicateEditionsList([...(appState.editions || []), ...editions]);
           }
-          const unsyncedEditions = (appState.editions || []).filter(ed => ed && ed.id && !syncedRemoteEditionIds.has(ed.id));
+          const unsyncedEditions = (appState.editions || []).filter(ed => ed && ed.id && !syncedRemoteEditionIds.has(normalizeEditionId(ed.id)));
           if (unsyncedEditions.length > 0) {
             syncLocalEditionsToRemote(unsyncedEditions, false);
           }
@@ -6652,21 +6666,23 @@
     }
 
     async function syncLocalEditionsToRemote(editionsSubset = null, force = false) {
-      const sourceList = Array.isArray(editionsSubset) ? editionsSubset : (appState.editions || []);
+      const rawList = Array.isArray(editionsSubset) ? editionsSubset : (appState.editions || []);
+      const sourceList = deduplicateEditionsList(rawList);
       const now = Date.now();
       let uploadedCount = 0;
 
       for (const ed of sourceList) {
         if (!ed) continue;
-        const edId = ed.id || ("ed_" + Date.now());
+        const edId = normalizeEditionId(ed.id || ("ed_" + Date.now()));
         ed.id = edId;
         if (!force && syncedRemoteEditionIds.has(edId)) continue;
         if (!force && lastEditionSyncAttempt[edId] && (now - lastEditionSyncAttempt[edId] < 45000)) continue;
 
         lastEditionSyncAttempt[edId] = now;
-        const cleanEd = sanitizeForFirestore(ed);
+        const cleanEd = sanitizeForFirestore({ ...ed, id: edId });
         const backupData = sanitizeForFirestore({
           ...cleanEd,
+          id: edId,
           isChampionshipEdition: true,
           date: cleanEd.date || new Date().toISOString().split('T')[0]
         });
@@ -6714,15 +6730,16 @@
 
         rawEditionsDocs.forEach(ed => {
           if (ed && ed.id) {
-            syncedRemoteEditionIds.add(ed.id);
-            remoteEditionsMap[ed.id] = ed;
+            const cleanId = normalizeEditionId(ed.id);
+            syncedRemoteEditionIds.add(cleanId);
+            remoteEditionsMap[cleanId] = { ...ed, id: cleanId };
           }
         });
 
         rawMatchesDocs.forEach(doc => {
           if (!doc || !doc.id) return;
           if (doc.isChampionshipEdition || String(doc.id).startsWith("edition_")) {
-            const edId = doc.id.replace(/^edition_/, '');
+            const edId = normalizeEditionId(doc.id);
             const cleanEd = { ...doc, id: edId };
             delete cleanEd.isChampionshipEdition;
             syncedRemoteEditionIds.add(edId);
@@ -6769,18 +6786,27 @@
         const prevMatchCount = (appState.matches || []).length;
         appState.matches = mergedMatches;
 
-        // Merge editions
-        const unsyncedLocalEditions = (appState.editions || []).filter(ed =>
-          ed && ed.id && !remoteEditionsMap[ed.id]
+        // Merge and deduplicate editions
+        const cleanLocalEditions = deduplicateEditionsList(appState.editions || []);
+        const remoteSeasonSet = new Set(
+          Object.values(remoteEditionsMap).map(ed => {
+            const m = String(ed.season || ed.edition || '').match(/\d+/);
+            return m ? m[0] : ed.id;
+          })
         );
+        const unsyncedLocalEditions = cleanLocalEditions.filter(ed => {
+          if (!ed || !ed.id) return false;
+          const cleanId = normalizeEditionId(ed.id);
+          const m = String(ed.season || ed.edition || '').match(/\d+/);
+          const sKey = m ? m[0] : cleanId;
+          return !remoteEditionsMap[cleanId] && !remoteSeasonSet.has(sKey);
+        });
         let pushedEditionCount = 0;
         if (unsyncedLocalEditions.length > 0) {
           pushedEditionCount = await syncLocalEditionsToRemote(unsyncedLocalEditions, true);
         }
 
-        const mergedEditions = [...Object.values(remoteEditionsMap), ...unsyncedLocalEditions];
-        mergedEditions.sort((a, b) => (b.date || '').localeCompare(a.date || ''));
-        appState.editions = mergedEditions;
+        appState.editions = deduplicateEditionsList([...Object.values(remoteEditionsMap), ...unsyncedLocalEditions]);
 
         saveLocalData();
         updateSyncBadge(true);
@@ -7561,7 +7587,7 @@
 
       // 2. Beauty Da: Won 2 or more Championships
       const titlesCountMap = {};
-      (appState.editions || []).forEach(ed => {
+      deduplicateEditionsList(appState.editions || []).forEach(ed => {
         (ed.champions || []).forEach(champName => {
           titlesCountMap[champName] = (titlesCountMap[champName] || 0) + 1;
         });
@@ -13786,15 +13812,17 @@
           titles: 0,
           runnersUp: 0,
           seasonsSet: new Set(),
+          titlesSeasonsSet: new Set(),
+          runnersSeasonsSet: new Set(),
           editionsWon: []
         };
       });
 
-      // Accumulate across editions
-      (appState.editions || []).forEach(ed => {
+      // Accumulate across deduplicated editions (strictly at most 1 title / 1 runner-up per season)
+      deduplicateEditionsList(appState.editions || []).forEach(ed => {
         const champs = Array.isArray(ed.champions) ? ed.champions : [];
         const runners = Array.isArray(ed.runnersUp) ? ed.runnersUp : [];
-        const seasonKey = normalizeSeason(ed.edition);
+        const seasonKey = normalizeSeason(ed.edition || ed.season) || ('ID_' + ed.id);
 
         champs.forEach(pName => {
           if (!pName) return;
@@ -13806,11 +13834,16 @@
               titles: 0,
               runnersUp: 0,
               seasonsSet: new Set(),
+              titlesSeasonsSet: new Set(),
+              runnersSeasonsSet: new Set(),
               editionsWon: []
             };
           }
-          playerStats[pName].titles += 1;
-          if (seasonKey) playerStats[pName].seasonsSet.add(seasonKey);
+          if (!playerStats[pName].titlesSeasonsSet.has(seasonKey)) {
+            playerStats[pName].titlesSeasonsSet.add(seasonKey);
+            playerStats[pName].titles += 1;
+          }
+          if (seasonKey && !seasonKey.startsWith('ID_')) playerStats[pName].seasonsSet.add(seasonKey);
           if (ed.edition && !playerStats[pName].editionsWon.includes(ed.edition)) {
             playerStats[pName].editionsWon.push(ed.edition);
           }
@@ -13826,11 +13859,16 @@
               titles: 0,
               runnersUp: 0,
               seasonsSet: new Set(),
+              titlesSeasonsSet: new Set(),
+              runnersSeasonsSet: new Set(),
               editionsWon: []
             };
           }
-          playerStats[pName].runnersUp += 1;
-          if (seasonKey) playerStats[pName].seasonsSet.add(seasonKey);
+          if (!playerStats[pName].runnersSeasonsSet.has(seasonKey)) {
+            playerStats[pName].runnersSeasonsSet.add(seasonKey);
+            playerStats[pName].runnersUp += 1;
+          }
+          if (seasonKey && !seasonKey.startsWith('ID_')) playerStats[pName].seasonsSet.add(seasonKey);
         });
       });
 

@@ -10605,6 +10605,38 @@
         .replace(/'/g, '&#039;');
     }
 
+    let activeToastTimeout = null;
+    function showToast(message, isError = false) {
+      if (!message) return;
+      try {
+        let toastEl = document.getElementById('tkGlobalToast');
+        if (!toastEl) {
+          toastEl = document.createElement('div');
+          toastEl.id = 'tkGlobalToast';
+          toastEl.style.cssText =
+            'position:fixed;bottom:24px;right:24px;z-index:99999;padding:12px 18px;border-radius:12px;' +
+            'font-size:13px;font-weight:700;box-shadow:0 12px 32px rgba(0,0,0,0.55);' +
+            'transition:opacity 0.25s ease,transform 0.25s ease;opacity:0;transform:translateY(10px);pointer-events:none;max-width:90vw;';
+          document.body.appendChild(toastEl);
+        }
+        toastEl.style.background = isError ? 'rgba(127, 29, 29, 0.96)' : 'rgba(6, 78, 59, 0.96)';
+        toastEl.style.border = isError ? '1px solid rgba(244, 63, 94, 0.6)' : '1px solid rgba(0, 245, 155, 0.55)';
+        toastEl.style.color = isError ? '#fecdd3' : '#ecfdf5';
+        toastEl.textContent = String(message);
+        toastEl.style.opacity = '1';
+        toastEl.style.transform = 'translateY(0)';
+        if (activeToastTimeout) clearTimeout(activeToastTimeout);
+        activeToastTimeout = setTimeout(() => {
+          if (toastEl) {
+            toastEl.style.opacity = '0';
+            toastEl.style.transform = 'translateY(10px)';
+          }
+        }, 3200);
+      } catch (e) {
+        console.log(message);
+      }
+    }
+
     // Initialize application on DOM ready
     
     /* ==========================================================================
@@ -16233,10 +16265,10 @@
       }
 
       const allPlayers = getAllSelectablePlayerNames();
-      const eloStandings = calculateStandings('doubles') || [];
+      const eloStandings = (typeof computeStandings === 'function' ? computeStandings() : []) || [];
       const eloMap = {};
       eloStandings.forEach(s => {
-        if (s && s.name) eloMap[s.name] = Math.round(s.elo || 1000);
+        if (s && s.name) eloMap[s.name] = Math.round(s.elo || 1200);
       });
 
       // Track which player is selected in which slot so we can mark/disable duplicates across dropdowns
@@ -16265,7 +16297,7 @@
           const isSelectedHere = (pName === currentVal);
           const takenBy = selectedWhere[pName];
           const isTakenElsewhere = !!(takenBy && !isSelectedHere);
-          const eloVal = eloMap[pName] || 1000;
+          const eloVal = eloMap[pName] || 1200;
           const labelText = pName + ' (' + eloVal + ' ELO)' + (isTakenElsewhere ? (' \u2014 in ' + takenBy) : '');
           html +=
             '<option value="' + escapeHtml(pName) + '"' +
@@ -16284,7 +16316,7 @@
           const isComplete = !!(t.p1 && t.p2 && t.p1 !== t.p2);
           let teamEloHtml = '<span class="ls-team-elo-chip">Select 2 players</span>';
           if (isComplete) {
-            const avgElo = Math.round(((eloMap[t.p1] || 1000) + (eloMap[t.p2] || 1000)) / 2);
+            const avgElo = Math.round(((eloMap[t.p1] || 1200) + (eloMap[t.p2] || 1200)) / 2);
             teamEloHtml = '<span class="ls-team-elo-chip">\u2714 Avg ELO: ' + avgElo + '</span>';
           }
 
@@ -16936,36 +16968,79 @@
         fixtureId: fixture.id
       };
 
-      if (fixture.matchId && (appState.matches || []).some(m => m.id === fixture.matchId)) {
-        openEditMatchModal(fixture.matchId);
-        return;
+      populatePlayerDropdowns();
+
+      const existingMatch = fixture.matchId
+        ? (appState.matches || []).find(m => m.id === fixture.matchId)
+        : null;
+
+      const matchForm = document.getElementById('matchForm');
+      if (matchForm) matchForm.reset();
+
+      const editIdEl = document.getElementById('editMatchId');
+      if (editIdEl) editIdEl.value = existingMatch ? existingMatch.id : '';
+
+      const titleEl = document.getElementById('matchModalTitle');
+      if (titleEl) {
+        titleEl.innerHTML = existingMatch
+          ? '<span>\u270F\uFE0F</span> Edit Live Match Score'
+          : '<span>\u{1F3F8}</span> Score Live Match (' + escapeHtml(fixture.team1Label + ' vs ' + fixture.team2Label) + ')';
       }
 
-      openMatchModal();
-      setModalFormat('doubles');
+      const dateInput = document.getElementById('matchDateInput');
+      if (dateInput) dateInput.value = (existingMatch && existingMatch.date) ? existingMatch.date : (tournament.date || getTodayIsoDateString());
+
       const seasonSelect = document.getElementById('matchSeasonSelect');
       if (seasonSelect) {
-        populateSeasonDropdown(parseInt(tournament.season, 10));
         seasonSelect.value = String(tournament.season);
       }
-      const dateInput = document.getElementById('matchDateInput');
-      if (dateInput) dateInput.value = tournament.date || getTodayIsoDateString();
+
+      const formatSelect = document.getElementById('modalFormatSelect');
+      if (formatSelect) formatSelect.value = 'doubles';
+      setModalFormat('doubles');
 
       const t1p1 = document.getElementById('team1Player1Select');
       const t1p2 = document.getElementById('team1Player2Select');
       const t2p1 = document.getElementById('team2Player1Select');
       const t2p2 = document.getElementById('team2Player2Select');
 
-      if (t1p1) t1p1.value = fixture.team1[0] || '';
-      if (t1p2) t1p2.value = fixture.team1[1] || '';
-      if (t2p1) t2p1.value = fixture.team2[0] || '';
-      if (t2p2) t2p2.value = fixture.team2[1] || '';
+      const team1Arr = (existingMatch && Array.isArray(existingMatch.team1)) ? existingMatch.team1 : fixture.team1;
+      const team2Arr = (existingMatch && Array.isArray(existingMatch.team2)) ? existingMatch.team2 : fixture.team2;
+
+      if (t1p1) t1p1.value = team1Arr[0] || '';
+      if (t1p2) t1p2.value = team1Arr[1] || '';
+      if (t2p1) t2p1.value = team2Arr[0] || '';
+      if (t2p2) t2p2.value = team2Arr[1] || '';
+
+      const setsArr = (existingMatch && Array.isArray(existingMatch.sets)) ? existingMatch.sets : (fixture.sets || []);
+      const setsCount = setsArr.length > 1 ? '3' : '1';
+      const setsCountSelect = document.getElementById('matchSetsCountSelect');
+      if (setsCountSelect) setsCountSelect.value = setsCount;
+      handleSetsCountChange(setsCount);
+
+      if (setsArr[0]) {
+        document.getElementById('set1Team1').value = setsArr[0].t1;
+        document.getElementById('set1Team2').value = setsArr[0].t2;
+      }
+      if (setsArr[1]) {
+        document.getElementById('set2Team1').value = setsArr[1].t1;
+        document.getElementById('set2Team2').value = setsArr[1].t2;
+      }
+      if (setsArr[2]) {
+        document.getElementById('set3Team1').value = setsArr[2].t1;
+        document.getElementById('set3Team2').value = setsArr[2].t2;
+      }
 
       const notesInput = document.getElementById('matchNotesInput');
       if (notesInput) {
-        notesInput.value = 'Season ' + tournament.season + ' \u2022 Group ' + fixture.group + ' (' + fixture.team1Label + ' vs ' + fixture.team2Label + ')';
+        notesInput.value = (existingMatch && existingMatch.notes)
+          ? existingMatch.notes
+          : ('Season ' + tournament.season + ' \u2022 Group ' + fixture.group + ' (' + fixture.team1Label + ' vs ' + fixture.team2Label + ')');
       }
+
       calculateLiveMatchWinner();
+      const modalEl = document.getElementById('matchModal');
+      if (modalEl) modalEl.classList.add('show');
     }
 
     async function clearLiveFixtureScore(seasonNum, fixtureId) {

@@ -4673,6 +4673,379 @@
       }
     }
 
+    /* ==========================================================================
+       LIVE SCORING TAB & WIZARD STYLES
+       ========================================================================== */
+    .ls-container {
+      max-width: 940px;
+      margin: 0 auto 36px auto;
+    }
+    .ls-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 14px;
+      margin-bottom: 18px;
+      flex-wrap: wrap;
+    }
+    .ls-header-actions {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+    .ls-stepper-bar {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 8px;
+      margin-bottom: 20px;
+      background: rgba(15, 23, 42, 0.75);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-md);
+      padding: 8px;
+    }
+    .ls-step-pill {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      padding: 10px 12px;
+      border-radius: 10px;
+      border: 1px solid transparent;
+      background: rgba(30, 41, 59, 0.45);
+      color: var(--text-dim);
+      font-size: 12.5px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      text-align: left;
+    }
+    .ls-step-pill:hover {
+      background: rgba(30, 41, 59, 0.85);
+      color: var(--text-main);
+    }
+    .ls-step-pill.active {
+      background: rgba(0, 245, 155, 0.14);
+      border-color: rgba(0, 245, 155, 0.5);
+      color: #00f59b;
+      box-shadow: 0 0 14px rgba(0, 245, 155, 0.15);
+    }
+    .ls-step-pill.completed {
+      background: rgba(56, 189, 248, 0.1);
+      border-color: rgba(56, 189, 248, 0.35);
+      color: #38bdf8;
+    }
+    .ls-step-num {
+      width: 22px;
+      height: 22px;
+      border-radius: 50%;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 11px;
+      font-weight: 900;
+      background: rgba(255, 255, 255, 0.08);
+      flex-shrink: 0;
+    }
+    .ls-step-pill.active .ls-step-num {
+      background: #00f59b;
+      color: #04130d;
+    }
+    .ls-step-pill.completed .ls-step-num {
+      background: #38bdf8;
+      color: #04131d;
+    }
+    .ls-wizard-card {
+      background: linear-gradient(165deg, rgba(15, 23, 42, 0.95) 0%, rgba(9, 14, 26, 0.98) 100%);
+      border: 1px solid rgba(0, 245, 155, 0.28);
+      border-radius: var(--radius-lg);
+      padding: 24px 22px;
+      box-shadow: 0 12px 32px rgba(0, 0, 0, 0.45);
+      margin-bottom: 20px;
+    }
+    .ls-wizard-step-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 11px;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.8px;
+      color: #00f59b;
+      background: rgba(0, 245, 155, 0.12);
+      border: 1px solid rgba(0, 245, 155, 0.3);
+      padding: 4px 10px;
+      border-radius: 9999px;
+      margin-bottom: 10px;
+    }
+    .ls-wizard-title {
+      font-family: var(--font-display);
+      font-size: clamp(19px, 4vw, 24px);
+      font-weight: 900;
+      color: #ffffff;
+      margin-bottom: 6px;
+    }
+    .ls-wizard-desc {
+      font-size: 13px;
+      color: var(--text-dim);
+      margin-bottom: 20px;
+      line-height: 1.5;
+    }
+    .ls-form-grid-2 {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+      margin-bottom: 18px;
+    }
+    .ls-preview-banner {
+      background: rgba(56, 189, 248, 0.08);
+      border: 1px solid rgba(56, 189, 248, 0.3);
+      border-radius: var(--radius-md);
+      padding: 14px 16px;
+      margin-bottom: 20px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+    .ls-wizard-footer {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      margin-top: 20px;
+      padding-top: 16px;
+      border-top: 1px solid rgba(255, 255, 255, 0.08);
+      flex-wrap: wrap;
+    }
+    .ls-groups-comp-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 18px;
+      margin-bottom: 16px;
+    }
+    .ls-groups-comp-grid.two-groups {
+      grid-template-columns: 1fr 1fr;
+    }
+    .ls-group-box {
+      background: rgba(15, 23, 42, 0.75);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: var(--radius-md);
+      padding: 16px;
+    }
+    .ls-group-box.group-a {
+      border-top: 3px solid #00f59b;
+    }
+    .ls-group-box.group-b {
+      border-top: 3px solid #38bdf8;
+    }
+    .ls-group-box-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 14px;
+      padding-bottom: 10px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+    }
+    .ls-group-box-title {
+      font-family: var(--font-display);
+      font-size: 16px;
+      font-weight: 900;
+      color: #ffffff;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .ls-team-slot-card {
+      background: rgba(7, 11, 18, 0.75);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: 10px;
+      padding: 12px;
+      margin-bottom: 10px;
+      transition: border-color 0.2s ease;
+    }
+    .ls-team-slot-card:last-child {
+      margin-bottom: 0;
+    }
+    .ls-team-slot-card.complete {
+      border-color: rgba(0, 245, 155, 0.35);
+    }
+    .ls-team-slot-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 8px;
+      font-size: 12.5px;
+      font-weight: 800;
+      color: #e2e8f0;
+    }
+    .ls-team-slot-selects {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+    }
+    .ls-dashboard-hero {
+      background: linear-gradient(135deg, rgba(15, 23, 42, 0.96) 0%, rgba(6, 18, 28, 0.98) 100%);
+      border: 1.5px solid rgba(0, 245, 155, 0.35);
+      border-radius: var(--radius-lg);
+      padding: 18px 20px;
+      margin-bottom: 18px;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
+    }
+    .ls-progress-track {
+      width: 100%;
+      height: 10px;
+      background: rgba(255, 255, 255, 0.08);
+      border-radius: 9999px;
+      overflow: hidden;
+      margin-top: 10px;
+    }
+    .ls-progress-fill {
+      height: 100%;
+      background: linear-gradient(90deg, #00f59b 0%, #38bdf8 100%);
+      border-radius: 9999px;
+      transition: width 0.35s ease;
+    }
+    .ls-fixtures-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 12px;
+      margin-bottom: 24px;
+    }
+    .ls-fixture-card {
+      background: rgba(15, 23, 42, 0.9);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: var(--radius-md);
+      padding: 16px 18px;
+      transition: all 0.2s ease;
+    }
+    .ls-fixture-card.completed {
+      border-color: rgba(0, 245, 155, 0.4);
+      background: linear-gradient(135deg, rgba(15, 23, 42, 0.95) 0%, rgba(6, 28, 24, 0.88) 100%);
+    }
+    .ls-fixture-card.pending {
+      border-left: 4px solid #fbbf24;
+    }
+    .ls-fixture-card.completed {
+      border-left: 4px solid #00f59b;
+    }
+    .ls-fixture-top {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      margin-bottom: 12px;
+      flex-wrap: wrap;
+    }
+    .ls-fixture-matchup {
+      display: grid;
+      grid-template-columns: 1fr auto 1fr;
+      align-items: center;
+      gap: 12px;
+      background: rgba(7, 11, 18, 0.65);
+      border: 1px solid rgba(255, 255, 255, 0.06);
+      border-radius: 10px;
+      padding: 12px 14px;
+      margin-bottom: 12px;
+    }
+    .ls-fixture-team {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+    .ls-fixture-team.team2 {
+      text-align: right;
+      align-items: flex-end;
+    }
+    .ls-fixture-team-names {
+      font-size: 15px;
+      font-weight: 800;
+      color: #f8fafc;
+      line-height: 1.3;
+    }
+    .ls-fixture-team.winner .ls-fixture-team-names {
+      color: #00f59b;
+    }
+    .ls-fixture-team-sub {
+      font-size: 11px;
+      color: var(--text-dim);
+      font-weight: 600;
+    }
+    .ls-fixture-vs-pill {
+      padding: 5px 12px;
+      border-radius: 9999px;
+      font-weight: 900;
+      font-size: 13px;
+      background: rgba(255, 255, 255, 0.06);
+      color: #94a3b8;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      white-space: nowrap;
+    }
+    .ls-fixture-vs-pill.scored {
+      background: rgba(0, 245, 155, 0.15);
+      color: #00f59b;
+      border-color: rgba(0, 245, 155, 0.4);
+      font-size: 15px;
+    }
+    .ls-fixture-score-bar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+    .ls-inline-score-inputs {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+    .ls-score-num-input {
+      width: 74px;
+      padding: 8px 10px;
+      border-radius: 8px;
+      border: 1px solid rgba(255, 255, 255, 0.18);
+      background: rgba(7, 11, 18, 0.9);
+      color: #ffffff;
+      font-size: 15px;
+      font-weight: 800;
+      text-align: center;
+    }
+    .ls-score-num-input:focus {
+      outline: none;
+      border-color: #00f59b;
+      box-shadow: 0 0 10px rgba(0, 245, 155, 0.25);
+    }
+
+    @media (max-width: 720px) {
+      .ls-stepper-bar {
+        grid-template-columns: 1fr 1fr;
+      }
+      .ls-form-grid-2,
+      .ls-groups-comp-grid.two-groups,
+      .ls-team-slot-selects {
+        grid-template-columns: 1fr;
+      }
+      .ls-fixture-matchup {
+        grid-template-columns: 1fr;
+        text-align: center;
+        gap: 8px;
+      }
+      .ls-fixture-team,
+      .ls-fixture-team.team2 {
+        text-align: center;
+        align-items: center;
+      }
+      .ls-fixture-score-bar {
+        flex-direction: column;
+        align-items: stretch;
+      }
+      .ls-inline-score-inputs {
+        justify-content: center;
+      }
+    }
+
   </style>
 </head>
 <body>
@@ -4712,6 +5085,16 @@
             <span class="burger-bar"></span>
           </button>
           <div class="burger-dropdown" id="burgerDropdown">
+            <div class="burger-menu-item" onclick="openLiveScoringTab()">
+              <span class="burger-item-icon">&#9889;</span>
+              <div class="burger-item-content">
+                <div class="burger-item-title" style="display: flex; align-items: center; justify-content: space-between; gap: 8px;">
+                  <span>Live scoring</span>
+                  <span style="font-size: 10px; font-weight: 800; padding: 2px 7px; border-radius: 9999px; background: rgba(0, 245, 155, 0.16); color: #00f59b; border: 1px solid rgba(0, 245, 155, 0.4);">LIVE</span>
+                </div>
+                <div class="burger-item-subtitle">Pre-schedule group matches &amp; score ongoing season</div>
+              </div>
+            </div>
             <div class="burger-menu-item" onclick="openSeasonSummaryTab()">
               <span class="burger-item-icon">&#127942;</span>
               <div class="burger-item-content">
@@ -5491,6 +5874,179 @@
       </div>
     </div>
 
+    <!-- =========================================================================
+         TAB: LIVE SCORING (Loaded via Burger Menu)
+         ========================================================================= -->
+    <div id="liveScoringTabContent" style="display: none;">
+      <div class="ls-container">
+        <!-- Header -->
+        <div class="ls-header">
+          <div>
+            <h2 class="section-title"><span>&#9889;</span> Live Scoring</h2>
+            <div class="section-subtitle">Configure season groups &amp; teams, pre-schedule round-robin fixtures &amp; score live matches</div>
+          </div>
+          <div class="ls-header-actions">
+            <button type="button" class="btn btn-outline" style="font-size: 12px; padding: 6px 12px; border-color: rgba(255, 215, 0, 0.4); color: #ffd700;" onclick="openSeasonSummaryForLiveSeason()">
+              <span>&#127942;</span> Season Summary
+            </button>
+            <button type="button" class="btn btn-outline" style="font-size: 12px; padding: 6px 12px;" onclick="switchMainTab('leaderboard')">
+              <span>&#8592;</span> Back to Leaderboard
+            </button>
+          </div>
+        </div>
+
+        <!-- 4-Step Progress Bar -->
+        <div class="ls-stepper-bar" id="liveScoringStepperBar">
+          <button type="button" class="ls-step-pill active" id="lsStepPill1" onclick="jumpToLiveStep(1)">
+            <span class="ls-step-num">1</span>
+            <span>Season &amp; Date</span>
+          </button>
+          <button type="button" class="ls-step-pill" id="lsStepPill2" onclick="jumpToLiveStep(2)">
+            <span class="ls-step-num">2</span>
+            <span>Groups &amp; Teams</span>
+          </button>
+          <button type="button" class="ls-step-pill" id="lsStepPill3" onclick="jumpToLiveStep(3)">
+            <span class="ls-step-num">3</span>
+            <span>Team Players</span>
+          </button>
+          <button type="button" class="ls-step-pill" id="lsStepPill4" onclick="jumpToLiveStep(4)">
+            <span class="ls-step-num">4</span>
+            <span>Live Matches</span>
+          </button>
+        </div>
+
+        <!-- STEP 1: SEASON NUMBER & DATE -->
+        <div id="liveScoringStep1" class="ls-wizard-card">
+          <div id="liveStep1ActiveBanner" style="display: none; margin-bottom: 18px;"></div>
+
+          <div class="ls-wizard-step-badge">&#128197; Step 1 of 3 &bull; Tournament Season &amp; Date</div>
+          <div class="ls-wizard-title">Select Ongoing Season &amp; Date</div>
+          <div class="ls-wizard-desc">
+            Choose the Season Number (e.g., Season 10, Season 11) and tournament date to configure or resume live group stage scoring.
+          </div>
+
+          <div class="ls-form-grid-2">
+            <div class="form-group" style="margin-bottom: 0;">
+              <label class="form-label" for="liveSetupSeasonSelect">Season Number</label>
+              <select id="liveSetupSeasonSelect" class="form-select" onchange="handleLiveSetupSeasonChange()">
+                <!-- Populated dynamically (Season 1 .. Season 50) -->
+              </select>
+            </div>
+            <div class="form-group" style="margin-bottom: 0;">
+              <label class="form-label" for="liveSetupDateInput">Tournament Date</label>
+              <input type="date" id="liveSetupDateInput" class="form-input" onchange="handleLiveSetupDateChange()">
+            </div>
+          </div>
+
+          <div id="liveStep1SeasonStatusBox" class="ls-preview-banner" style="margin-top: 16px; margin-bottom: 0;">
+            <!-- Populated dynamically -->
+          </div>
+
+          <div class="ls-wizard-footer">
+            <div style="font-size: 12px; color: var(--text-dim);">
+              Step 1: Set Season Number &amp; Date
+            </div>
+            <div style="display: flex; gap: 10px; flex-wrap: wrap;">
+              <button type="button" class="btn btn-outline" id="liveStep1JumpMatchesBtn" style="display: none; border-color: rgba(0, 245, 155, 0.45); color: #00f59b;" onclick="jumpToLiveStep(4)">
+                <span>&#9889;</span> View Pre-Scheduled Matches
+              </button>
+              <button type="button" class="btn btn-emerald" onclick="goToLiveSetupStep2()">
+                <span>Next: Groups &amp; Teams &#8594;</span>
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- STEP 2: NUMBER OF GROUPS & NUMBER OF TEAMS -->
+        <div id="liveScoringStep2" class="ls-wizard-card" style="display: none;">
+          <div class="ls-wizard-step-badge">&#127992; Step 2 of 3 &bull; Groups &amp; Teams</div>
+          <div class="ls-wizard-title" id="liveStep2Title">Configure Groups &amp; Number of Teams</div>
+          <div class="ls-wizard-desc">
+            Select the number of groups (1 or 2) and total number of teams (4 to 10). When 2 groups are selected, only even team counts (4, 6, 8, or 10) are available so groups split evenly.
+          </div>
+
+          <div class="ls-form-grid-2">
+            <div class="form-group" style="margin-bottom: 0;">
+              <label class="form-label" for="liveSetupGroupsSelect">Number of Groups</label>
+              <select id="liveSetupGroupsSelect" class="form-select" onchange="handleLiveGroupsCountChange()">
+                <option value="1">1</option>
+                <option value="2">2</option>
+              </select>
+            </div>
+            <div class="form-group" style="margin-bottom: 0;">
+              <label class="form-label" for="liveSetupTeamsSelect">Number of Teams</label>
+              <select id="liveSetupTeamsSelect" class="form-select" onchange="handleLiveTeamsCountChange()">
+                <!-- Dynamically populated: 4..10 for 1 group; strictly 4, 6, 8, 10 for 2 groups -->
+              </select>
+            </div>
+          </div>
+
+          <div id="liveSetupFormatPreview" class="ls-preview-banner" style="margin-top: 16px; margin-bottom: 0;">
+            <!-- Populated dynamically -->
+          </div>
+
+          <div class="ls-wizard-footer">
+            <button type="button" class="btn btn-outline" onclick="goToLiveSetupStep1()">
+              <span>&#8592; Back</span>
+            </button>
+            <button type="button" class="btn btn-emerald" onclick="goToLiveSetupStep3()">
+              <span>Next: Team Composition &#8594;</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- STEP 3: TEAM COMPOSITION / PLAYERS -->
+        <div id="liveScoringStep3" class="ls-wizard-card" style="display: none;">
+          <div style="display: flex; align-items: flex-start; justify-content: space-between; gap: 12px; flex-wrap: wrap; margin-bottom: 12px;">
+            <div>
+              <div class="ls-wizard-step-badge">&#128101; Step 3 of 3 &bull; Team Composition</div>
+              <div class="ls-wizard-title" id="liveStep3Title">Assign Players to Teams</div>
+              <div class="ls-wizard-desc" style="margin-bottom: 6px;">
+                Select 2 players for each team below. Once saved, all round-robin group stage matches will be pre-scheduled automatically.
+              </div>
+            </div>
+            <div style="display: flex; gap: 8px; flex-wrap: wrap;">
+              <button type="button" class="btn btn-outline" id="liveAutoFillGenBtn" style="font-size: 12px; padding: 6px 11px; display: none; border-color: rgba(56, 189, 248, 0.45); color: #38bdf8;" onclick="autoFillLiveTeamsFromGenerator()">
+                <span>&#9878;&#65039;</span> Auto-Fill from Generated Teams
+              </button>
+              <button type="button" class="btn btn-outline" style="font-size: 12px; padding: 6px 11px;" onclick="promptQuickAddPlayerForLiveScoring()">
+                <span>&#10133;</span> Quick Add New Player
+              </button>
+              <button type="button" class="btn btn-outline" style="font-size: 12px; padding: 6px 11px;" onclick="clearAllLiveTeamSelections()">
+                <span>&#128260;</span> Clear Slots
+              </button>
+            </div>
+          </div>
+
+          <!-- Dynamic Group & Team Player Dropdowns -->
+          <div id="liveTeamCompositionContainer" class="ls-groups-comp-grid">
+            <!-- Populated dynamically -->
+          </div>
+
+          <!-- Validation Status Box -->
+          <div id="liveTeamCompValidationBox" class="ls-preview-banner" style="margin-top: 14px; margin-bottom: 0;">
+            <!-- Populated dynamically -->
+          </div>
+
+          <div class="ls-wizard-footer">
+            <button type="button" class="btn btn-outline" onclick="goToLiveSetupStep2()">
+              <span>&#8592; Back to Groups &amp; Teams</span>
+            </button>
+            <button type="button" class="btn btn-emerald" id="saveLiveTournamentBtn" onclick="saveLiveTournamentSetup()">
+              <span>&#128190; Save &amp; Pre-Schedule Matches</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- STEP 4: PRE-SCHEDULED GROUP MATCHES & LIVE SCORING -->
+        <div id="liveScoringStep4" style="display: none;">
+          <div id="liveScoringDashboardWrap">
+            <!-- Populated dynamically -->
+          </div>
+        </div>
+      </div>
+    </div>
+
     <div id="historyTabContent" style="display: none;">
       <!-- SECTION 4: MATCH HISTORY FEED -->
     <section>
@@ -6184,6 +6740,7 @@
       players: [],
       matches: [],
       editions: [],
+      liveTournaments: {},
       activeMainTab: 'standings',
       activeLeaderboardView: 'champions',
       isAdmin: false,
@@ -6202,8 +6759,10 @@
        ========================================================================== */
     const syncedRemoteMatchIds = new Set();
     const syncedRemoteEditionIds = new Set();
+    const syncedRemoteTournamentIds = new Set();
     const lastMatchSyncAttempt = {};
     const lastEditionSyncAttempt = {};
+    const lastTournamentSyncAttempt = {};
     let isCloudSyncInProgress = false;
     let lastAutoRestSyncTime = 0;
 
@@ -6384,6 +6943,7 @@
         const storedPlayers = localStorage.getItem('tk_baddy_players');
         const storedMatches = localStorage.getItem('tk_baddy_matches');
         const storedEditions = localStorage.getItem('tk_baddy_editions');
+        const storedTournaments = localStorage.getItem('tk_baddy_live_tournaments');
         const storedDeletedIds = localStorage.getItem('tk_baddy_deleted_match_ids');
         if (storedPlayers) {
           try { appState.players = JSON.parse(storedPlayers) || []; } catch (e) {}
@@ -6395,6 +6955,17 @@
           try {
             appState.editions = deduplicateEditionsList(JSON.parse(storedEditions) || []);
           } catch (e) {}
+        }
+        if (storedTournaments) {
+          try {
+            const parsedT = JSON.parse(storedTournaments);
+            if (parsedT && typeof parsedT === 'object') {
+              appState.liveTournaments = parsedT;
+            }
+          } catch (e) {}
+        }
+        if (!appState.liveTournaments || typeof appState.liveTournaments !== 'object') {
+          appState.liveTournaments = {};
         }
         if (storedDeletedIds) {
           try {
@@ -6419,6 +6990,7 @@
         localStorage.setItem('tk_baddy_players', JSON.stringify(appState.players || []));
         localStorage.setItem('tk_baddy_matches', JSON.stringify(appState.matches || []));
         localStorage.setItem('tk_baddy_editions', JSON.stringify(appState.editions || []));
+        localStorage.setItem('tk_baddy_live_tournaments', JSON.stringify(appState.liveTournaments || {}));
         if (appState.deletedMatchIds && appState.deletedMatchIds.size > 0) {
           localStorage.setItem('tk_baddy_deleted_match_ids', JSON.stringify(Array.from(appState.deletedMatchIds)));
         }
@@ -6620,6 +7192,32 @@
         }, (err) => {
           console.warn("badminton_editions sync listener notice:", err.message);
         });
+
+        // Listen to Live Tournaments (badminton_tournaments)
+        firestoreDb.collection("badminton_tournaments").onSnapshot((snapshot) => {
+          markRemoteSuccess();
+          if (!appState.liveTournaments || typeof appState.liveTournaments !== 'object') {
+            appState.liveTournaments = {};
+          }
+          if (!snapshot.empty) {
+            snapshot.forEach(doc => {
+              const data = doc.data();
+              if (data && data.season) {
+                const sKey = String(data.season);
+                const docId = doc.id || ("season_" + sKey);
+                syncedRemoteTournamentIds.add(docId);
+                const prev = appState.liveTournaments[sKey];
+                if (!prev || String(data.updatedAt || '') >= String(prev.updatedAt || '')) {
+                  appState.liveTournaments[sKey] = { ...data, id: docId };
+                }
+              }
+            });
+          }
+          saveLocalData();
+          updateUI();
+        }, (err) => {
+          console.warn("badminton_tournaments sync listener notice:", err.message);
+        });
       } else {
         fallbackToLocalStorage();
       }
@@ -6717,16 +7315,44 @@
       updateHeaderSyncButtonState('syncing', isManual ? 'Syncing...' : 'Sync');
 
       try {
-        const [rawMatchesDocs, rawEditionsDocs, rawPlayersDocs] = await Promise.all([
+        const [rawMatchesDocs, rawEditionsDocs, rawPlayersDocs, rawTournamentsDocs] = await Promise.all([
           firestoreRestListCollection("badminton_matches"),
           firestoreRestListCollection("badminton_editions").catch(() => []),
-          firestoreRestListCollection("badminton_players").catch(() => [])
+          firestoreRestListCollection("badminton_players").catch(() => []),
+          firestoreRestListCollection("badminton_tournaments").catch(() => [])
         ]);
 
         const deletedIds = appState.deletedMatchIds || new Set();
         const remoteMatches = [];
         const remoteMatchIds = new Set();
         const remoteEditionsMap = {};
+
+        if (!appState.liveTournaments || typeof appState.liveTournaments !== 'object') {
+          appState.liveTournaments = {};
+        }
+        const remoteTournamentSeasonKeys = new Set();
+        (rawTournamentsDocs || []).forEach(tDoc => {
+          if (tDoc && tDoc.season) {
+            const sKey = String(tDoc.season);
+            const docId = tDoc.id || ("season_" + sKey);
+            syncedRemoteTournamentIds.add(docId);
+            remoteTournamentSeasonKeys.add(sKey);
+            const localT = appState.liveTournaments[sKey];
+            if (!localT || String(tDoc.updatedAt || '') >= String(localT.updatedAt || '')) {
+              appState.liveTournaments[sKey] = { ...tDoc, id: docId };
+            }
+          }
+        });
+        for (const sKey of Object.keys(appState.liveTournaments)) {
+          const localT = appState.liveTournaments[sKey];
+          if (localT && localT.season && !remoteTournamentSeasonKeys.has(String(localT.season))) {
+            const docId = localT.id || ("season_" + localT.season);
+            try {
+              await firestoreRestUpsert("badminton_tournaments", docId, localT);
+              syncedRemoteTournamentIds.add(docId);
+            } catch (e) {}
+          }
+        }
 
         rawEditionsDocs.forEach(ed => {
           if (ed && ed.id) {
@@ -6846,7 +7472,8 @@
         exportedAt: new Date().toISOString(),
         matches: appState.matches || [],
         editions: appState.editions || [],
-        players: appState.players || []
+        players: appState.players || [],
+        liveTournaments: appState.liveTournaments || {}
       };
       const jsonStr = JSON.stringify(payload);
       if (navigator.clipboard && navigator.clipboard.writeText) {
@@ -6894,6 +7521,15 @@
             existingPlayerIds.add(p.id);
           }
         });
+
+        if (parsed.liveTournaments && typeof parsed.liveTournaments === 'object') {
+          if (!appState.liveTournaments || typeof appState.liveTournaments !== 'object') {
+            appState.liveTournaments = {};
+          }
+          Object.keys(parsed.liveTournaments).forEach(k => {
+            appState.liveTournaments[k] = parsed.liveTournaments[k];
+          });
+        }
 
         saveLocalData();
         updateUI();
@@ -6965,6 +7601,9 @@
       } else {
         appState.matches.unshift(cleanMatch);
       }
+      if (typeof syncLiveTournamentsAfterMatchChange === 'function') {
+        syncLiveTournamentsAfterMatchChange(cleanMatch);
+      }
       saveLocalData();
       updateUI();
 
@@ -7008,6 +7647,9 @@
 
       // 1. Optimistically remove from local state immediately
       appState.matches = (appState.matches || []).filter(m => m.id !== matchId);
+      if (typeof syncLiveTournamentsAfterMatchDelete === 'function') {
+        syncLiveTournamentsAfterMatchDelete(matchId);
+      }
       saveLocalData();
       updateUI();
 
@@ -7359,6 +8001,10 @@
         renderH2HShowcase();
       } else if (appState.activeMainTab === 'seasonsummary') {
         initSeasonSummaryView(true);
+      } else if (appState.activeMainTab === 'livescoring') {
+        if (typeof refreshLiveScoringOnDataUpdate === 'function') {
+          refreshLiveScoringOnDataUpdate();
+        }
       }
     }
 
@@ -8619,11 +9265,15 @@
       let maxSeason = 1;
       (appState.matches || []).forEach(m => {
         const s = parseInt(m.season || m.weekNumber) || 0;
-        if (s > maxSeason && s <= 30) maxSeason = s;
+        if (s > maxSeason && s <= 50) maxSeason = s;
       });
       (appState.editions || []).forEach(ed => {
         const s = parseInt(ed.season) || 0;
-        if (s > maxSeason && s <= 30) maxSeason = s;
+        if (s > maxSeason && s <= 50) maxSeason = s;
+      });
+      Object.values(appState.liveTournaments || {}).forEach(t => {
+        const s = parseInt(t && t.season, 10) || 0;
+        if (s > maxSeason && s <= 50) maxSeason = s;
       });
       return String(maxSeason);
     }
@@ -9100,6 +9750,37 @@
           if (modified && isFirestoreActive && firestoreDb) {
             firestoreDb.collection("badminton_editions").doc(ed.id).set(ed, { merge: true }).catch(() => {});
             firestoreDb.collection("badminton_matches").doc("edition_" + ed.id).set(ed, { merge: true }).catch(() => {});
+          }
+        });
+
+        // Also update player name in any configured live tournaments
+        Object.keys(appState.liveTournaments || {}).forEach(sKey => {
+          const lt = appState.liveTournaments[sKey];
+          if (!lt) return;
+          let ltModified = false;
+          if (Array.isArray(lt.teams)) {
+            lt.teams.forEach(t => {
+              if (Array.isArray(t.players) && t.players.includes(oldName)) {
+                t.players = t.players.map(n => n === oldName ? newName : n);
+                ltModified = true;
+              }
+            });
+          }
+          if (Array.isArray(lt.fixtures)) {
+            lt.fixtures.forEach(f => {
+              if (Array.isArray(f.team1) && f.team1.includes(oldName)) {
+                f.team1 = f.team1.map(n => n === oldName ? newName : n);
+                ltModified = true;
+              }
+              if (Array.isArray(f.team2) && f.team2.includes(oldName)) {
+                f.team2 = f.team2.map(n => n === oldName ? newName : n);
+                ltModified = true;
+              }
+            });
+          }
+          if (ltModified && isFirestoreActive && firestoreDb) {
+            const docId = lt.id || ('live_season_' + sKey);
+            firestoreDb.collection("badminton_tournaments").doc(docId).set(lt, { merge: true }).catch(() => {});
           }
         });
       }
@@ -11062,6 +11743,7 @@
       const netContributionContent = document.getElementById('netContributionTabContent');
       const h2hContent = document.getElementById('h2hTabContent');
       const seasonSummaryContent = document.getElementById('seasonSummaryTabContent');
+      const liveScoringContent = document.getElementById('liveScoringTabContent');
 
       const tabBtnLeaderboard = document.getElementById('tabBtnLeaderboard');
       const tabBtnBadges = document.getElementById('tabBtnBadges');
@@ -11075,12 +11757,16 @@
       if (netContributionContent) netContributionContent.style.display = 'none';
       if (h2hContent) h2hContent.style.display = 'none';
       if (seasonSummaryContent) seasonSummaryContent.style.display = 'none';
+      if (liveScoringContent) liveScoringContent.style.display = 'none';
 
       if (tabBtnLeaderboard) tabBtnLeaderboard.classList.remove('active');
       if (tabBtnBadges) tabBtnBadges.classList.remove('active');
       if (tabBtnHistory) tabBtnHistory.classList.remove('active');
 
-      if (tabName === 'seasonsummary') {
+      if (tabName === 'livescoring') {
+        if (liveScoringContent) liveScoringContent.style.display = 'block';
+        initLiveScoringView();
+      } else if (tabName === 'seasonsummary') {
         if (seasonSummaryContent) seasonSummaryContent.style.display = 'block';
         initSeasonSummaryView(false);
       } else if (tabName === 'h2h') {
@@ -14108,8 +14794,17 @@
         }
       });
 
-      // Ensure all seasons 1..maxActive plus the next upcoming season (maxActive + 1) are selectable
-      const totalToShow = Math.min(30, Math.max(7, maxActive + 1));
+      Object.keys(appState.liveTournaments || {}).forEach(k => {
+        const lt = appState.liveTournaments[k];
+        const s = parseInt((lt && lt.season) || k, 10) || 0;
+        if (s > 0 && s <= 50) {
+          seasonSet.add(s);
+          if (s > maxActive) maxActive = s;
+        }
+      });
+
+      // Ensure all seasons 1..maxActive plus upcoming seasons (at least up to Season 15) are selectable
+      const totalToShow = Math.min(50, Math.max(15, maxActive + 2));
       const list = [];
       for (let i = 1; i <= totalToShow; i++) {
         list.push({
@@ -14139,6 +14834,7 @@
       list.forEach(item => {
         const sNum = item.season;
         const ed = (appState.editions || []).find(e => extractSeasonNumFromEdition(e) === sNum);
+        const liveT = (appState.liveTournaments || {})[String(sNum)];
         const matchCount = (appState.matches || []).filter(m =>
           m && !m.isChampionshipEdition && !String(m.id || '').startsWith('edition_') &&
           (parseInt(m.season || m.weekNumber, 10) || 1) === sNum
@@ -14147,6 +14843,9 @@
         let label = 'Season ' + sNum;
         if (ed && ed.date) {
           label += ' (' + ed.date + ')';
+        } else if (liveT) {
+          const totalSched = Array.isArray(liveT.fixtures) ? liveT.fixtures.length : 0;
+          label += ' (Live \u2022 ' + matchCount + (totalSched > 0 ? '/' + totalSched : '') + ' matches)';
         } else if (matchCount > 0) {
           label += ' (' + matchCount + ' matches)';
         } else if (sNum > maxActive) {
@@ -14166,7 +14865,8 @@
         const pillSeasons = list.filter(x => x.season <= Math.max(maxActive + 1, targetSeason));
         pillsEl.innerHTML = pillSeasons.map(x => {
           const isActive = x.season === targetSeason;
-          return '<button type="button" class="ss-season-pill ' + (isActive ? 'active' : '') + '" onclick="selectSeasonSummaryPill(' + x.season + ')">S' + x.season + '</button>';
+          const isLive = !!(appState.liveTournaments && appState.liveTournaments[String(x.season)]);
+          return '<button type="button" class="ss-season-pill ' + (isActive ? 'active' : '') + '" onclick="selectSeasonSummaryPill(' + x.season + ')">S' + x.season + (isLive ? ' \u26A1' : '') + '</button>';
         }).join('');
       }
 
@@ -14209,8 +14909,10 @@
     function computeSeasonSummaryData(seasonNum) {
       const sNum = parseInt(seasonNum, 10) || 1;
 
-      // 1. Find edition (Champions & Runners-Up)
+      // 1. Find edition (Champions & Runners-Up) and any configured Live Tournament
       const editionObj = (appState.editions || []).find(ed => extractSeasonNumFromEdition(ed) === sNum) || null;
+      const liveTournament = (appState.liveTournaments || {})[String(sNum)] || null;
+
       const champions = editionObj && Array.isArray(editionObj.champions)
         ? editionObj.champions.map(p => (p || '').trim()).filter(Boolean)
         : [];
@@ -14233,7 +14935,7 @@
       });
 
       // Determine season date
-      let seasonDate = editionObj && editionObj.date ? editionObj.date : '';
+      let seasonDate = editionObj && editionObj.date ? editionObj.date : (liveTournament && liveTournament.date ? liveTournament.date : '');
       if (!seasonDate && seasonMatches.length > 0) {
         const dates = seasonMatches.map(m => m.date).filter(Boolean).sort();
         if (dates.length > 0) seasonDate = dates[dates.length - 1];
@@ -14242,7 +14944,7 @@
       // 3. Aggregate Points Table by canonical team pairing
       const teamsMap = {};
 
-      function getOrCreateTeamEntry(rawPlayers) {
+      function getOrCreateTeamEntry(rawPlayers, groupHint, labelHint) {
         const cleaned = (rawPlayers || []).map(p => (p || '').trim()).filter(Boolean);
         if (cleaned.length === 0) return null;
         const canonicalKey = [...cleaned].sort((a, b) => a.localeCompare(b)).join(' - ');
@@ -14257,6 +14959,8 @@
             key: canonicalKey,
             team: displayTeam,
             players: cleaned,
+            group: groupHint || '',
+            teamLabel: labelHint || '',
             matches: 0,
             won: 0,
             lost: 0,
@@ -14267,13 +14971,29 @@
             isChampion: canonicalKey === champCanonical && hasChampions,
             isRunnerUp: canonicalKey === runnerCanonical && hasRunnersUp
           };
+        } else {
+          if (groupHint && !teamsMap[canonicalKey].group) {
+            teamsMap[canonicalKey].group = groupHint;
+          }
+          if (labelHint && !teamsMap[canonicalKey].teamLabel) {
+            teamsMap[canonicalKey].teamLabel = labelHint;
+          }
         }
         return teamsMap[canonicalKey];
       }
 
+      // Pre-seed teams from Live Tournament setup if present so ongoing season shows all participating teams immediately
+      if (liveTournament && Array.isArray(liveTournament.teams)) {
+        liveTournament.teams.forEach(t => {
+          if (t && Array.isArray(t.players) && t.players.length > 0) {
+            getOrCreateTeamEntry(t.players, t.group || 'A', t.label || '');
+          }
+        });
+      }
+
       seasonMatches.forEach(m => {
-        const t1Entry = getOrCreateTeamEntry(m.team1);
-        const t2Entry = getOrCreateTeamEntry(m.team2);
+        const t1Entry = getOrCreateTeamEntry(m.team1, m.group || '');
+        const t2Entry = getOrCreateTeamEntry(m.team2, m.group || '');
         if (!t1Entry || !t2Entry) return;
 
         let t1Pts = 0;
@@ -14329,11 +15049,17 @@
         return a.team.localeCompare(b.team);
       });
 
+      const scheduledCount = (liveTournament && Array.isArray(liveTournament.fixtures)) ? liveTournament.fixtures.length : 0;
+      const numGroups = liveTournament ? (parseInt(liveTournament.numGroups, 10) || 1) : 1;
+
       return {
         season: sNum,
         seasonTitle: 'Season ' + sNum,
         date: seasonDate,
         totalMatches: seasonMatches.length,
+        scheduledFixturesCount: scheduledCount,
+        numGroups,
+        hasLiveTournament: !!liveTournament,
         finalsDeclared,
         hasChampions,
         hasRunnersUp,
@@ -14394,26 +15120,31 @@
             '</div>' +
           '</div>';
       } else {
+        const liveJumpBtnHtml = data.hasLiveTournament
+          ? '<div style="margin-top: 10px;"><button type="button" class="btn btn-outline" style="font-size: 12px; padding: 5px 12px; border-color: rgba(0, 245, 155, 0.45); color: #00f59b;" onclick="openLiveScoringForSeason(' + data.season + ')">\u26A1 Go to Live Scoring (' + data.totalMatches + '/' + data.scheduledFixturesCount + ' Matches Scored)</button></div>'
+          : '';
         honorsSectionHtml =
           '<div class="ss-finals-pending-box">' +
             '<div class="ss-finals-pending-title"><span>\u23F3</span> Finals yet to happen</div>' +
             '<div class="ss-finals-pending-sub">Season Champions &amp; Runners-Up have not been declared yet. The points table below reflects the latest live standings.</div>' +
+            liveJumpBtnHtml +
           '</div>';
       }
 
-      // Points Table Rows HTML
-      let tbodyHtml = '';
-      if (rows.length === 0) {
-        tbodyHtml =
-          '<tr>' +
-            '<td colspan="6" class="empty-state" style="padding: 32px 16px; text-align: center; color: var(--text-muted);">' +
-              '<div style="font-size: 26px; margin-bottom: 6px;">\u{1F3F8}</div>' +
-              '<div style="font-size: 14px; font-weight: 700; color: var(--text-main);">No match scores logged for ' + escapeHtml(data.seasonTitle) + ' yet</div>' +
-              '<div style="font-size: 12px; margin-top: 4px;">As soon as matches are logged for ' + escapeHtml(data.seasonTitle) + ', team standings and point differentials will update here live.</div>' +
-            '</td>' +
-          '</tr>';
-      } else {
-        tbodyHtml = rows.map((r, idx) => {
+      // Helper to render a table body for a given list of rows
+      const buildRowsHtml = (targetRows) => {
+        if (targetRows.length === 0) {
+          return (
+            '<tr>' +
+              '<td colspan="6" class="empty-state" style="padding: 32px 16px; text-align: center; color: var(--text-muted);">' +
+                '<div style="font-size: 26px; margin-bottom: 6px;">\u{1F3F8}</div>' +
+                '<div style="font-size: 14px; font-weight: 700; color: var(--text-main);">No match scores logged for ' + escapeHtml(data.seasonTitle) + ' yet</div>' +
+                '<div style="font-size: 12px; margin-top: 4px;">As soon as matches are logged for ' + escapeHtml(data.seasonTitle) + ', team standings and point differentials will update here live.</div>' +
+              '</td>' +
+            '</tr>'
+          );
+        }
+        return targetRows.map((r, idx) => {
           const rank = idx + 1;
           let rankBadge = '<span class="rank-badge ' + (rank === 1 ? 'crown' : (rank === 2 ? 'silver' : (rank === 3 ? 'bronze' : ''))) + '">#' + rank + '</span>';
           if (rank === 1) {
@@ -14428,6 +15159,11 @@
             teamBadges += ' <span title="Season Champions" style="font-size: 13px;">\u{1F3C6}</span>';
           } else if (r.isRunnerUp) {
             teamBadges += ' <span title="Season Runners-Up" style="font-size: 13px;">\u{1F948}</span>';
+          }
+          if (r.group && data.numGroups === 2) {
+            const grpColor = r.group === 'B' ? '#38bdf8' : '#00f59b';
+            const grpBg = r.group === 'B' ? 'rgba(56, 189, 248, 0.12)' : 'rgba(0, 245, 155, 0.12)';
+            teamBadges += ' <span style="font-size: 10px; font-weight: 800; padding: 2px 6px; border-radius: 999px; background: ' + grpBg + '; color: ' + grpColor + '; border: 1px solid ' + grpColor + '44; margin-left: 4px; vertical-align: middle;">GRP ' + escapeHtml(r.group) + '</span>';
           }
 
           return (
@@ -14452,13 +15188,53 @@
             '</tr>'
           );
         }).join('');
+      };
+
+      const tbodyHtml = buildRowsHtml(rows);
+
+      // If 2 groups are configured for this season, also render side-by-side Group A and Group B breakdown tables above or below
+      let groupSplitTablesHtml = '';
+      if (data.numGroups === 2 && rows.some(r => r.group === 'A' || r.group === 'B')) {
+        const groupARows = rows.filter(r => r.group === 'A');
+        const groupBRows = rows.filter(r => r.group === 'B');
+        const buildMiniGroupTable = (grpLetter, grpRows, accentColor) => (
+          '<div class="leaderboard-card" style="margin-bottom: 0; border-color: ' + accentColor + '33;">' +
+            '<div style="padding: 10px 14px; background: rgba(15, 23, 42, 0.85); border-bottom: 1px solid rgba(255,255,255,0.08); display: flex; justify-content: space-between; align-items: center;">' +
+              '<span style="font-size: 13px; font-weight: 800; color: ' + accentColor + '; text-transform: uppercase; letter-spacing: 0.5px;">\u{1F3F8} Group ' + grpLetter + ' Standings</span>' +
+              '<span style="font-size: 11px; color: var(--text-dim);">' + grpRows.length + ' Teams</span>' +
+            '</div>' +
+            '<div class="table-container">' +
+              '<table class="standings-table ss-points-table">' +
+                '<thead>' +
+                  '<tr>' +
+                    '<th class="rank-cell">#</th>' +
+                    '<th class="th-player">Team</th>' +
+                    '<th style="text-align: center;">M</th>' +
+                    '<th style="text-align: center;">W</th>' +
+                    '<th style="text-align: center;">L</th>' +
+                    '<th style="text-align: center;">Pts Diff</th>' +
+                  '</tr>' +
+                '</thead>' +
+                '<tbody>' + buildRowsHtml(grpRows) + '</tbody>' +
+              '</table>' +
+            '</div>' +
+          '</div>'
+        );
+        groupSplitTablesHtml =
+          '<div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 14px; margin-bottom: 18px;">' +
+            buildMiniGroupTable('A', groupARows, '#00f59b') +
+            buildMiniGroupTable('B', groupBRows, '#38bdf8') +
+          '</div>';
       }
 
       const datePillHtml = data.date
         ? '<span class="ss-meta-pill"><span>\u{1F4C5}</span> ' + escapeHtml(data.date) + '</span>'
         : '';
-      const matchesPillHtml = '<span class="ss-meta-pill"><span>\u{1F3F8}</span> ' + data.totalMatches + (data.totalMatches === 1 ? ' Match' : ' Matches') + ' Played</span>';
-      const teamsPillHtml = '<span class="ss-meta-pill"><span>\u{1F91D}</span> ' + data.tableRows.length + (data.tableRows.length === 1 ? ' Team' : ' Teams') + '</span>';
+      const matchesPillLabel = data.scheduledFixturesCount > 0
+        ? (data.totalMatches + ' / ' + data.scheduledFixturesCount + ' Matches Played')
+        : (data.totalMatches + (data.totalMatches === 1 ? ' Match' : ' Matches') + ' Played');
+      const matchesPillHtml = '<span class="ss-meta-pill"><span>\u{1F3F8}</span> ' + matchesPillLabel + '</span>';
+      const teamsPillHtml = '<span class="ss-meta-pill"><span>\u{1F91D}</span> ' + data.tableRows.length + (data.tableRows.length === 1 ? ' Team' : ' Teams') + (data.numGroups === 2 ? ' (2 Groups)' : '') + '</span>';
 
       wrap.innerHTML =
         '<div class="ss-card-top-banner">' +
@@ -14471,9 +15247,10 @@
           '</div>' +
         '</div>' +
         honorsSectionHtml +
+        groupSplitTablesHtml +
         '<div class="ss-table-section-header">' +
           '<div class="ss-table-section-title">' +
-            '<span>\u{1F4CA}</span> ' + escapeHtml(data.seasonTitle) + ' Points Table' +
+            '<span>\u{1F4CA}</span> ' + escapeHtml(data.seasonTitle) + (data.numGroups === 2 ? ' Overall Points Table' : ' Points Table') +
           '</div>' +
           '<span class="ss-live-badge">\u25CF Live Standings</span>' +
         '</div>' +
@@ -14834,6 +15611,1633 @@
           resolve(null);
         }
       });
+    }
+
+    /* ==========================================================================
+       16. LIVE SCORING & TOURNAMENT PRE-SCHEDULER ENGINE
+       ========================================================================== */
+    const liveScoringState = {
+      hasInitializedOnce: false,
+      currentStep: 1, // 1: Season & Date, 2: Groups & Teams, 3: Team Composition, 4: Pre-Scheduled Matches
+      season: 10,
+      date: '',
+      numGroups: 1,
+      numTeams: 4,
+      draftTeams: [], // [{ idx, group: 'A'|'B', groupTeamNum: 1..N, label: 'Group A Team 1', p1: '', p2: '' }]
+      fixtureFilter: 'all', // 'all' | 'pending' | 'completed' | 'groupA' | 'groupB'
+      editingFixtureIds: new Set(),
+      activeModalFixtureContext: null // { season, fixtureId }
+    };
+
+    function getTodayIsoDateString() {
+      const now = new Date();
+      const yyyy = now.getFullYear();
+      const mm = String(now.getMonth() + 1).padStart(2, '0');
+      const dd = String(now.getDate()).padStart(2, '0');
+      return yyyy + '-' + mm + '-' + dd;
+    }
+
+    function canonicalTeamKey(playersArr) {
+      if (!Array.isArray(playersArr)) return '';
+      return playersArr
+        .map(p => String(p || '').trim())
+        .filter(Boolean)
+        .sort((a, b) => a.localeCompare(b))
+        .join(' - ');
+    }
+
+    function getDefaultOngoingSeasonNumber() {
+      // 1. If there is an active live tournament where finals haven't been declared yet, prefer the highest such season
+      const declaredSeasons = new Set();
+      let maxDeclaredSeason = 0;
+      (appState.editions || []).forEach(ed => {
+        const s = extractSeasonNumFromEdition(ed);
+        const hasChamp = Array.isArray(ed.champions) && ed.champions.some(p => String(p || '').trim());
+        const hasRun = Array.isArray(ed.runnersUp) && ed.runnersUp.some(p => String(p || '').trim());
+        if (s > 0 && (hasChamp || hasRun)) {
+          declaredSeasons.add(s);
+          if (s > maxDeclaredSeason) maxDeclaredSeason = s;
+        }
+      });
+
+      let bestLiveSeason = 0;
+      Object.keys(appState.liveTournaments || {}).forEach(k => {
+        const lt = appState.liveTournaments[k];
+        const s = parseInt((lt && lt.season) || k, 10) || 0;
+        if (s > 0 && !declaredSeasons.has(s) && s > bestLiveSeason) {
+          bestLiveSeason = s;
+        }
+      });
+      if (bestLiveSeason > 0) return bestLiveSeason;
+
+      // 2. If there are matches logged for a season higher than maxDeclaredSeason, use that ongoing season
+      let maxMatchSeason = 0;
+      (appState.matches || []).forEach(m => {
+        if (!m || m.isChampionshipEdition || String(m.id || '').startsWith('edition_')) return;
+        const s = parseInt(m.season || m.weekNumber, 10) || 0;
+        if (s > maxMatchSeason && s <= 50) maxMatchSeason = s;
+      });
+      if (maxMatchSeason > maxDeclaredSeason && !declaredSeasons.has(maxMatchSeason)) {
+        return maxMatchSeason;
+      }
+
+      // 3. Otherwise default to the next season after the highest completed season (e.g., Season 10)
+      return Math.max(10, maxDeclaredSeason + 1);
+    }
+
+    function getAllSelectablePlayerNames() {
+      const nameMap = new Map();
+      (appState.players || []).forEach(p => {
+        const clean = String((p && p.name) || '').trim();
+        if (clean) nameMap.set(clean.toLowerCase(), clean);
+      });
+      (appState.matches || []).forEach(m => {
+        if (!m || m.isChampionshipEdition || String(m.id || '').startsWith('edition_')) return;
+        [...(m.team1 || []), ...(m.team2 || [])].forEach(n => {
+          const clean = String(n || '').trim();
+          if (clean && !nameMap.has(clean.toLowerCase())) {
+            nameMap.set(clean.toLowerCase(), clean);
+          }
+        });
+      });
+      (appState.editions || []).forEach(ed => {
+        if (!ed) return;
+        [...(ed.champions || []), ...(ed.runnersUp || [])].forEach(n => {
+          const clean = String(n || '').trim();
+          if (clean && !nameMap.has(clean.toLowerCase())) {
+            nameMap.set(clean.toLowerCase(), clean);
+          }
+        });
+      });
+      return Array.from(nameMap.values()).sort((a, b) => a.localeCompare(b));
+    }
+
+    function openLiveScoringTab() {
+      const menu = document.getElementById('burgerDropdown');
+      const btn = document.getElementById('burgerMenuBtn');
+      if (menu) menu.classList.remove('show');
+      if (btn) btn.classList.remove('open');
+
+      if (!liveScoringState.hasInitializedOnce) {
+        const defaultSeason = getDefaultOngoingSeasonNumber();
+        liveScoringState.season = defaultSeason;
+        liveScoringState.date = getTodayIsoDateString();
+        loadSeasonIntoLiveDraft(defaultSeason);
+        // Start at Step 1 so user sees Season Number & Date (with 1-click jump banner if already configured)
+        liveScoringState.currentStep = 1;
+        liveScoringState.hasInitializedOnce = true;
+      }
+
+      switchMainTab('livescoring');
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    function openLiveScoringForSeason(seasonNum) {
+      const sNum = parseInt(seasonNum, 10) || getDefaultOngoingSeasonNumber();
+      liveScoringState.season = sNum;
+      loadSeasonIntoLiveDraft(sNum);
+      liveScoringState.hasInitializedOnce = true;
+      if (appState.liveTournaments && appState.liveTournaments[String(sNum)]) {
+        liveScoringState.currentStep = 4;
+      } else {
+        liveScoringState.currentStep = 1;
+      }
+      switchMainTab('livescoring');
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    function openSeasonSummaryForLiveSeason() {
+      const sNum = parseInt(liveScoringState.season, 10) || getDefaultOngoingSeasonNumber();
+      appState.userManuallyPickedSeason = true;
+      appState.selectedSummarySeason = sNum;
+      switchMainTab('seasonsummary');
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    function loadSeasonIntoLiveDraft(seasonNum) {
+      const sKey = String(parseInt(seasonNum, 10) || 10);
+      const existing = (appState.liveTournaments || {})[sKey];
+      if (existing) {
+        liveScoringState.season = parseInt(existing.season || sKey, 10) || 10;
+        liveScoringState.date = existing.date || getTodayIsoDateString();
+        const ng = parseInt(existing.numGroups, 10) === 2 ? 2 : 1;
+        let nt = parseInt(existing.numTeams, 10) || 4;
+        if (ng === 2 && nt % 2 !== 0) {
+          nt = Math.min(10, Math.max(4, nt + 1));
+        }
+        liveScoringState.numGroups = ng;
+        liveScoringState.numTeams = nt;
+        liveScoringState.draftTeams = buildDraftTeamsArray(ng, nt, existing.teams || []);
+      } else {
+        liveScoringState.season = parseInt(sKey, 10) || 10;
+        if (!liveScoringState.date) {
+          liveScoringState.date = getTodayIsoDateString();
+        }
+        if (liveScoringState.numGroups === 2 && liveScoringState.numTeams % 2 !== 0) {
+          liveScoringState.numTeams = 4;
+        }
+        liveScoringState.draftTeams = buildDraftTeamsArray(
+          liveScoringState.numGroups,
+          liveScoringState.numTeams,
+          liveScoringState.draftTeams
+        );
+      }
+    }
+
+    function buildDraftTeamsArray(numGroups, numTeams, seedTeams) {
+      const ng = parseInt(numGroups, 10) === 2 ? 2 : 1;
+      let nt = parseInt(numTeams, 10) || 4;
+      if (nt < 4) nt = 4;
+      if (nt > 10) nt = 10;
+      if (ng === 2 && nt % 2 !== 0) {
+        nt = Math.min(10, Math.max(4, nt + 1));
+      }
+
+      const result = [];
+      const groupACount = ng === 2 ? (nt / 2) : nt;
+      const groupBCount = ng === 2 ? (nt / 2) : 0;
+
+      // Map existing seed teams by (group, groupTeamNum) or linear index
+      const getSeedPair = (linearIdx, grp, grpNum) => {
+        if (!Array.isArray(seedTeams) || seedTeams.length === 0) return { p1: '', p2: '' };
+        const bySlot = seedTeams.find(t => t && t.group === grp && parseInt(t.groupTeamNum, 10) === grpNum);
+        const item = bySlot || seedTeams[linearIdx];
+        if (!item) return { p1: '', p2: '' };
+        if (Array.isArray(item.players)) {
+          return { p1: String(item.players[0] || '').trim(), p2: String(item.players[1] || '').trim() };
+        }
+        return { p1: String(item.p1 || '').trim(), p2: String(item.p2 || '').trim() };
+      };
+
+      let linearIdx = 0;
+      for (let i = 1; i <= groupACount; i++) {
+        const pair = getSeedPair(linearIdx, 'A', i);
+        result.push({
+          idx: linearIdx,
+          id: 'groupA_team' + i,
+          group: 'A',
+          groupTeamNum: i,
+          label: 'Group A Team ' + i,
+          p1: pair.p1,
+          p2: pair.p2
+        });
+        linearIdx++;
+      }
+
+      for (let j = 1; j <= groupBCount; j++) {
+        const pair = getSeedPair(linearIdx, 'B', j);
+        result.push({
+          idx: linearIdx,
+          id: 'groupB_team' + j,
+          group: 'B',
+          groupTeamNum: j,
+          label: 'Group B Team ' + j,
+          p1: pair.p1,
+          p2: pair.p2
+        });
+        linearIdx++;
+      }
+
+      return result;
+    }
+
+    function initLiveScoringView() {
+      if (!liveScoringState.date) {
+        liveScoringState.date = getTodayIsoDateString();
+      }
+      if (!liveScoringState.hasInitializedOnce) {
+        const defaultSeason = getDefaultOngoingSeasonNumber();
+        liveScoringState.season = defaultSeason;
+        loadSeasonIntoLiveDraft(defaultSeason);
+        liveScoringState.hasInitializedOnce = true;
+      }
+
+      // Sync all live tournaments with appState.matches in case matches were added/edited
+      syncAllLiveTournamentsWithMatches();
+      renderCurrentLiveScoringStep();
+    }
+
+    function refreshLiveScoringOnDataUpdate() {
+      syncAllLiveTournamentsWithMatches();
+      if (appState.activeMainTab === 'livescoring') {
+        if (liveScoringState.currentStep === 4) {
+          renderLiveScoringDashboard();
+        } else if (liveScoringState.currentStep === 1) {
+          renderLiveStep1();
+        } else if (liveScoringState.currentStep === 3) {
+          renderLiveTeamCompositionStep();
+        }
+      }
+    }
+
+    function updateLiveStepperBarUI() {
+      const step = liveScoringState.currentStep || 1;
+      const hasSavedTournament = !!(appState.liveTournaments && appState.liveTournaments[String(liveScoringState.season)]);
+
+      for (let i = 1; i <= 4; i++) {
+        const pill = document.getElementById('lsStepPill' + i);
+        if (!pill) continue;
+        pill.classList.remove('active', 'completed');
+        if (i === step) {
+          pill.classList.add('active');
+        } else if (i < step || (i === 4 && hasSavedTournament)) {
+          pill.classList.add('completed');
+        }
+      }
+
+      const step1El = document.getElementById('liveScoringStep1');
+      const step2El = document.getElementById('liveScoringStep2');
+      const step3El = document.getElementById('liveScoringStep3');
+      const step4El = document.getElementById('liveScoringStep4');
+
+      if (step1El) step1El.style.display = step === 1 ? 'block' : 'none';
+      if (step2El) step2El.style.display = step === 2 ? 'block' : 'none';
+      if (step3El) step3El.style.display = step === 3 ? 'block' : 'none';
+      if (step4El) step4El.style.display = step === 4 ? 'block' : 'none';
+    }
+
+    function renderCurrentLiveScoringStep() {
+      updateLiveStepperBarUI();
+      const step = liveScoringState.currentStep || 1;
+      if (step === 1) {
+        renderLiveStep1();
+      } else if (step === 2) {
+        renderLiveStep2();
+      } else if (step === 3) {
+        renderLiveTeamCompositionStep();
+      } else if (step === 4) {
+        renderLiveScoringDashboard();
+      }
+    }
+
+    function jumpToLiveStep(targetStep) {
+      const stepNum = parseInt(targetStep, 10) || 1;
+      if (stepNum === 1) {
+        goToLiveSetupStep1();
+      } else if (stepNum === 2) {
+        goToLiveSetupStep2();
+      } else if (stepNum === 3) {
+        goToLiveSetupStep3();
+      } else if (stepNum === 4) {
+        const sKey = String(liveScoringState.season);
+        if (appState.liveTournaments && appState.liveTournaments[sKey]) {
+          liveScoringState.currentStep = 4;
+          renderCurrentLiveScoringStep();
+        } else {
+          // Check if any other season has an active live tournament
+          const keys = Object.keys(appState.liveTournaments || {});
+          if (keys.length > 0) {
+            const latestKey = keys.sort((a, b) => (parseInt(b, 10) || 0) - (parseInt(a, 10) || 0))[0];
+            liveScoringState.season = parseInt(latestKey, 10) || liveScoringState.season;
+            loadSeasonIntoLiveDraft(liveScoringState.season);
+            liveScoringState.currentStep = 4;
+            renderCurrentLiveScoringStep();
+          } else {
+            showToast("Complete Step 3 and click Save to pre-schedule matches first!", true);
+          }
+        }
+      }
+    }
+
+    /* --------------------------------------------------------------------------
+       STEP 1: SEASON NUMBER & DATE
+       -------------------------------------------------------------------------- */
+    function renderLiveStep1() {
+      const seasonSelect = document.getElementById('liveSetupSeasonSelect');
+      const dateInput = document.getElementById('liveSetupDateInput');
+      const statusBox = document.getElementById('liveStep1SeasonStatusBox');
+      const activeBanner = document.getElementById('liveStep1ActiveBanner');
+      const jumpBtn = document.getElementById('liveStep1JumpMatchesBtn');
+
+      if (!seasonSelect || !dateInput) return;
+
+      const maxKnown = Math.max(getLatestSeasonNumber(), liveScoringState.season || 10, 15);
+      const maxOptionSeason = Math.min(50, maxKnown + 5);
+
+      seasonSelect.innerHTML = '';
+      for (let s = 1; s <= maxOptionSeason; s++) {
+        const opt = document.createElement('option');
+        opt.value = String(s);
+        const hasLive = !!(appState.liveTournaments && appState.liveTournaments[String(s)]);
+        const ed = (appState.editions || []).find(e => extractSeasonNumFromEdition(e) === s);
+        const hasChamp = ed && Array.isArray(ed.champions) && ed.champions.some(p => String(p || '').trim());
+        let suffix = '';
+        if (hasLive && !hasChamp) {
+          suffix = ' (Ongoing Live Setup)';
+        } else if (hasChamp) {
+          suffix = ' (Completed)';
+        }
+        opt.textContent = 'Season ' + s + suffix;
+        seasonSelect.appendChild(opt);
+      }
+
+      seasonSelect.value = String(liveScoringState.season);
+      dateInput.value = liveScoringState.date || getTodayIsoDateString();
+
+      // Check if selected season or any season has an active live tournament
+      const selectedTournament = (appState.liveTournaments || {})[String(liveScoringState.season)];
+      const allLiveKeys = Object.keys(appState.liveTournaments || {}).sort((a, b) => (parseInt(b, 10) || 0) - (parseInt(a, 10) || 0));
+
+      if (activeBanner) {
+        if (selectedTournament) {
+          const totalF = Array.isArray(selectedTournament.fixtures) ? selectedTournament.fixtures.length : 0;
+          const compF = Array.isArray(selectedTournament.fixtures) ? selectedTournament.fixtures.filter(f => f.status === 'completed').length : 0;
+          activeBanner.style.display = 'block';
+          activeBanner.innerHTML =
+            '<div style="background: rgba(0, 245, 155, 0.1); border: 1px solid rgba(0, 245, 155, 0.4); border-radius: 12px; padding: 12px 16px; display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap;">' +
+              '<div>' +
+                '<div style="font-size: 12px; font-weight: 800; color: #00f59b; text-transform: uppercase; letter-spacing: 0.6px;">\u26A1 Ongoing Tournament Configured \u2022 Season ' + selectedTournament.season + '</div>' +
+                '<div style="font-size: 13px; color: var(--text-main); margin-top: 2px;">' +
+                  selectedTournament.numGroups + (selectedTournament.numGroups === 1 ? ' Group' : ' Groups') + ' \u2022 ' +
+                  selectedTournament.numTeams + ' Teams \u2022 <strong>' + compF + ' / ' + totalF + '</strong> group matches scored' +
+                '</div>' +
+              '</div>' +
+              '<button type="button" class="btn btn-emerald" style="padding: 8px 14px; font-size: 12px;" onclick="jumpToLiveStep(4)">' +
+                '<span>\u{1F3F8} Score Pre-Scheduled Matches \u2192</span>' +
+              '</button>' +
+            '</div>';
+        } else if (allLiveKeys.length > 0) {
+          const activeS = parseInt(allLiveKeys[0], 10);
+          const lt = appState.liveTournaments[allLiveKeys[0]];
+          const totalF = Array.isArray(lt.fixtures) ? lt.fixtures.length : 0;
+          const compF = Array.isArray(lt.fixtures) ? lt.fixtures.filter(f => f.status === 'completed').length : 0;
+          activeBanner.style.display = 'block';
+          activeBanner.innerHTML =
+            '<div style="background: rgba(56, 189, 248, 0.1); border: 1px solid rgba(56, 189, 248, 0.35); border-radius: 12px; padding: 12px 16px; display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap;">' +
+              '<div style="font-size: 13px; color: var(--text-main);">' +
+                '\u26A1 <strong>Season ' + activeS + '</strong> has an active Live Scoring schedule (' + compF + '/' + totalF + ' matches scored).' +
+              '</div>' +
+              '<button type="button" class="btn btn-outline" style="padding: 6px 12px; font-size: 12px; border-color: rgba(56, 189, 248, 0.5); color: #38bdf8;" onclick="openLiveScoringForSeason(' + activeS + ')">' +
+                '<span>Switch to Season ' + activeS + ' Matches \u2192</span>' +
+              '</button>' +
+            '</div>';
+        } else {
+          activeBanner.style.display = 'none';
+          activeBanner.innerHTML = '';
+        }
+      }
+
+      if (jumpBtn) {
+        jumpBtn.style.display = selectedTournament ? 'inline-flex' : 'none';
+      }
+
+      if (statusBox) {
+        const sNum = liveScoringState.season;
+        const seasonMatchCount = (appState.matches || []).filter(m =>
+          m && !m.isChampionshipEdition && !String(m.id || '').startsWith('edition_') &&
+          (parseInt(m.season || m.weekNumber, 10) || 1) === sNum
+        ).length;
+
+        if (selectedTournament) {
+          statusBox.innerHTML =
+            '<div>' +
+              '<strong>Season ' + sNum + '</strong> is already configured (' + selectedTournament.numGroups +
+              (selectedTournament.numGroups === 1 ? ' Group, ' : ' Groups, ') + selectedTournament.numTeams + ' Teams, Date: ' +
+              escapeHtml(selectedTournament.date || liveScoringState.date) + '). ' +
+              'Click <strong>Next: Groups &amp; Teams</strong> to review/edit the setup, or click <strong>View Pre-Scheduled Matches</strong>.' +
+            '</div>';
+        } else {
+          statusBox.innerHTML =
+            '<div>' +
+              'Setting up <strong>Season ' + sNum + '</strong> for <strong>' + escapeHtml(liveScoringState.date) + '</strong>' +
+              (seasonMatchCount > 0 ? (' (' + seasonMatchCount + ' existing match(es) already logged for Season ' + sNum + ' will be preserved)') : '') +
+              '. Click <strong>Next: Groups &amp; Teams</strong> to choose groups and team count.' +
+            '</div>';
+        }
+      }
+    }
+
+    function handleLiveSetupSeasonChange() {
+      const seasonSelect = document.getElementById('liveSetupSeasonSelect');
+      if (!seasonSelect) return;
+      const newSeason = parseInt(seasonSelect.value, 10) || 10;
+      liveScoringState.season = newSeason;
+      loadSeasonIntoLiveDraft(newSeason);
+      renderLiveStep1();
+      updateLiveStepperBarUI();
+    }
+
+    function handleLiveSetupDateChange() {
+      const dateInput = document.getElementById('liveSetupDateInput');
+      if (!dateInput) return;
+      liveScoringState.date = dateInput.value || getTodayIsoDateString();
+      renderLiveStep1();
+    }
+
+    function goToLiveSetupStep1() {
+      liveScoringState.currentStep = 1;
+      renderCurrentLiveScoringStep();
+    }
+
+    /* --------------------------------------------------------------------------
+       STEP 2: NUMBER OF GROUPS (1 or 2) & NUMBER OF TEAMS (4..10; EVEN ONLY IF 2 GROUPS)
+       -------------------------------------------------------------------------- */
+    function goToLiveSetupStep2() {
+      const seasonSelect = document.getElementById('liveSetupSeasonSelect');
+      const dateInput = document.getElementById('liveSetupDateInput');
+      if (seasonSelect && seasonSelect.value) {
+        liveScoringState.season = parseInt(seasonSelect.value, 10) || liveScoringState.season;
+      }
+      if (dateInput && dateInput.value) {
+        liveScoringState.date = dateInput.value;
+      }
+      if (!liveScoringState.date) {
+        liveScoringState.date = getTodayIsoDateString();
+      }
+
+      liveScoringState.currentStep = 2;
+      renderCurrentLiveScoringStep();
+    }
+
+    function populateLiveTeamsCountDropdown(numGroups, preferredTeams) {
+      const teamsSelect = document.getElementById('liveSetupTeamsSelect');
+      if (!teamsSelect) return;
+
+      const ng = parseInt(numGroups, 10) === 2 ? 2 : 1;
+      // MANDATORY RULE: If number of groups is 2, number of teams MUST be even (4, 6, 8 or 10) - other options must NOT exist in dropdown
+      const validTeamOptions = ng === 2 ? [4, 6, 8, 10] : [4, 5, 6, 7, 8, 9, 10];
+
+      let targetTeams = parseInt(preferredTeams, 10) || 4;
+      if (!validTeamOptions.includes(targetTeams)) {
+        // Snap odd number to nearest valid even number in [4, 6, 8, 10]
+        if (targetTeams < 4) targetTeams = 4;
+        else if (targetTeams > 10) targetTeams = 10;
+        else targetTeams = targetTeams + (targetTeams % 2);
+        if (!validTeamOptions.includes(targetTeams)) targetTeams = 4;
+      }
+
+      teamsSelect.innerHTML = '';
+      validTeamOptions.forEach(count => {
+        const opt = document.createElement('option');
+        opt.value = String(count);
+        opt.textContent = String(count);
+        teamsSelect.appendChild(opt);
+      });
+
+      teamsSelect.value = String(targetTeams);
+      liveScoringState.numGroups = ng;
+      liveScoringState.numTeams = targetTeams;
+    }
+
+    function renderLiveStep2() {
+      const titleEl = document.getElementById('liveStep2Title');
+      const groupsSelect = document.getElementById('liveSetupGroupsSelect');
+      if (titleEl) {
+        titleEl.textContent = 'Season ' + liveScoringState.season + ' \u2022 Groups & Number of Teams';
+      }
+      if (groupsSelect) {
+        groupsSelect.value = String(liveScoringState.numGroups === 2 ? 2 : 1);
+      }
+      populateLiveTeamsCountDropdown(liveScoringState.numGroups, liveScoringState.numTeams);
+      updateLiveStep2FormatPreview();
+    }
+
+    function handleLiveGroupsCountChange() {
+      const groupsSelect = document.getElementById('liveSetupGroupsSelect');
+      const teamsSelect = document.getElementById('liveSetupTeamsSelect');
+      if (!groupsSelect) return;
+
+      const ng = parseInt(groupsSelect.value, 10) === 2 ? 2 : 1;
+      const currentTeams = teamsSelect ? (parseInt(teamsSelect.value, 10) || liveScoringState.numTeams) : liveScoringState.numTeams;
+      populateLiveTeamsCountDropdown(ng, currentTeams);
+      liveScoringState.draftTeams = buildDraftTeamsArray(liveScoringState.numGroups, liveScoringState.numTeams, liveScoringState.draftTeams);
+      updateLiveStep2FormatPreview();
+    }
+
+    function handleLiveTeamsCountChange() {
+      const teamsSelect = document.getElementById('liveSetupTeamsSelect');
+      if (!teamsSelect) return;
+      const nt = parseInt(teamsSelect.value, 10) || 4;
+      liveScoringState.numTeams = nt;
+      liveScoringState.draftTeams = buildDraftTeamsArray(liveScoringState.numGroups, liveScoringState.numTeams, liveScoringState.draftTeams);
+      updateLiveStep2FormatPreview();
+    }
+
+    function updateLiveStep2FormatPreview() {
+      const previewEl = document.getElementById('liveSetupFormatPreview');
+      if (!previewEl) return;
+
+      const ng = liveScoringState.numGroups === 2 ? 2 : 1;
+      const nt = liveScoringState.numTeams || 4;
+      const totalPlayers = nt * 2;
+
+      if (ng === 1) {
+        const totalMatches = (nt * (nt - 1)) / 2;
+        previewEl.innerHTML =
+          '<div>' +
+            '<strong>Single Group Round-Robin (Group A):</strong> All <strong>' + nt + ' teams</strong> (' + totalPlayers + ' players) are in <strong>Group A</strong> and play each other once \u2192 ' +
+            '<strong style="color: #00f59b;">' + totalMatches + ' pre-scheduled group matches</strong>.' +
+          '</div>';
+      } else {
+        const perGroup = nt / 2;
+        const matchesPerGroup = (perGroup * (perGroup - 1)) / 2;
+        const totalMatches = matchesPerGroup * 2;
+        previewEl.innerHTML =
+          '<div>' +
+            '<strong>Two-Group Split Round-Robin (Group A &amp; Group B):</strong> <strong>' + perGroup + ' teams</strong> in <strong>Group A</strong> (' + matchesPerGroup + (matchesPerGroup === 1 ? ' match' : ' matches') + ') + ' +
+            '<strong>' + perGroup + ' teams</strong> in <strong>Group B</strong> (' + matchesPerGroup + (matchesPerGroup === 1 ? ' match' : ' matches') + ') \u2192 ' +
+            '<strong style="color: #00f59b;">' + totalMatches + ' total pre-scheduled group matches</strong> (' + totalPlayers + ' players).' +
+            '<div style="font-size: 11px; color: var(--text-dim); margin-top: 4px;">\u2714 Even team counts only (4, 6, 8, or 10) are enabled when 2 Groups are selected.</div>' +
+          '</div>';
+      }
+    }
+
+    /* --------------------------------------------------------------------------
+       STEP 3: TEAM COMPOSITION / PLAYERS DROPDOWNS
+       -------------------------------------------------------------------------- */
+    function goToLiveSetupStep3() {
+      const groupsSelect = document.getElementById('liveSetupGroupsSelect');
+      const teamsSelect = document.getElementById('liveSetupTeamsSelect');
+      if (groupsSelect) {
+        liveScoringState.numGroups = parseInt(groupsSelect.value, 10) === 2 ? 2 : 1;
+      }
+      if (teamsSelect) {
+        liveScoringState.numTeams = parseInt(teamsSelect.value, 10) || 4;
+      }
+      if (liveScoringState.numGroups === 2 && liveScoringState.numTeams % 2 !== 0) {
+        populateLiveTeamsCountDropdown(2, liveScoringState.numTeams);
+      }
+
+      liveScoringState.draftTeams = buildDraftTeamsArray(
+        liveScoringState.numGroups,
+        liveScoringState.numTeams,
+        liveScoringState.draftTeams
+      );
+
+      liveScoringState.currentStep = 3;
+      renderCurrentLiveScoringStep();
+    }
+
+    function renderLiveTeamCompositionStep() {
+      const container = document.getElementById('liveTeamCompositionContainer');
+      const titleEl = document.getElementById('liveStep3Title');
+      const autoFillBtn = document.getElementById('liveAutoFillGenBtn');
+      if (!container) return;
+
+      liveScoringState.draftTeams = buildDraftTeamsArray(
+        liveScoringState.numGroups,
+        liveScoringState.numTeams,
+        liveScoringState.draftTeams
+      );
+
+      if (titleEl) {
+        titleEl.textContent =
+          'Season ' + liveScoringState.season + ' \u2022 Team Composition (' +
+          liveScoringState.numGroups + (liveScoringState.numGroups === 1 ? ' Group, ' : ' Groups, ') +
+          liveScoringState.numTeams + ' Teams)';
+      }
+
+      if (autoFillBtn) {
+        const hasGenPairs = Array.isArray(appState.lastGeneratedPairs) && appState.lastGeneratedPairs.length > 0;
+        autoFillBtn.style.display = hasGenPairs ? 'inline-flex' : 'none';
+      }
+
+      const allPlayers = getAllSelectablePlayerNames();
+      const eloStandings = calculateStandings('doubles') || [];
+      const eloMap = {};
+      eloStandings.forEach(s => {
+        if (s && s.name) eloMap[s.name] = Math.round(s.elo || 1000);
+      });
+
+      // Track which player is selected in which slot so we can mark/disable duplicates across dropdowns
+      const selectedWhere = {};
+      liveScoringState.draftTeams.forEach(t => {
+        if (t.p1) selectedWhere[t.p1] = t.label + ' (Player 1)';
+        if (t.p2) {
+          if (!selectedWhere[t.p2]) {
+            selectedWhere[t.p2] = t.label + ' (Player 2)';
+          } else {
+            selectedWhere[t.p2] += ' & ' + t.label + ' (Player 2)';
+          }
+        }
+      });
+
+      const buildPlayerOptionsHtml = (currentVal, currentSlotDesc) => {
+        let html = '<option value="">-- Select Player --</option>';
+        // Ensure currentVal is included even if not in allPlayers
+        const namesList = [...allPlayers];
+        if (currentVal && !namesList.includes(currentVal)) {
+          namesList.push(currentVal);
+          namesList.sort((a, b) => a.localeCompare(b));
+        }
+
+        namesList.forEach(pName => {
+          const isSelectedHere = (pName === currentVal);
+          const takenBy = selectedWhere[pName];
+          const isTakenElsewhere = !!(takenBy && !isSelectedHere);
+          const eloVal = eloMap[pName] || 1000;
+          const labelText = pName + ' (' + eloVal + ' ELO)' + (isTakenElsewhere ? (' \u2014 in ' + takenBy) : '');
+          html +=
+            '<option value="' + escapeHtml(pName) + '"' +
+            (isSelectedHere ? ' selected' : '') +
+            (isTakenElsewhere ? ' disabled' : '') +
+            '>' + escapeHtml(labelText) + '</option>';
+        });
+        return html;
+      };
+
+      const renderGroupCardHtml = (groupLetter) => {
+        const groupTeams = liveScoringState.draftTeams.filter(t => t.group === groupLetter);
+        const matchesInGroup = (groupTeams.length * (groupTeams.length - 1)) / 2;
+
+        const slotsHtml = groupTeams.map(t => {
+          const isComplete = !!(t.p1 && t.p2 && t.p1 !== t.p2);
+          let teamEloHtml = '<span class="ls-team-elo-chip">Select 2 players</span>';
+          if (isComplete) {
+            const avgElo = Math.round(((eloMap[t.p1] || 1000) + (eloMap[t.p2] || 1000)) / 2);
+            teamEloHtml = '<span class="ls-team-elo-chip">\u2714 Avg ELO: ' + avgElo + '</span>';
+          }
+
+          return (
+            '<div class="ls-team-slot-card ' + (isComplete ? 'complete' : '') + '" id="lsTeamSlotCard_' + t.idx + '">' +
+              '<div class="ls-team-slot-top">' +
+                '<div class="ls-team-slot-name">' +
+                  '<span>\u{1F3F8}</span> Group ' + groupLetter + ' \u2022 Team ' + t.groupTeamNum +
+                '</div>' +
+                teamEloHtml +
+              '</div>' +
+              '<div class="ls-player-select-pair">' +
+                '<select class="form-select" id="liveTeamSelect_' + t.idx + '_p1" aria-label="Group ' + groupLetter + ' Team ' + t.groupTeamNum + ' Player 1" onchange="handleLiveTeamPlayerSelectChange(' + t.idx + ', 1, this.value)">' +
+                  buildPlayerOptionsHtml(t.p1, t.label + ' (Player 1)') +
+                '</select>' +
+                '<select class="form-select" id="liveTeamSelect_' + t.idx + '_p2" aria-label="Group ' + groupLetter + ' Team ' + t.groupTeamNum + ' Player 2" onchange="handleLiveTeamPlayerSelectChange(' + t.idx + ', 2, this.value)">' +
+                  buildPlayerOptionsHtml(t.p2, t.label + ' (Player 2)') +
+                '</select>' +
+              '</div>' +
+            '</div>'
+          );
+        }).join('');
+
+        return (
+          '<div class="ls-group-comp-card group-' + groupLetter.toLowerCase() + '">' +
+            '<div class="ls-group-comp-header">' +
+              '<div class="ls-group-comp-title">' +
+                '<span>' + (groupLetter === 'A' ? '\u{1F7E2}' : '\u{1F535}') + '</span> Group ' + groupLetter +
+              '</div>' +
+              '<span class="ls-group-comp-meta">' + groupTeams.length + ' Teams \u2022 ' + matchesInGroup + (matchesInGroup === 1 ? ' Match' : ' Matches') + '</span>' +
+            '</div>' +
+            slotsHtml +
+          '</div>'
+        );
+      };
+
+      if (liveScoringState.numGroups === 2) {
+        container.innerHTML = renderGroupCardHtml('A') + renderGroupCardHtml('B');
+      } else {
+        container.innerHTML = renderGroupCardHtml('A');
+      }
+
+      updateLiveTeamCompositionValidationUI();
+    }
+
+    function handleLiveTeamPlayerSelectChange(teamIdx, playerSlot, newVal) {
+      const idx = parseInt(teamIdx, 10);
+      const slot = parseInt(playerSlot, 10);
+      const cleanVal = String(newVal || '').trim();
+      const targetTeam = liveScoringState.draftTeams.find(t => t.idx === idx);
+      if (!targetTeam) return;
+
+      if (slot === 1) {
+        targetTeam.p1 = cleanVal;
+      } else {
+        targetTeam.p2 = cleanVal;
+      }
+
+      renderLiveTeamCompositionStep();
+    }
+
+    function updateLiveTeamCompositionValidationUI() {
+      const box = document.getElementById('liveTeamCompValidationBox');
+      if (!box) return;
+
+      const totalTeams = liveScoringState.draftTeams.length;
+      let completeTeams = 0;
+      const seenPlayers = new Set();
+      const duplicatePlayers = new Set();
+
+      liveScoringState.draftTeams.forEach(t => {
+        if (t.p1 && t.p2 && t.p1 !== t.p2) {
+          completeTeams++;
+        }
+        [t.p1, t.p2].forEach(p => {
+          if (!p) return;
+          if (seenPlayers.has(p)) duplicatePlayers.add(p);
+          seenPlayers.add(p);
+        });
+      });
+
+      const ng = liveScoringState.numGroups === 2 ? 2 : 1;
+      const perGroup = ng === 2 ? (totalTeams / 2) : totalTeams;
+      const totalFixtures = ng === 2
+        ? ((perGroup * (perGroup - 1)) / 2) * 2
+        : (totalTeams * (totalTeams - 1)) / 2;
+
+      if (duplicatePlayers.size > 0) {
+        box.style.borderColor = 'rgba(244, 63, 94, 0.5)';
+        box.style.background = 'rgba(244, 63, 94, 0.1)';
+        box.innerHTML =
+          '<div style="color: #fda4af;">' +
+            '\u26A0\uFE0F <strong>Duplicate player detected:</strong> ' + escapeHtml(Array.from(duplicatePlayers).join(', ')) +
+            '. Each player can only belong to one team.' +
+          '</div>';
+      } else if (completeTeams < totalTeams) {
+        box.style.borderColor = 'rgba(56, 189, 248, 0.35)';
+        box.style.background = 'rgba(56, 189, 248, 0.08)';
+        box.innerHTML =
+          '<div>' +
+            '<strong>' + completeTeams + ' of ' + totalTeams + ' teams assigned</strong> (' + seenPlayers.size + ' / ' + (totalTeams * 2) + ' players selected). ' +
+            'Select 2 players for every team, then click <strong>Save &amp; Pre-Schedule Matches</strong> to generate all <strong>' + totalFixtures + '</strong> group stage fixtures.' +
+          '</div>';
+      } else {
+        box.style.borderColor = 'rgba(0, 245, 155, 0.45)';
+        box.style.background = 'rgba(0, 245, 155, 0.1)';
+        box.innerHTML =
+          '<div style="color: #00f59b;">' +
+            '\u2705 <strong>All ' + totalTeams + ' teams (' + (totalTeams * 2) + ' players) are ready!</strong> ' +
+            'Click <strong>Save &amp; Pre-Schedule Matches</strong> to schedule all <strong>' + totalFixtures + '</strong> round-robin group matches for <strong>Season ' + liveScoringState.season + '</strong>.' +
+          '</div>';
+      }
+    }
+
+    function clearAllLiveTeamSelections() {
+      liveScoringState.draftTeams.forEach(t => {
+        t.p1 = '';
+        t.p2 = '';
+      });
+      renderLiveTeamCompositionStep();
+    }
+
+    function autoFillLiveTeamsFromGenerator() {
+      const pairs = appState.lastGeneratedPairs || [];
+      if (!Array.isArray(pairs) || pairs.length === 0) {
+        showToast("No generated teams found in this session.", true);
+        return;
+      }
+      liveScoringState.draftTeams.forEach((t, idx) => {
+        if (pairs[idx] && Array.isArray(pairs[idx].players) && pairs[idx].players.length >= 2) {
+          t.p1 = pairs[idx].players[0] || '';
+          t.p2 = pairs[idx].players[1] || '';
+        }
+      });
+      renderLiveTeamCompositionStep();
+      showToast("Auto-filled teams from Matchmaking Generator! \u2728");
+    }
+
+    async function promptQuickAddPlayerForLiveScoring() {
+      const rawName = prompt("Enter new player's name to add to the roster:");
+      if (!rawName) return;
+      const cleanName = rawName.trim();
+      if (!cleanName) return;
+
+      const exists = (appState.players || []).some(p => (p.name || '').trim().toLowerCase() === cleanName.toLowerCase());
+      if (exists) {
+        showToast(cleanName + " is already in the player roster!");
+        renderLiveTeamCompositionStep();
+        return;
+      }
+
+      const newPlayer = {
+        id: 'p_' + Date.now() + '_' + Math.random().toString(36).substring(2, 6),
+        name: cleanName,
+        gender: 'M',
+        photoUrl: '',
+        createdAt: new Date().toISOString()
+      };
+
+      appState.players.push(newPlayer);
+      saveLocalData();
+      renderLiveTeamCompositionStep();
+      showToast("Added " + cleanName + " to player roster! \u{1F3F8}");
+
+      try {
+        await firestoreRestUpsert("badminton_players", newPlayer.id, sanitizeForFirestore(newPlayer));
+      } catch (e) {}
+      if (isFirestoreActive && firestoreDb) {
+        firestoreDb.collection("badminton_players").doc(newPlayer.id).set(sanitizeForFirestore(newPlayer), { merge: true }).catch(() => {});
+      }
+    }
+
+    /* --------------------------------------------------------------------------
+       ROUND-ROBIN PRE-SCHEDULER & TOURNAMENT PERSISTENCE
+       -------------------------------------------------------------------------- */
+    function generateGroupRoundRobinSchedule(groupTeams, groupLetter) {
+      // Berger Circle Method so no team plays back-to-back unnecessarily
+      const list = [...groupTeams];
+      if (list.length < 2) return [];
+      if (list.length % 2 === 1) {
+        list.push(null); // Dummy bye slot
+      }
+
+      const n = list.length;
+      const numRounds = n - 1;
+      const half = n / 2;
+      const rounds = [];
+
+      const rotating = list.slice(1);
+      for (let r = 0; r < numRounds; r++) {
+        const currentRound = [];
+        const currentLineup = [list[0], ...rotating];
+        for (let i = 0; i < half; i++) {
+          const tA = currentLineup[i];
+          const tB = currentLineup[n - 1 - i];
+          if (tA && tB) {
+            // Keep lower groupTeamNum first for clean display
+            const first = tA.groupTeamNum < tB.groupTeamNum ? tA : tB;
+            const second = tA.groupTeamNum < tB.groupTeamNum ? tB : tA;
+            currentRound.push({
+              round: r + 1,
+              group: groupLetter,
+              team1Obj: first,
+              team2Obj: second
+            });
+          }
+        }
+        rounds.push(currentRound);
+        // Rotate clockwise (last element moves to front of rotating array)
+        rotating.unshift(rotating.pop());
+      }
+      return rounds;
+    }
+
+    function generateRoundRobinFixtures(seasonNum, dateStr, teamsList, existingFixtures) {
+      const groupATeams = teamsList.filter(t => t.group === 'A');
+      const groupBTeams = teamsList.filter(t => t.group === 'B');
+
+      const roundsA = generateGroupRoundRobinSchedule(groupATeams, 'A');
+      const roundsB = generateGroupRoundRobinSchedule(groupBTeams, 'B');
+
+      // Interleave Round 1 of Group A, Round 1 of Group B, Round 2 of Group A, Round 2 of Group B...
+      const maxRounds = Math.max(roundsA.length, roundsB.length);
+      const rawMatches = [];
+      for (let r = 0; r < maxRounds; r++) {
+        if (roundsA[r]) rawMatches.push(...roundsA[r]);
+        if (roundsB[r]) rawMatches.push(...roundsB[r]);
+      }
+
+      // Build lookup map of existing completed fixtures or logged matches in Season `seasonNum`
+      const seasonMatches = (appState.matches || []).filter(m => {
+        if (!m || m.isChampionshipEdition || String(m.id || '').startsWith('edition_')) return false;
+        return (parseInt(m.season || m.weekNumber, 10) || 1) === parseInt(seasonNum, 10);
+      });
+
+      const usedMatchIds = new Set();
+
+      return rawMatches.map((item, idx) => {
+        const matchOrder = idx + 1;
+        const t1Players = [...item.team1Obj.players];
+        const t2Players = [...item.team2Obj.players];
+        const t1Key = canonicalTeamKey(t1Players);
+        const t2Key = canonicalTeamKey(t2Players);
+        const fixtureId = 's' + seasonNum + '_g' + item.group + '_t' + item.team1Obj.groupTeamNum + '_vs_t' + item.team2Obj.groupTeamNum;
+
+        // Check if an existing match in appState.matches matches this fixture
+        let linkedMatch = seasonMatches.find(m => m.liveFixtureId === fixtureId && !usedMatchIds.has(m.id));
+        if (!linkedMatch && Array.isArray(existingFixtures)) {
+          const prevFix = existingFixtures.find(ef => ef && ef.id === fixtureId && ef.matchId);
+          if (prevFix) {
+            linkedMatch = seasonMatches.find(m => m.id === prevFix.matchId && !usedMatchIds.has(m.id));
+          }
+        }
+        if (!linkedMatch) {
+          linkedMatch = seasonMatches.find(m => {
+            if (usedMatchIds.has(m.id)) return false;
+            const mK1 = canonicalTeamKey(m.team1);
+            const mK2 = canonicalTeamKey(m.team2);
+            return (mK1 === t1Key && mK2 === t2Key) || (mK1 === t2Key && mK2 === t1Key);
+          });
+        }
+
+        if (linkedMatch) {
+          usedMatchIds.add(linkedMatch.id);
+          // Align sets & winner orientation with fixture's team1 and team2
+          const mK1 = canonicalTeamKey(linkedMatch.team1);
+          const isReversed = (mK1 === t2Key && mK1 !== t1Key);
+          const orientedSets = (linkedMatch.sets || []).map(s => ({
+            t1: isReversed ? (parseInt(s.t2, 10) || 0) : (parseInt(s.t1, 10) || 0),
+            t2: isReversed ? (parseInt(s.t1, 10) || 0) : (parseInt(s.t2, 10) || 0)
+          }));
+          let orientedWinner = linkedMatch.winner || 1;
+          if (isReversed) {
+            orientedWinner = orientedWinner === 1 ? 2 : (orientedWinner === 2 ? 1 : 0);
+          }
+
+          return {
+            id: fixtureId,
+            matchOrder,
+            round: item.round,
+            group: item.group,
+            team1Id: item.team1Obj.id,
+            team2Id: item.team2Obj.id,
+            team1Label: item.team1Obj.label,
+            team2Label: item.team2Obj.label,
+            team1: t1Players,
+            team2: t2Players,
+            status: 'completed',
+            matchId: linkedMatch.id,
+            sets: orientedSets,
+            winner: orientedWinner
+          };
+        }
+
+        return {
+          id: fixtureId,
+          matchOrder,
+          round: item.round,
+          group: item.group,
+          team1Id: item.team1Obj.id,
+          team2Id: item.team2Obj.id,
+          team1Label: item.team1Obj.label,
+          team2Label: item.team2Obj.label,
+          team1: t1Players,
+          team2: t2Players,
+          status: 'pending',
+          matchId: null,
+          sets: [],
+          winner: 0
+        };
+      });
+    }
+
+    function persistLiveTournament(tournamentObj) {
+      if (!tournamentObj || !tournamentObj.season) return;
+      const sKey = String(tournamentObj.season);
+      const docId = tournamentObj.id || ('live_season_' + sKey);
+      tournamentObj.id = docId;
+
+      const cleanTournament = sanitizeForFirestore(tournamentObj);
+      if (!appState.liveTournaments || typeof appState.liveTournaments !== 'object') {
+        appState.liveTournaments = {};
+      }
+      appState.liveTournaments[sKey] = cleanTournament;
+      saveLocalData();
+
+      firestoreRestUpsert("badminton_tournaments", docId, cleanTournament)
+        .then(() => {
+          syncedRemoteTournamentIds.add(docId);
+        })
+        .catch((err) => {
+          console.warn("Direct REST tournament sync fallback:", err);
+        });
+
+      if (isFirestoreActive && firestoreDb) {
+        firestoreDb.collection("badminton_tournaments").doc(docId).set(cleanTournament, { merge: true })
+          .then(() => {
+            syncedRemoteTournamentIds.add(docId);
+          })
+          .catch(() => {});
+      }
+    }
+
+    function saveLiveTournamentSetup() {
+      const seasonNum = parseInt(liveScoringState.season, 10) || 10;
+      const dateStr = liveScoringState.date || getTodayIsoDateString();
+      const numGroups = parseInt(liveScoringState.numGroups, 10) === 2 ? 2 : 1;
+      const numTeams = parseInt(liveScoringState.numTeams, 10) || 4;
+
+      if (numGroups === 2 && numTeams % 2 !== 0) {
+        alert("When Number of Groups is 2, the Number of Teams must be even (4, 6, 8, or 10).");
+        return;
+      }
+
+      const seenPlayers = new Set();
+      for (let i = 0; i < liveScoringState.draftTeams.length; i++) {
+        const t = liveScoringState.draftTeams[i];
+        const p1 = String(t.p1 || '').trim();
+        const p2 = String(t.p2 || '').trim();
+        if (!p1 || !p2) {
+          alert("Please select both players for " + t.label + " before saving.");
+          return;
+        }
+        if (p1 === p2) {
+          alert(t.label + " cannot have the same player (" + p1 + ") selected twice.");
+          return;
+        }
+        if (seenPlayers.has(p1)) {
+          alert(p1 + " is assigned to more than one team. Please select distinct players for each team.");
+          return;
+        }
+        if (seenPlayers.has(p2)) {
+          alert(p2 + " is assigned to more than one team. Please select distinct players for each team.");
+          return;
+        }
+        seenPlayers.add(p1);
+        seenPlayers.add(p2);
+      }
+
+      const configuredTeams = liveScoringState.draftTeams.map(t => ({
+        id: t.id,
+        group: t.group,
+        groupTeamNum: t.groupTeamNum,
+        label: 'Group ' + t.group + ' Team ' + t.groupTeamNum,
+        players: [String(t.p1).trim(), String(t.p2).trim()]
+      }));
+
+      const prevTournament = (appState.liveTournaments || {})[String(seasonNum)];
+      const prevFixtures = prevTournament && Array.isArray(prevTournament.fixtures) ? prevTournament.fixtures : [];
+
+      const fixtures = generateRoundRobinFixtures(seasonNum, dateStr, configuredTeams, prevFixtures);
+
+      const tournamentObj = {
+        id: 'live_season_' + seasonNum,
+        season: seasonNum,
+        date: dateStr,
+        numGroups: numGroups,
+        numTeams: numTeams,
+        teams: configuredTeams,
+        fixtures: fixtures,
+        createdAt: (prevTournament && prevTournament.createdAt) ? prevTournament.createdAt : new Date().toISOString(),
+        updatedAt: new Date().toISOString()
+      };
+
+      persistLiveTournament(tournamentObj);
+
+      // Point Season Summary to this ongoing season by default unless manually overridden later
+      appState.selectedSummarySeason = seasonNum;
+      appState.lastLoggedSeason = seasonNum;
+
+      liveScoringState.fixtureFilter = 'all';
+      liveScoringState.editingFixtureIds.clear();
+      liveScoringState.currentStep = 4;
+
+      updateUI();
+      renderCurrentLiveScoringStep();
+      triggerMiniConfetti();
+      showToast("Season " + seasonNum + " saved! " + fixtures.length + " group stage matches pre-scheduled. \u{1F3F8}");
+    }
+
+    /* --------------------------------------------------------------------------
+       BIDIRECTIONAL SYNC BETWEEN LIVE FIXTURES & APPSTATE.MATCHES
+       -------------------------------------------------------------------------- */
+    function syncAllLiveTournamentsWithMatches() {
+      if (!appState.liveTournaments || typeof appState.liveTournaments !== 'object') return;
+      Object.keys(appState.liveTournaments).forEach(sKey => {
+        const lt = appState.liveTournaments[sKey];
+        if (!lt || !Array.isArray(lt.fixtures)) return;
+        const sNum = parseInt(lt.season || sKey, 10) || 0;
+        if (sNum <= 0) return;
+
+        const seasonMatches = (appState.matches || []).filter(m => {
+          if (!m || m.isChampionshipEdition || String(m.id || '').startsWith('edition_')) return false;
+          return (parseInt(m.season || m.weekNumber, 10) || 1) === sNum;
+        });
+
+        const usedMatchIds = new Set();
+
+        // Pass 1: link by explicit matchId or liveFixtureId
+        lt.fixtures.forEach(f => {
+          let m = null;
+          if (f.matchId) {
+            m = seasonMatches.find(x => x.id === f.matchId);
+          }
+          if (!m) {
+            m = seasonMatches.find(x => x.liveFixtureId === f.id && !usedMatchIds.has(x.id));
+          }
+          if (m) {
+            usedMatchIds.add(m.id);
+            applyMatchToFixture(f, m);
+          } else if (f.matchId) {
+            // Match was deleted
+            f.status = 'pending';
+            f.matchId = null;
+            f.sets = [];
+            f.winner = 0;
+          }
+        });
+
+        // Pass 2: link any remaining pending fixture if a match with the exact same two teams exists in this season
+        lt.fixtures.forEach(f => {
+          if (f.status === 'completed' && f.matchId) return;
+          const fK1 = canonicalTeamKey(f.team1);
+          const fK2 = canonicalTeamKey(f.team2);
+          const m = seasonMatches.find(x => {
+            if (usedMatchIds.has(x.id)) return false;
+            const mK1 = canonicalTeamKey(x.team1);
+            const mK2 = canonicalTeamKey(x.team2);
+            return (mK1 === fK1 && mK2 === fK2) || (mK1 === fK2 && mK2 === fK1);
+          });
+          if (m) {
+            usedMatchIds.add(m.id);
+            applyMatchToFixture(f, m);
+          }
+        });
+      });
+    }
+
+    function applyMatchToFixture(fixture, matchObj) {
+      if (!fixture || !matchObj) return;
+      const fK1 = canonicalTeamKey(fixture.team1);
+      const fK2 = canonicalTeamKey(fixture.team2);
+      const mK1 = canonicalTeamKey(matchObj.team1);
+      const isReversed = (mK1 === fK2 && mK1 !== fK1);
+
+      fixture.status = 'completed';
+      fixture.matchId = matchObj.id;
+      fixture.sets = (matchObj.sets || []).map(s => ({
+        t1: isReversed ? (parseInt(s.t2, 10) || 0) : (parseInt(s.t1, 10) || 0),
+        t2: isReversed ? (parseInt(s.t1, 10) || 0) : (parseInt(s.t2, 10) || 0)
+      }));
+      let w = parseInt(matchObj.winner, 10) || 1;
+      if (isReversed) {
+        w = w === 1 ? 2 : (w === 2 ? 1 : 0);
+      }
+      fixture.winner = w;
+    }
+
+    function syncLiveTournamentsAfterMatchChange(matchObj) {
+      if (!matchObj || matchObj.isChampionshipEdition || String(matchObj.id || '').startsWith('edition_')) return;
+      const sNum = parseInt(matchObj.season || matchObj.weekNumber, 10) || 0;
+      const lt = (appState.liveTournaments || {})[String(sNum)];
+      if (!lt || !Array.isArray(lt.fixtures)) return;
+
+      let targetFixture = null;
+      if (liveScoringState.activeModalFixtureContext &&
+          parseInt(liveScoringState.activeModalFixtureContext.season, 10) === sNum) {
+        targetFixture = lt.fixtures.find(f => f.id === liveScoringState.activeModalFixtureContext.fixtureId);
+        liveScoringState.activeModalFixtureContext = null;
+      }
+      if (!targetFixture && matchObj.liveFixtureId) {
+        targetFixture = lt.fixtures.find(f => f.id === matchObj.liveFixtureId);
+      }
+      if (!targetFixture) {
+        targetFixture = lt.fixtures.find(f => f.matchId === matchObj.id);
+      }
+      if (!targetFixture) {
+        const mK1 = canonicalTeamKey(matchObj.team1);
+        const mK2 = canonicalTeamKey(matchObj.team2);
+        targetFixture = lt.fixtures.find(f => {
+          const fK1 = canonicalTeamKey(f.team1);
+          const fK2 = canonicalTeamKey(f.team2);
+          return (fK1 === mK1 && fK2 === mK2) || (fK1 === mK2 && fK2 === mK1);
+        });
+      }
+
+      if (targetFixture) {
+        applyMatchToFixture(targetFixture, matchObj);
+        lt.updatedAt = new Date().toISOString();
+        persistLiveTournament(lt);
+      }
+    }
+
+    function syncLiveTournamentsAfterMatchDelete(matchId) {
+      if (!matchId || !appState.liveTournaments) return;
+      Object.keys(appState.liveTournaments).forEach(sKey => {
+        const lt = appState.liveTournaments[sKey];
+        if (!lt || !Array.isArray(lt.fixtures)) return;
+        let changed = false;
+        lt.fixtures.forEach(f => {
+          if (f.matchId === matchId) {
+            f.status = 'pending';
+            f.matchId = null;
+            f.sets = [];
+            f.winner = 0;
+            changed = true;
+          }
+        });
+        if (changed) {
+          lt.updatedAt = new Date().toISOString();
+          persistLiveTournament(lt);
+        }
+      });
+    }
+
+    /* --------------------------------------------------------------------------
+       STEP 4: PRE-SCHEDULED GROUP STAGE MATCHES & LIVE SCORING DASHBOARD
+       -------------------------------------------------------------------------- */
+    function setLiveFixtureFilter(filterVal) {
+      liveScoringState.fixtureFilter = filterVal || 'all';
+      renderLiveScoringDashboard();
+    }
+
+    function toggleEditLiveFixture(fixtureId) {
+      if (liveScoringState.editingFixtureIds.has(fixtureId)) {
+        liveScoringState.editingFixtureIds.delete(fixtureId);
+      } else {
+        liveScoringState.editingFixtureIds.add(fixtureId);
+      }
+      renderLiveScoringDashboard();
+    }
+
+    function saveLiveFixtureInlineScore(seasonNum, fixtureId) {
+      const sKey = String(parseInt(seasonNum, 10) || liveScoringState.season);
+      const tournament = (appState.liveTournaments || {})[sKey];
+      if (!tournament || !Array.isArray(tournament.fixtures)) return;
+
+      const fixture = tournament.fixtures.find(f => f.id === fixtureId);
+      if (!fixture) return;
+
+      const input1 = document.getElementById('lsScoreInput_' + fixtureId + '_t1');
+      const input2 = document.getElementById('lsScoreInput_' + fixtureId + '_t2');
+      if (!input1 || !input2) return;
+
+      const raw1 = input1.value.trim();
+      const raw2 = input2.value.trim();
+      if (raw1 === '' || raw2 === '') {
+        alert("Please enter the score for both teams before saving.");
+        return;
+      }
+
+      const s1 = parseInt(raw1, 10);
+      const s2 = parseInt(raw2, 10);
+      if (isNaN(s1) || isNaN(s2) || s1 < 0 || s2 < 0) {
+        alert("Please enter valid non-negative scores.");
+        return;
+      }
+      if (s1 === s2) {
+        alert("Scores cannot be tied (" + s1 + "-" + s2 + "). Please enter a decisive match score!");
+        return;
+      }
+
+      const winner = s1 > s2 ? 1 : 2;
+      const isEdit = !!(fixture.matchId && (appState.matches || []).some(m => m.id === fixture.matchId));
+      const existingMatch = isEdit ? appState.matches.find(m => m.id === fixture.matchId) : null;
+      const matchId = existingMatch ? existingMatch.id : ('m_live_s' + tournament.season + '_' + fixture.id + '_' + Date.now().toString(36));
+
+      const matchData = {
+        id: matchId,
+        date: tournament.date || getTodayIsoDateString(),
+        season: parseInt(tournament.season, 10),
+        weekNumber: parseInt(tournament.season, 10),
+        format: 'doubles',
+        setsCount: 1,
+        group: fixture.group,
+        liveFixtureId: fixture.id,
+        team1: [...fixture.team1],
+        team2: [...fixture.team2],
+        sets: [{ t1: s1, t2: s2 }],
+        winner: winner,
+        notes: 'Season ' + tournament.season + ' \u2022 Group ' + fixture.group + ' (' + fixture.team1Label + ' vs ' + fixture.team2Label + ')',
+        createdAt: existingMatch && existingMatch.createdAt ? existingMatch.createdAt : new Date().toISOString()
+      };
+
+      fixture.status = 'completed';
+      fixture.matchId = matchId;
+      fixture.sets = [{ t1: s1, t2: s2 }];
+      fixture.winner = winner;
+      liveScoringState.editingFixtureIds.delete(fixtureId);
+
+      // Save match through standard persistMatch pipeline so all tabs (Leaderboard, ELO, Badges, History, H2H, Season Summary) update live!
+      appState.lastLoggedSeason = parseInt(tournament.season, 10);
+      appState.selectedSummarySeason = parseInt(tournament.season, 10);
+      persistMatch(matchData, isEdit);
+      persistLiveTournament(tournament);
+      triggerMiniConfetti();
+    }
+
+    function openLiveFixtureInMatchModal(seasonNum, fixtureId) {
+      const sKey = String(parseInt(seasonNum, 10) || liveScoringState.season);
+      const tournament = (appState.liveTournaments || {})[sKey];
+      if (!tournament || !Array.isArray(tournament.fixtures)) return;
+
+      const fixture = tournament.fixtures.find(f => f.id === fixtureId);
+      if (!fixture) return;
+
+      liveScoringState.activeModalFixtureContext = {
+        season: parseInt(tournament.season, 10),
+        fixtureId: fixture.id
+      };
+
+      if (fixture.matchId && (appState.matches || []).some(m => m.id === fixture.matchId)) {
+        openEditMatchModal(fixture.matchId);
+        return;
+      }
+
+      openMatchModal();
+      setModalFormat('doubles');
+      const seasonSelect = document.getElementById('matchSeasonSelect');
+      if (seasonSelect) {
+        populateSeasonDropdown(parseInt(tournament.season, 10));
+        seasonSelect.value = String(tournament.season);
+      }
+      const dateInput = document.getElementById('matchDateInput');
+      if (dateInput) dateInput.value = tournament.date || getTodayIsoDateString();
+
+      const t1p1 = document.getElementById('team1Player1Select');
+      const t1p2 = document.getElementById('team1Player2Select');
+      const t2p1 = document.getElementById('team2Player1Select');
+      const t2p2 = document.getElementById('team2Player2Select');
+
+      if (t1p1) t1p1.value = fixture.team1[0] || '';
+      if (t1p2) t1p2.value = fixture.team1[1] || '';
+      if (t2p1) t2p1.value = fixture.team2[0] || '';
+      if (t2p2) t2p2.value = fixture.team2[1] || '';
+
+      const notesInput = document.getElementById('matchNotesInput');
+      if (notesInput) {
+        notesInput.value = 'Season ' + tournament.season + ' \u2022 Group ' + fixture.group + ' (' + fixture.team1Label + ' vs ' + fixture.team2Label + ')';
+      }
+      calculateLiveMatchWinner();
+    }
+
+    async function clearLiveFixtureScore(seasonNum, fixtureId) {
+      const sKey = String(parseInt(seasonNum, 10) || liveScoringState.season);
+      const tournament = (appState.liveTournaments || {})[sKey];
+      if (!tournament || !Array.isArray(tournament.fixtures)) return;
+
+      const fixture = tournament.fixtures.find(f => f.id === fixtureId);
+      if (!fixture || !fixture.matchId) return;
+
+      if (!confirm("Reset score for " + fixture.team1.join(' & ') + " vs " + fixture.team2.join(' & ') + "? This will remove the match result from standings.")) {
+        return;
+      }
+
+      const oldMatchId = fixture.matchId;
+      fixture.status = 'pending';
+      fixture.matchId = null;
+      fixture.sets = [];
+      fixture.winner = 0;
+      liveScoringState.editingFixtureIds.delete(fixtureId);
+
+      await deleteMatchById(oldMatchId);
+      persistLiveTournament(tournament);
+      renderLiveScoringDashboard();
+    }
+
+    function renderLiveScoringDashboard() {
+      const wrap = document.getElementById('liveScoringDashboardWrap');
+      if (!wrap) return;
+
+      const sKey = String(liveScoringState.season);
+      const tournament = (appState.liveTournaments || {})[sKey];
+
+      if (!tournament || !Array.isArray(tournament.fixtures)) {
+        wrap.innerHTML =
+          '<div class="ls-wizard-card" style="text-align: center; padding: 36px 20px;">' +
+            '<div style="font-size: 32px; margin-bottom: 10px;">\u{1F3F8}</div>' +
+            '<div class="ls-wizard-title">No Pre-Scheduled Matches Found for Season ' + escapeHtml(sKey) + '</div>' +
+            '<div class="ls-wizard-desc" style="max-width: 480px; margin: 8px auto 20px;">Configure the Season Number, Groups, Teams, and Team Players first to pre-schedule all group stage matches.</div>' +
+            '<button type="button" class="btn btn-emerald" onclick="goToLiveSetupStep1()">\u2699\uFE0F Configure Live Tournament</button>' +
+          '</div>';
+        return;
+      }
+
+      const fixtures = tournament.fixtures;
+      const totalCount = fixtures.length;
+      const completedCount = fixtures.filter(f => f.status === 'completed').length;
+      const pendingCount = totalCount - completedCount;
+      const pct = totalCount > 0 ? Math.round((completedCount / totalCount) * 100) : 0;
+      const numGroups = parseInt(tournament.numGroups, 10) === 2 ? 2 : 1;
+
+      const activeFilter = liveScoringState.fixtureFilter || 'all';
+      const filteredFixtures = fixtures.filter(f => {
+        if (activeFilter === 'pending') return f.status !== 'completed';
+        if (activeFilter === 'completed') return f.status === 'completed';
+        if (activeFilter === 'groupA') return f.group === 'A';
+        if (activeFilter === 'groupB') return f.group === 'B';
+        return true;
+      });
+
+      const fixturesHtml = filteredFixtures.length === 0
+        ? (
+          '<div class="ls-wizard-card" style="text-align: center; padding: 28px 16px; color: var(--text-muted);">' +
+            'No matches match the selected filter (' + escapeHtml(activeFilter) + ').' +
+          '</div>'
+        )
+        : filteredFixtures.map(f => {
+          const isCompleted = f.status === 'completed';
+          const isEditing = !isCompleted || liveScoringState.editingFixtureIds.has(f.id);
+
+          let s1Val = '';
+          let s2Val = '';
+          let scoreSummaryStr = '';
+          if (Array.isArray(f.sets) && f.sets.length > 0) {
+            s1Val = String(f.sets[0].t1 !== undefined ? f.sets[0].t1 : '');
+            s2Val = String(f.sets[0].t2 !== undefined ? f.sets[0].t2 : '');
+            scoreSummaryStr = f.sets.map(s => s.t1 + '-' + s.t2).join(', ');
+          }
+
+          const isT1Win = isCompleted && f.winner === 1;
+          const isT2Win = isCompleted && f.winner === 2;
+
+          let actionZoneHtml = '';
+          if (isEditing) {
+            actionZoneHtml =
+              '<div class="ls-fixture-score-zone">' +
+                '<input type="number" min="0" max="99" class="ls-score-num-input" id="lsScoreInput_' + f.id + '_t1" placeholder="T1" value="' + escapeHtml(s1Val) + '" aria-label="' + escapeHtml(f.team1.join(' & ')) + ' score" onkeydown="if(event.key===\'Enter\'){event.preventDefault();saveLiveFixtureInlineScore(' + tournament.season + ',\'' + f.id + '\');}">' +
+                '<span class="ls-score-dash">-</span>' +
+                '<input type="number" min="0" max="99" class="ls-score-num-input" id="lsScoreInput_' + f.id + '_t2" placeholder="T2" value="' + escapeHtml(s2Val) + '" aria-label="' + escapeHtml(f.team2.join(' & ')) + ' score" onkeydown="if(event.key===\'Enter\'){event.preventDefault();saveLiveFixtureInlineScore(' + tournament.season + ',\'' + f.id + '\');}">' +
+                '<button type="button" class="btn btn-emerald" style="padding: 8px 14px; font-size: 12px; font-weight: 800;" onclick="saveLiveFixtureInlineScore(' + tournament.season + ', \'' + f.id + '\')">' +
+                  '<span>\u{1F4BE} Save</span>' +
+                '</button>' +
+                '<button type="button" class="btn btn-outline" style="padding: 7px 10px; font-size: 11px;" title="Open full match modal (e.g. for 3 sets or match notes)" onclick="openLiveFixtureInMatchModal(' + tournament.season + ', \'' + f.id + '\')">' +
+                  '<span>3-Set / Modal</span>' +
+                '</button>' +
+                (isCompleted
+                  ? '<button type="button" class="btn btn-outline" style="padding: 7px 10px; font-size: 11px;" onclick="toggleEditLiveFixture(\'' + f.id + '\')">Cancel</button>'
+                  : '') +
+              '</div>';
+          } else {
+            actionZoneHtml =
+              '<div class="ls-fixture-score-zone">' +
+                '<div class="ls-completed-score-pill">\u2705 ' + escapeHtml(scoreSummaryStr) + '</div>' +
+                '<button type="button" class="btn btn-outline" style="padding: 6px 11px; font-size: 11px;" onclick="toggleEditLiveFixture(\'' + f.id + '\')">' +
+                  '<span>\u270F\uFE0F Edit Score</span>' +
+                '</button>' +
+                '<button type="button" class="btn btn-outline" style="padding: 6px 10px; font-size: 11px; color: #fda4af; border-color: rgba(244, 63, 94, 0.35);" title="Reset match score" onclick="clearLiveFixtureScore(' + tournament.season + ', \'' + f.id + '\')">' +
+                  '<span>\u21BA</span>' +
+                '</button>' +
+              '</div>';
+          }
+
+          return (
+            '<div class="ls-fixture-card ' + (isCompleted ? 'completed' : '') + '" id="lsFixtureCard_' + f.id + '">' +
+              '<div class="ls-fixture-top">' +
+                '<div class="ls-fixture-badges">' +
+                  '<span class="ls-fixture-num-badge">Match #' + f.matchOrder + '</span>' +
+                  '<span class="ls-fixture-grp-badge grp-' + f.group.toLowerCase() + '">Group ' + escapeHtml(f.group) + ' \u2022 Round ' + f.round + '</span>' +
+                '</div>' +
+                '<span class="ls-fixture-status ' + (isCompleted ? 'done' : 'pending') + '">' +
+                  (isCompleted ? '\u2714 Score Saved' : '\u23F3 Ready to Score') +
+                '</span>' +
+              '</div>' +
+              '<div class="ls-fixture-body">' +
+                '<div class="ls-fixture-teams">' +
+                  '<div class="ls-fixture-team-box ' + (isT1Win ? 'winner' : '') + '">' +
+                    '<div class="ls-fixture-team-slot">' + escapeHtml(f.team1Label) + '</div>' +
+                    '<div class="ls-fixture-team-players">' +
+                      escapeHtml(f.team1.join(' & ')) + (isT1Win ? ' \u{1F3C6}' : '') +
+                    '</div>' +
+                  '</div>' +
+                  '<div class="ls-fixture-vs">VS</div>' +
+                  '<div class="ls-fixture-team-box ' + (isT2Win ? 'winner' : '') + '">' +
+                    '<div class="ls-fixture-team-slot">' + escapeHtml(f.team2Label) + '</div>' +
+                    '<div class="ls-fixture-team-players">' +
+                      escapeHtml(f.team2.join(' & ')) + (isT2Win ? ' \u{1F3C6}' : '') +
+                    '</div>' +
+                  '</div>' +
+                '</div>' +
+                actionZoneHtml +
+              '</div>' +
+            '</div>'
+          );
+        }).join('');
+
+      // Also build Live Standings preview right below the pre-scheduled matches
+      const summaryData = computeSeasonSummaryData(tournament.season);
+      const allRows = summaryData.tableRows || [];
+
+      const renderMiniStandingsTable = (titleText, rowsSubset, accentColor) => {
+        const bodyRows = rowsSubset.map((r, i) => {
+          const rank = i + 1;
+          const diffClass = r.diff > 0 ? 'pos' : (r.diff < 0 ? 'neg' : 'zero');
+          const diffStr = r.diff > 0 ? ('+' + r.diff) : String(r.diff);
+          return (
+            '<tr>' +
+              '<td class="rank-cell">#' + rank + '</td>' +
+              '<td class="player-col-cell" style="font-weight: 700; color: #f8fafc;">' + escapeHtml(r.team) + '</td>' +
+              '<td style="text-align: center; font-weight: 600;">' + r.matches + '</td>' +
+              '<td style="text-align: center; font-weight: 700; color: #00f59b;">' + r.won + '</td>' +
+              '<td style="text-align: center; font-weight: 600; color: #94a3b8;">' + r.lost + '</td>' +
+              '<td style="text-align: center;"><span class="ss-diff-pill ' + diffClass + '">' + diffStr + '</span></td>' +
+            '</tr>'
+          );
+        }).join('');
+
+        return (
+          '<div class="leaderboard-card" style="margin-bottom: 0; border-color: ' + accentColor + '33;">' +
+            '<div style="padding: 12px 16px; background: rgba(15, 23, 42, 0.85); border-bottom: 1px solid rgba(255,255,255,0.08); display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 8px;">' +
+              '<span style="font-size: 14px; font-weight: 800; color: ' + accentColor + '; text-transform: uppercase; letter-spacing: 0.5px;">\u{1F4CA} ' + escapeHtml(titleText) + '</span>' +
+              '<span class="ss-live-badge">\u25CF Live Standings</span>' +
+            '</div>' +
+            '<div class="table-container">' +
+              '<table class="standings-table ss-points-table">' +
+                '<thead>' +
+                  '<tr>' +
+                    '<th class="rank-cell">#</th>' +
+                    '<th class="th-player">Team</th>' +
+                    '<th style="text-align: center;">M</th>' +
+                    '<th style="text-align: center;">W</th>' +
+                    '<th style="text-align: center;">L</th>' +
+                    '<th style="text-align: center;">Pts Diff</th>' +
+                  '</tr>' +
+                '</thead>' +
+                '<tbody>' + bodyRows + '</tbody>' +
+              '</table>' +
+            '</div>' +
+          '</div>'
+        );
+      };
+
+      let liveStandingsSectionHtml = '';
+      if (numGroups === 2) {
+        const grpARows = allRows.filter(r => r.group === 'A');
+        const grpBRows = allRows.filter(r => r.group === 'B');
+        liveStandingsSectionHtml =
+          '<div style="margin-top: 22px;">' +
+            '<div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; flex-wrap: wrap; gap: 8px;">' +
+              '<div style="font-size: 16px; font-weight: 800; color: #f8fafc;">\u{1F3C6} Season ' + tournament.season + ' Live Group Standings</div>' +
+              '<button type="button" class="btn btn-outline" style="font-size: 12px; padding: 6px 12px; border-color: rgba(255, 215, 0, 0.45); color: #ffd700;" onclick="openSeasonSummaryForLiveSeason()">Open Full Season Summary Tab \u2192</button>' +
+            '</div>' +
+            '<div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 14px;">' +
+              renderMiniStandingsTable('Group A Live Standings', grpARows, '#00f59b') +
+              renderMiniStandingsTable('Group B Live Standings', grpBRows, '#38bdf8') +
+            '</div>' +
+          '</div>';
+      } else {
+        liveStandingsSectionHtml =
+          '<div style="margin-top: 22px;">' +
+            '<div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; flex-wrap: wrap; gap: 8px;">' +
+              '<div style="font-size: 16px; font-weight: 800; color: #f8fafc;">\u{1F3C6} Season ' + tournament.season + ' Live Standings</div>' +
+              '<button type="button" class="btn btn-outline" style="font-size: 12px; padding: 6px 12px; border-color: rgba(255, 215, 0, 0.45); color: #ffd700;" onclick="openSeasonSummaryForLiveSeason()">Open Full Season Summary Tab \u2192</button>' +
+            '</div>' +
+            renderMiniStandingsTable('Group A Live Standings', allRows, '#00f59b') +
+          '</div>';
+      }
+
+      const groupFilterButtonsHtml = numGroups === 2
+        ? (
+          '<button type="button" class="ls-filter-chip ' + (activeFilter === 'groupA' ? 'active' : '') + '" onclick="setLiveFixtureFilter(\'groupA\')">Group A (' + fixtures.filter(f => f.group === 'A').length + ')</button>' +
+          '<button type="button" class="ls-filter-chip ' + (activeFilter === 'groupB' ? 'active' : '') + '" onclick="setLiveFixtureFilter(\'groupB\')">Group B (' + fixtures.filter(f => f.group === 'B').length + ')</button>'
+        )
+        : '';
+
+      wrap.innerHTML =
+        '<div class="ls-dashboard-hero">' +
+          '<div class="ls-dashboard-top">' +
+            '<div>' +
+              '<div class="ls-live-pulse-badge"><span class="ls-live-dot"></span> LIVE TOURNAMENT \u2022 SEASON ' + tournament.season + '</div>' +
+              '<div class="ls-dashboard-title">Season ' + tournament.season + ' Pre-Scheduled Group Matches</div>' +
+              '<div class="ls-dashboard-meta">' +
+                '<span>\u{1F4C5} ' + escapeHtml(tournament.date || '') + '</span>' +
+                '<span>\u2022</span>' +
+                '<span>\u{1F3F8} ' + numGroups + (numGroups === 1 ? ' Group' : ' Groups') + ' (' + tournament.numTeams + ' Teams)</span>' +
+                '<span>\u2022</span>' +
+                '<span style="color: #00f59b; font-weight: 700;">' + completedCount + ' of ' + totalCount + ' Matches Scored</span>' +
+              '</div>' +
+            '</div>' +
+            '<div style="display: flex; gap: 8px; flex-wrap: wrap;">' +
+              '<button type="button" class="btn btn-outline" style="font-size: 12px; padding: 7px 12px;" onclick="goToLiveSetupStep3()">' +
+                '<span>\u{1F465} Edit Team Players</span>' +
+              '</button>' +
+              '<button type="button" class="btn btn-outline" style="font-size: 12px; padding: 7px 12px;" onclick="goToLiveSetupStep1()">' +
+                '<span>\u2699\uFE0F Change Season / Format</span>' +
+              '</button>' +
+            '</div>' +
+          '</div>' +
+          '<div class="ls-progress-wrap">' +
+            '<div class="ls-progress-labels">' +
+              '<span>Group Stage Progress (' + completedCount + '/' + totalCount + ' matches completed)</span>' +
+              '<span style="color: #00f59b;">' + pct + '%</span>' +
+            '</div>' +
+            '<div class="ls-progress-track">' +
+              '<div class="ls-progress-fill" style="width: ' + pct + '%;"></div>' +
+            '</div>' +
+          '</div>' +
+        '</div>' +
+        '<div class="ls-filter-bar">' +
+          '<div class="ls-filter-pills">' +
+            '<button type="button" class="ls-filter-chip ' + (activeFilter === 'all' ? 'active' : '') + '" onclick="setLiveFixtureFilter(\'all\')">All Matches (' + totalCount + ')</button>' +
+            '<button type="button" class="ls-filter-chip ' + (activeFilter === 'pending' ? 'active' : '') + '" onclick="setLiveFixtureFilter(\'pending\')">Pending (' + pendingCount + ')</button>' +
+            '<button type="button" class="ls-filter-chip ' + (activeFilter === 'completed' ? 'active' : '') + '" onclick="setLiveFixtureFilter(\'completed\')">Completed (' + completedCount + ')</button>' +
+            groupFilterButtonsHtml +
+          '</div>' +
+          '<div style="font-size: 12px; color: var(--text-dim);">' +
+            'Enter score &amp; click <strong>Save</strong> to update all tabs &amp; standings live' +
+          '</div>' +
+        '</div>' +
+        '<div class="ls-fixtures-grid">' +
+          fixturesHtml +
+        '</div>' +
+        liveStandingsSectionHtml;
     }
 
     function showBeautyDaStamp() {

@@ -5962,7 +5962,7 @@
           <div class="ls-wizard-step-badge">&#127992; Step 2 of 3 &bull; Groups &amp; Teams</div>
           <div class="ls-wizard-title" id="liveStep2Title">Configure Groups &amp; Number of Teams</div>
           <div class="ls-wizard-desc">
-            Select the number of groups (1 or 2) and total number of teams (4 to 10). When 2 groups are selected, only even team counts (4, 6, 8, or 10) are available so groups split evenly.
+            Select the number of groups (1 or 2) and total number of teams (4 to 10). When 2 groups are selected with an odd team count (e.g., 9 teams), Group A gets the extra team (5 in Group A, 4 in Group B).
           </div>
 
           <div class="ls-form-grid-2">
@@ -5976,7 +5976,7 @@
             <div class="form-group" style="margin-bottom: 0;">
               <label class="form-label" for="liveSetupTeamsSelect">Number of Teams</label>
               <select id="liveSetupTeamsSelect" class="form-select" onchange="handleLiveTeamsCountChange()">
-                <!-- Dynamically populated: 4..10 for 1 group; strictly 4, 6, 8, 10 for 2 groups -->
+                <!-- Dynamically populated: 4..10 for both 1 and 2 groups -->
               </select>
             </div>
           </div>
@@ -15793,10 +15793,7 @@
         liveScoringState.season = parseInt(existing.season || sKey, 10) || 10;
         liveScoringState.date = existing.date || getTodayIsoDateString();
         const ng = parseInt(existing.numGroups, 10) === 2 ? 2 : 1;
-        let nt = parseInt(existing.numTeams, 10) || 4;
-        if (ng === 2 && nt % 2 !== 0) {
-          nt = Math.min(10, Math.max(4, nt + 1));
-        }
+        const nt = Math.min(10, Math.max(4, parseInt(existing.numTeams, 10) || 4));
         liveScoringState.numGroups = ng;
         liveScoringState.numTeams = nt;
         liveScoringState.draftTeams = buildDraftTeamsArray(ng, nt, existing.teams || []);
@@ -15805,9 +15802,7 @@
         if (!liveScoringState.date) {
           liveScoringState.date = getTodayIsoDateString();
         }
-        if (liveScoringState.numGroups === 2 && liveScoringState.numTeams % 2 !== 0) {
-          liveScoringState.numTeams = 4;
-        }
+        liveScoringState.numTeams = Math.min(10, Math.max(4, parseInt(liveScoringState.numTeams, 10) || 4));
         liveScoringState.draftTeams = buildDraftTeamsArray(
           liveScoringState.numGroups,
           liveScoringState.numTeams,
@@ -15821,13 +15816,12 @@
       let nt = parseInt(numTeams, 10) || 4;
       if (nt < 4) nt = 4;
       if (nt > 10) nt = 10;
-      if (ng === 2 && nt % 2 !== 0) {
-        nt = Math.min(10, Math.max(4, nt + 1));
-      }
 
       const result = [];
-      const groupACount = ng === 2 ? (nt / 2) : nt;
-      const groupBCount = ng === 2 ? (nt / 2) : 0;
+      // When 2 groups are chosen, Group A gets Math.ceil(nt / 2) teams and Group B gets Math.floor(nt / 2) teams
+      // (e.g., for 9 teams -> Group A has 5 teams, Group B has 4 teams)
+      const groupACount = ng === 2 ? Math.ceil(nt / 2) : nt;
+      const groupBCount = ng === 2 ? Math.floor(nt / 2) : 0;
 
       // Map existing seed teams by (group, groupTeamNum) or linear index
       const getSeedPair = (linearIdx, grp, grpNum) => {
@@ -16102,7 +16096,7 @@
     }
 
     /* --------------------------------------------------------------------------
-       STEP 2: NUMBER OF GROUPS (1 or 2) & NUMBER OF TEAMS (4..10; EVEN ONLY IF 2 GROUPS)
+       STEP 2: NUMBER OF GROUPS (1 or 2) & NUMBER OF TEAMS (4..10)
        -------------------------------------------------------------------------- */
     function goToLiveSetupStep2() {
       const seasonSelect = document.getElementById('liveSetupSeasonSelect');
@@ -16126,17 +16120,11 @@
       if (!teamsSelect) return;
 
       const ng = parseInt(numGroups, 10) === 2 ? 2 : 1;
-      // MANDATORY RULE: If number of groups is 2, number of teams MUST be even (4, 6, 8 or 10) - other options must NOT exist in dropdown
-      const validTeamOptions = ng === 2 ? [4, 6, 8, 10] : [4, 5, 6, 7, 8, 9, 10];
+      const validTeamOptions = [4, 5, 6, 7, 8, 9, 10];
 
       let targetTeams = parseInt(preferredTeams, 10) || 4;
-      if (!validTeamOptions.includes(targetTeams)) {
-        // Snap odd number to nearest valid even number in [4, 6, 8, 10]
-        if (targetTeams < 4) targetTeams = 4;
-        else if (targetTeams > 10) targetTeams = 10;
-        else targetTeams = targetTeams + (targetTeams % 2);
-        if (!validTeamOptions.includes(targetTeams)) targetTeams = 4;
-      }
+      if (targetTeams < 4) targetTeams = 4;
+      if (targetTeams > 10) targetTeams = 10;
 
       teamsSelect.innerHTML = '';
       validTeamOptions.forEach(count => {
@@ -16195,21 +16183,27 @@
 
       if (ng === 1) {
         const totalMatches = (nt * (nt - 1)) / 2;
+        const perTeamMatches = nt - 1;
         previewEl.innerHTML =
           '<div>' +
-            '<strong>Single Group Round-Robin (Group A):</strong> All <strong>' + nt + ' teams</strong> (' + totalPlayers + ' players) are in <strong>Group A</strong> and play each other once \u2192 ' +
+            '<strong>Single Group Round-Robin (Group A):</strong> All <strong>' + nt + ' teams</strong> (' + totalPlayers + ' players) are in <strong>Group A</strong>. ' +
+            'Each team plays <strong>' + perTeamMatches + '</strong> round-robin matches \u2192 ' +
             '<strong style="color: #00f59b;">' + totalMatches + ' pre-scheduled group matches</strong>.' +
           '</div>';
       } else {
-        const perGroup = nt / 2;
-        const matchesPerGroup = (perGroup * (perGroup - 1)) / 2;
-        const totalMatches = matchesPerGroup * 2;
+        const groupACount = Math.ceil(nt / 2);
+        const groupBCount = Math.floor(nt / 2);
+        const matchesGroupA = (groupACount * (groupACount - 1)) / 2;
+        const matchesGroupB = (groupBCount * (groupBCount - 1)) / 2;
+        const totalMatches = matchesGroupA + matchesGroupB;
+        const perTeamA = groupACount - 1;
+        const perTeamB = groupBCount - 1;
         previewEl.innerHTML =
           '<div>' +
-            '<strong>Two-Group Split Round-Robin (Group A &amp; Group B):</strong> <strong>' + perGroup + ' teams</strong> in <strong>Group A</strong> (' + matchesPerGroup + (matchesPerGroup === 1 ? ' match' : ' matches') + ') + ' +
-            '<strong>' + perGroup + ' teams</strong> in <strong>Group B</strong> (' + matchesPerGroup + (matchesPerGroup === 1 ? ' match' : ' matches') + ') \u2192 ' +
+            '<strong>Two-Group Round-Robin (Group A &amp; Group B):</strong> ' +
+            '<strong>Group A</strong> has <strong>' + groupACount + ' teams</strong> (' + perTeamA + (perTeamA === 1 ? ' match' : ' matches') + '/team, ' + matchesGroupA + ' total) &amp; ' +
+            '<strong>Group B</strong> has <strong>' + groupBCount + ' teams</strong> (' + perTeamB + (perTeamB === 1 ? ' match' : ' matches') + '/team, ' + matchesGroupB + ' total) \u2192 ' +
             '<strong style="color: #00f59b;">' + totalMatches + ' total pre-scheduled group matches</strong> (' + totalPlayers + ' players).' +
-            '<div style="font-size: 11px; color: var(--text-dim); margin-top: 4px;">\u2714 Even team counts only (4, 6, 8, or 10) are enabled when 2 Groups are selected.</div>' +
           '</div>';
       }
     }
@@ -16224,10 +16218,7 @@
         liveScoringState.numGroups = parseInt(groupsSelect.value, 10) === 2 ? 2 : 1;
       }
       if (teamsSelect) {
-        liveScoringState.numTeams = parseInt(teamsSelect.value, 10) || 4;
-      }
-      if (liveScoringState.numGroups === 2 && liveScoringState.numTeams % 2 !== 0) {
-        populateLiveTeamsCountDropdown(2, liveScoringState.numTeams);
+        liveScoringState.numTeams = Math.min(10, Math.max(4, parseInt(teamsSelect.value, 10) || 4));
       }
 
       liveScoringState.draftTeams = buildDraftTeamsArray(
@@ -16399,10 +16390,9 @@
       });
 
       const ng = liveScoringState.numGroups === 2 ? 2 : 1;
-      const perGroup = ng === 2 ? (totalTeams / 2) : totalTeams;
-      const totalFixtures = ng === 2
-        ? ((perGroup * (perGroup - 1)) / 2) * 2
-        : (totalTeams * (totalTeams - 1)) / 2;
+      const groupACount = ng === 2 ? Math.ceil(totalTeams / 2) : totalTeams;
+      const groupBCount = ng === 2 ? Math.floor(totalTeams / 2) : 0;
+      const totalFixtures = ((groupACount * (groupACount - 1)) / 2) + ((groupBCount * (groupBCount - 1)) / 2);
 
       if (duplicatePlayers.size > 0) {
         box.style.borderColor = 'rgba(244, 63, 94, 0.5)';
@@ -16664,12 +16654,7 @@
       const seasonNum = parseInt(liveScoringState.season, 10) || 10;
       const dateStr = liveScoringState.date || getTodayIsoDateString();
       const numGroups = parseInt(liveScoringState.numGroups, 10) === 2 ? 2 : 1;
-      const numTeams = parseInt(liveScoringState.numTeams, 10) || 4;
-
-      if (numGroups === 2 && numTeams % 2 !== 0) {
-        alert("When Number of Groups is 2, the Number of Teams must be even (4, 6, 8, or 10).");
-        return;
-      }
+      const numTeams = Math.min(10, Math.max(4, parseInt(liveScoringState.numTeams, 10) || 4));
 
       const seenPlayers = new Set();
       for (let i = 0; i < liveScoringState.draftTeams.length; i++) {

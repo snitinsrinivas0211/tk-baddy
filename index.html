@@ -6938,6 +6938,47 @@
       return results;
     }
 
+    const PERMANENT_DELETED_MATCH_IDS = ['m_live_s10_s10_gA_t1_vs_t4_mvl269po'];
+
+    function deduplicateLiveFixtureMatches(matchesList) {
+      if (!Array.isArray(matchesList)) return [];
+      if (!appState.deletedMatchIds) appState.deletedMatchIds = new Set();
+      PERMANENT_DELETED_MATCH_IDS.forEach(id => appState.deletedMatchIds.add(id));
+
+      // Group matches with liveFixtureId by (season, liveFixtureId) and keep only the newest one
+      const bestByFixtureKey = {};
+      matchesList.forEach(m => {
+        if (!m || !m.id || appState.deletedMatchIds.has(m.id)) return;
+        if (m.liveFixtureId) {
+          const sNum = parseInt(m.season || m.weekNumber, 10) || 1;
+          const fKey = sNum + '::' + String(m.liveFixtureId);
+          const prev = bestByFixtureKey[fKey];
+          if (!prev) {
+            bestByFixtureKey[fKey] = m;
+          } else {
+            const prevTime = String(prev.updatedAt || prev.createdAt || '');
+            const curTime = String(m.updatedAt || m.createdAt || '');
+            if (curTime >= prevTime) {
+              appState.deletedMatchIds.add(prev.id);
+              firestoreRestDelete("badminton_matches", prev.id).catch(() => {});
+              bestByFixtureKey[fKey] = m;
+            } else {
+              appState.deletedMatchIds.add(m.id);
+              firestoreRestDelete("badminton_matches", m.id).catch(() => {});
+            }
+          }
+        }
+      });
+
+      const seenIds = new Set();
+      return matchesList.filter(m => {
+        if (!m || !m.id || appState.deletedMatchIds.has(m.id)) return false;
+        if (seenIds.has(m.id)) return false;
+        seenIds.add(m.id);
+        return true;
+      });
+    }
+
     function loadLocalData() {
       try {
         const storedPlayers = localStorage.getItem('tk_baddy_players');
@@ -6945,11 +6986,25 @@
         const storedEditions = localStorage.getItem('tk_baddy_editions');
         const storedTournaments = localStorage.getItem('tk_baddy_live_tournaments');
         const storedDeletedIds = localStorage.getItem('tk_baddy_deleted_match_ids');
+        if (storedDeletedIds) {
+          try {
+            const arr = JSON.parse(storedDeletedIds) || [];
+            appState.deletedMatchIds = new Set(arr);
+          } catch (e) {
+            appState.deletedMatchIds = new Set();
+          }
+        } else if (!appState.deletedMatchIds) {
+          appState.deletedMatchIds = new Set();
+        }
+        PERMANENT_DELETED_MATCH_IDS.forEach(id => appState.deletedMatchIds.add(id));
+
         if (storedPlayers) {
           try { appState.players = JSON.parse(storedPlayers) || []; } catch (e) {}
         }
         if (storedMatches) {
-          try { appState.matches = JSON.parse(storedMatches) || []; } catch (e) {}
+          try {
+            appState.matches = deduplicateLiveFixtureMatches(JSON.parse(storedMatches) || []);
+          } catch (e) {}
         }
         if (storedEditions) {
           try {
@@ -6967,16 +7022,6 @@
         if (!appState.liveTournaments || typeof appState.liveTournaments !== 'object') {
           appState.liveTournaments = {};
         }
-        if (storedDeletedIds) {
-          try {
-            const arr = JSON.parse(storedDeletedIds) || [];
-            appState.deletedMatchIds = new Set(arr);
-          } catch (e) {
-            appState.deletedMatchIds = new Set();
-          }
-        } else if (!appState.deletedMatchIds) {
-          appState.deletedMatchIds = new Set();
-        }
         return true;
       } catch (e) {
         console.error("Local data load error", e);
@@ -6986,6 +7031,7 @@
 
     function saveLocalData() {
       try {
+        appState.matches = deduplicateLiveFixtureMatches(appState.matches || []);
         appState.editions = deduplicateEditionsList(appState.editions || []);
         localStorage.setItem('tk_baddy_players', JSON.stringify(appState.players || []));
         localStorage.setItem('tk_baddy_matches', JSON.stringify(appState.matches || []));
@@ -7144,10 +7190,16 @@
             });
 
             // Preserve any locally logged matches that have not yet finished syncing to Firestore
-            const unsyncedLocal = (appState.matches || []).filter(m =>
-              m && m.id && !remoteIds.has(m.id) && !deletedIds.has(m.id) && !m.isChampionshipEdition && !String(m.id).startsWith("edition_")
+            const remoteFixtureKeys = new Set(
+              remoteMatches.filter(rm => rm && rm.liveFixtureId).map(rm => String(rm.season || '') + '::' + String(rm.liveFixtureId))
             );
-            const mergedMatches = [...unsyncedLocal, ...remoteMatches];
+            const unsyncedLocal = (appState.matches || []).filter(m =>
+              m && m.id && !remoteIds.has(m.id) && !deletedIds.has(m.id) &&
+              !PERMANENT_DELETED_MATCH_IDS.includes(String(m.id)) &&
+              !(m.liveFixtureId && remoteFixtureKeys.has(String(m.season || '') + '::' + String(m.liveFixtureId))) &&
+              !m.isChampionshipEdition && !String(m.id).startsWith("edition_")
+            );
+            const mergedMatches = deduplicateLiveFixtureMatches([...unsyncedLocal, ...remoteMatches]);
             mergedMatches.sort((a, b) => {
               const da = a.date || '';
               const db = b.date || '';
@@ -7392,8 +7444,14 @@
         }
 
         // Find any locally stored matches (e.g. Season 8 matches in desktop localStorage) that are not yet in Cloud Firestore
+        const remoteFixtureKeys = new Set(
+          remoteMatches.filter(rm => rm && rm.liveFixtureId).map(rm => String(rm.season || '') + '::' + String(rm.liveFixtureId))
+        );
         const unsyncedLocalMatches = (appState.matches || []).filter(m =>
-          m && m.id && !remoteMatchIds.has(m.id) && !deletedIds.has(m.id) && !m.isChampionshipEdition && !String(m.id).startsWith("edition_")
+          m && m.id && !remoteMatchIds.has(m.id) && !deletedIds.has(m.id) &&
+          !PERMANENT_DELETED_MATCH_IDS.includes(String(m.id)) &&
+          !(m.liveFixtureId && remoteFixtureKeys.has(String(m.season || '') + '::' + String(m.liveFixtureId))) &&
+          !m.isChampionshipEdition && !String(m.id).startsWith("edition_")
         );
 
         let pushedMatchCount = 0;
@@ -7401,7 +7459,7 @@
           pushedMatchCount = await syncLocalMatchesToRemote(unsyncedLocalMatches, true);
         }
 
-        const mergedMatches = [...unsyncedLocalMatches, ...remoteMatches];
+        const mergedMatches = deduplicateLiveFixtureMatches([...unsyncedLocalMatches, ...remoteMatches]);
         mergedMatches.sort((a, b) => {
           const da = a.date || '';
           const db = b.date || '';
@@ -16740,14 +16798,16 @@
 
         const usedMatchIds = new Set();
 
-        // Pass 1: link by explicit matchId or liveFixtureId
+        // Pass 1: link by explicit matchId or liveFixtureId (preferring newest if multiple exist)
         lt.fixtures.forEach(f => {
           let m = null;
-          if (f.matchId) {
-            m = seasonMatches.find(x => x.id === f.matchId);
-          }
-          if (!m) {
-            m = seasonMatches.find(x => x.liveFixtureId === f.id && !usedMatchIds.has(x.id));
+          const byFixtureId = seasonMatches
+            .filter(x => x.liveFixtureId === f.id && !usedMatchIds.has(x.id))
+            .sort((a, b) => String(b.updatedAt || b.createdAt || '').localeCompare(String(a.updatedAt || a.createdAt || '')));
+          if (byFixtureId.length > 0) {
+            m = byFixtureId[0];
+          } else if (f.matchId) {
+            m = seasonMatches.find(x => x.id === f.matchId && !usedMatchIds.has(x.id));
           }
           if (m) {
             usedMatchIds.add(m.id);
@@ -16761,13 +16821,14 @@
           }
         });
 
-        // Pass 2: link any remaining pending fixture if a match with the exact same two teams exists in this season
+        // Pass 2: link any remaining PENDING fixture if a match with the exact same two teams (and no conflicting liveFixtureId) exists in this season
         lt.fixtures.forEach(f => {
           if (f.status === 'completed' && f.matchId) return;
           const fK1 = canonicalTeamKey(f.team1);
           const fK2 = canonicalTeamKey(f.team2);
           const m = seasonMatches.find(x => {
             if (usedMatchIds.has(x.id)) return false;
+            if (x.liveFixtureId && x.liveFixtureId !== f.id) return false;
             const mK1 = canonicalTeamKey(x.team1);
             const mK2 = canonicalTeamKey(x.team2);
             return (mK1 === fK1 && mK2 === fK2) || (mK1 === fK2 && mK2 === fK1);
@@ -16818,10 +16879,12 @@
       if (!targetFixture) {
         targetFixture = lt.fixtures.find(f => f.matchId === matchObj.id);
       }
-      if (!targetFixture) {
+      if (!targetFixture && !matchObj.liveFixtureId) {
+        // Only link an untagged match to a fixture if that fixture is still pending (never overwrite a completed group match with a Finals/Semis rematch)
         const mK1 = canonicalTeamKey(matchObj.team1);
         const mK2 = canonicalTeamKey(matchObj.team2);
         targetFixture = lt.fixtures.find(f => {
+          if (f.status === 'completed' && f.matchId) return false;
           const fK1 = canonicalTeamKey(f.team1);
           const fK2 = canonicalTeamKey(f.team2);
           return (fK1 === mK1 && fK2 === mK2) || (fK1 === mK2 && fK2 === mK1);
@@ -16905,9 +16968,22 @@
       }
 
       const winner = s1 > s2 ? 1 : 2;
-      const isEdit = !!(fixture.matchId && (appState.matches || []).some(m => m.id === fixture.matchId));
-      const existingMatch = isEdit ? appState.matches.find(m => m.id === fixture.matchId) : null;
-      const matchId = existingMatch ? existingMatch.id : ('m_live_s' + tournament.season + '_' + fixture.id + '_' + Date.now().toString(36));
+      const existingById = fixture.matchId
+        ? (appState.matches || []).find(m => m && m.id === fixture.matchId)
+        : null;
+      const existingByFixture = (appState.matches || []).find(
+        m => m && m.liveFixtureId === fixture.id && (parseInt(m.season || m.weekNumber, 10) || 1) === parseInt(tournament.season, 10)
+      );
+      const existingMatch = existingById || existingByFixture || null;
+      const isEdit = !!existingMatch;
+      const matchId = existingMatch ? existingMatch.id : ('m_live_s' + tournament.season + '_' + fixture.id);
+
+      // Remove any other stale duplicate matches with the same liveFixtureId
+      (appState.matches || []).forEach(m => {
+        if (m && m.liveFixtureId === fixture.id && m.id !== matchId) {
+          deleteMatchById(m.id);
+        }
+      });
 
       const matchData = {
         id: matchId,
@@ -16923,7 +16999,8 @@
         sets: [{ t1: s1, t2: s2 }],
         winner: winner,
         notes: 'Season ' + tournament.season + ' \u2022 Group ' + fixture.group + ' (' + fixture.team1Label + ' vs ' + fixture.team2Label + ')',
-        createdAt: existingMatch && existingMatch.createdAt ? existingMatch.createdAt : new Date().toISOString()
+        createdAt: existingMatch && existingMatch.createdAt ? existingMatch.createdAt : new Date().toISOString(),
+        updatedAt: new Date().toISOString()
       };
 
       fixture.status = 'completed';
